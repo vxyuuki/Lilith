@@ -819,6 +819,7 @@ body {
 }
 
 .mystery .giant-text {
+  position: relative;
   font-family: var(--font-sans);
   font-weight: 800;
   font-size: clamp(3rem, 10vw, 8rem);
@@ -936,8 +937,8 @@ body {
   position: absolute;
   background-color: #fff;
   height: 2px;
-  width: 100vw;
-  left: 0;
+  width: 150%;
+  left: -25%;
   z-index: 4;
   opacity: 0;
   mix-blend-mode: difference;

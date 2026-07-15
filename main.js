@@ -530,6 +530,25 @@ function initScatteredText() {
   const texts = [];
   const shapes = [];
 
+  // Helper to add glitch lines to a text element
+  function attachLinesToText(textElement, count) {
+    for (let i = 0; i < count; i++) {
+      const line = document.createElement('div');
+      const type = Math.random();
+      if (type > 0.6) {
+        line.className = 'glitch-line red flicker-text';
+      } else if (type > 0.3) {
+        line.className = 'glitch-line dark flicker-text';
+      } else {
+        line.className = 'glitch-line flicker-text';
+      }
+      line.style.animationDelay = (Math.random() * 3) + 's';
+      line.style.top = Math.random() * 100 + '%'; // Random vertical pos inside text
+      textElement.appendChild(line);
+      shapes.push(line);
+    }
+  }
+
   // 1. Create Texts
   for (let i = 0; i < numTexts; i++) {
     const el = document.createElement('div');
@@ -543,8 +562,16 @@ function initScatteredText() {
     el.style.left = Math.random() * 80 + 10 + '%';
     el.style.animationDelay = (Math.random() * 3) + 's';
     
+    attachLinesToText(el, 3); // Attach 3 lines directly to each YES/NO
+    
     mysteryContent.appendChild(el);
     texts.push(el);
+  }
+
+  // Attach lines to the main giant text too!
+  const giantText = mysteryContent.querySelector('.giant-text');
+  if (giantText) {
+    attachLinesToText(giantText, 8);
   }
 
   // 2. Create Glitch Geometric Shapes
@@ -564,22 +591,6 @@ function initScatteredText() {
     shapes.push(el);
   }
 
-  // 3. Create Glitch Lines (Slices)
-  for (let i = 0; i < 10; i++) {
-    const el = document.createElement('div');
-    const type = Math.random();
-    if (type > 0.6) {
-      el.className = 'glitch-line red flicker-text';
-    } else if (type > 0.3) {
-      el.className = 'glitch-line dark flicker-text';
-    } else {
-      el.className = 'glitch-line flicker-text';
-    }
-    el.style.animationDelay = (Math.random() * 3) + 's';
-    mysteryContent.appendChild(el);
-    shapes.push(el);
-  }
-
   // Loop to change position every 1 second
   setInterval(() => {
     texts.forEach(el => {
@@ -590,12 +601,13 @@ function initScatteredText() {
     });
 
     shapes.forEach(el => {
-      el.style.top = Math.random() * 100 + '%';
       if (el.classList.contains('glitch-square')) {
+        el.style.top = Math.random() * 100 + '%';
         el.style.left = Math.random() * 100 + '%';
         el.style.transform = `rotate(45deg) scale(${0.5 + Math.random() * 1.5})`;
       } else {
-        // Horizontal tracking streak
+        // Horizontal tracking streak on text
+        el.style.top = Math.random() * 100 + '%'; // move up and down on the text
         el.style.transform = `scaleY(${Math.random() * 2})`;
       }
     });
