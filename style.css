@@ -573,7 +573,8 @@ body {
   align-items: center;
   justify-content: center;
   z-index: 5; 
-  background-image: url('./Image/kosong.png');
+  background-color: #020202; /* Prevent shader bleeding through */
+  background-image: url('/Image/kosong.png'); /* Absolute path */
   background-size: cover;
   background-position: center;
   background-attachment: fixed;

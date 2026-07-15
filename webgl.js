@@ -12,7 +12,8 @@ export function initWebGLBackground() {
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false });
   
   renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  const pixelRatio = Math.min(window.devicePixelRatio, 2);
+  renderer.setPixelRatio(pixelRatio);
 
   // The Plane that covers the entire screen
   const geometry = new THREE.PlaneGeometry(2, 2);
@@ -21,7 +22,7 @@ export function initWebGLBackground() {
   const material = new THREE.ShaderMaterial({
     uniforms: {
       uTime: { value: 0.0 },
-      uResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+      uResolution: { value: new THREE.Vector2(window.innerWidth * pixelRatio, window.innerHeight * pixelRatio) },
       uMouse: { value: new THREE.Vector2(0.5, 0.5) },
       uScroll: { value: 0.0 }
     },
@@ -170,6 +171,6 @@ export function initWebGLBackground() {
 
   window.addEventListener('resize', () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
-    material.uniforms.uResolution.value.set(window.innerWidth, window.innerHeight);
+    material.uniforms.uResolution.value.set(window.innerWidth * pixelRatio, window.innerHeight * pixelRatio);
   });
 }
