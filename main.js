@@ -548,16 +548,16 @@ function initScatteredText() {
   setInterval(() => {
     texts.forEach(el => {
       // Randomly position on screen
+      // Randomly position on screen
       el.style.left = Math.random() * 80 + 10 + '%';
       el.style.top = Math.random() * 80 + 10 + '%';
       
       // Random rotation for chaotic feel
       const rot = Math.random() * 20 - 10;
-      el.style.transform =  + '' + otate(deg) + '' + ;
+      el.style.transform = `rotate(${rot}deg)`;
     });
   }, 1000);
 }
 
 // Initialize the scatter text logic
 initScatteredText();
-
