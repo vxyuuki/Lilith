@@ -428,17 +428,7 @@ lenis.on('scroll', () => {
   // Removed old manual parallax logic
   
   // -- Gallery Horizontal Scroll Tracking --
-  const galleryOffset = gallerySection.offsetTop;
-  if (scrollY >= galleryOffset && scrollY <= galleryOffset + gallerySection.offsetHeight - vh) {
-    const galleryProgress = (scrollY - galleryOffset) / (gallerySection.offsetHeight - vh);
-    const maxTranslate = galleryTrack.scrollWidth - vw;
-    galleryTrack.style.transform = `translateX(${-galleryProgress * maxTranslate}px)`;
-  } else if (scrollY < galleryOffset) {
-    galleryTrack.style.transform = `translateX(0px)`;
-  } else if (scrollY > galleryOffset + gallerySection.offsetHeight - vh) {
-    const maxTranslate = galleryTrack.scrollWidth - vw;
-    galleryTrack.style.transform = `translateX(${-maxTranslate}px)`;
-  }
+  // Handled by GSAP ScrollTrigger below
   
   // -- Mystery Section Scroll Tracking (Image Reveal) --
   const mysteryOffset = mysterySection.offsetTop;
@@ -450,6 +440,22 @@ lenis.on('scroll', () => {
 });
 
 
+
+// GSAP Horizontal Scroll Gallery (Scroll Hijacking / Pinned)
+if (galleryTrack && gallerySection) {
+  gsap.to(galleryTrack, {
+    x: () => -(galleryTrack.scrollWidth - window.innerWidth) + "px",
+    ease: "none",
+    scrollTrigger: {
+      trigger: gallerySection,
+      start: "top top",
+      end: () => "+=" + (galleryTrack.scrollWidth - window.innerWidth),
+      pin: true,
+      scrub: 1, // Smooth interpolation
+      invalidateOnRefresh: true, // Recalculate on window resize
+    }
+  });
+}
 
 // 6. GSAP Text Animation for Character Section
 const charTextContainer = document.querySelector('.gsap-text-container');
