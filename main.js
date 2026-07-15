@@ -606,9 +606,11 @@ function initScatteredText() {
         el.style.left = Math.random() * 100 + '%';
         el.style.transform = `rotate(45deg) scale(${0.5 + Math.random() * 1.5})`;
       } else {
-        // Horizontal tracking streak on text
-        el.style.top = Math.random() * 100 + '%'; // move up and down on the text
-        el.style.transform = `scaleY(${Math.random() * 2})`;
+        // Horizontal tracking streak on text - chaotic variation
+        el.style.top = Math.random() * 100 + '%'; 
+        el.style.left = (Math.random() * -100) + '%'; // Jitter left edge
+        el.style.width = (Math.random() * 200 + 50) + '%'; // 50% to 250% width
+        el.style.transform = `scaleY(${Math.random() * 3})`; // Random thickness
       }
     });
   }, 1000);
