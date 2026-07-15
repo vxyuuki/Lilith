@@ -94,7 +94,7 @@ export function initWebGLBackground() {
       }
 
       void main() {
-        vec2 normUv = gl_FragCoord.xy / uResolution.xy;
+        vec2 normUv = vUv;
         vec2 st = normUv;
         st.x *= uResolution.x / uResolution.y; // Correct aspect ratio
 
@@ -124,7 +124,7 @@ export function initWebGLBackground() {
         // Add brighter red edges
         finalColor = mix(finalColor, colorBrightRed, clamp(length(q), 0.0, 1.0) * mouseGlow);
         
-        // Vignette uses normalized UV to prevent NaN artifacts!
+        // Vignette uses perfectly normalized vUv!
         float vignette = normUv.x * normUv.y * (1.0 - normUv.x) * (1.0 - normUv.y);
         vignette = clamp(pow(abs(vignette) * 15.0, 0.25), 0.0, 1.0);
         
