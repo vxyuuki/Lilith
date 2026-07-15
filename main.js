@@ -2,8 +2,12 @@ import Lenis from 'lenis';
 import { animate, createTimeline, stagger, splitText, utils } from 'animejs';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { initWebGLBackground } from './webgl.js';
 
 gsap.registerPlugin(ScrollTrigger);
+
+// Initialize WebGL Background
+initWebGLBackground();
 
 // 1. Smooth Scroll Setup (Lenis)
 const lenis = new Lenis({
