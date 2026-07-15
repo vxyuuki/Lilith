@@ -94,7 +94,8 @@ export function initWebGLBackground() {
       }
 
       void main() {
-        vec2 st = gl_FragCoord.xy / uResolution.xy;
+        vec2 normUv = gl_FragCoord.xy / uResolution.xy;
+        vec2 st = normUv;
         st.x *= uResolution.x / uResolution.y; // Correct aspect ratio
 
         // Add slow movement and scroll influence
@@ -123,9 +124,9 @@ export function initWebGLBackground() {
         // Add brighter red edges
         finalColor = mix(finalColor, colorBrightRed, clamp(length(q), 0.0, 1.0) * mouseGlow);
         
-        // Vignette
-        float vignette = st.x * st.y * (1.0 - st.x) * (1.0 - st.y);
-        vignette = clamp(pow(vignette * 15.0, 0.25), 0.0, 1.0);
+        // Vignette uses normalized UV to prevent NaN artifacts!
+        float vignette = normUv.x * normUv.y * (1.0 - normUv.x) * (1.0 - normUv.y);
+        vignette = clamp(pow(abs(vignette) * 15.0, 0.25), 0.0, 1.0);
         
         gl_FragColor = vec4(finalColor * vignette, 1.0);
       }
