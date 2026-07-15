@@ -934,14 +934,25 @@ body {
 
 .glitch-line {
   position: absolute;
-  background-color: #020202; /* Thick black glitch lines */
-  height: 8px;
-  width: 150vw;
-  left: -25vw;
+  background-color: #fff;
+  height: 2px;
+  width: 100vw;
+  left: 0;
   z-index: 4;
   opacity: 0;
-  transform: rotate(-15deg); /* Angled slice */
+  mix-blend-mode: difference;
   pointer-events: none;
+}
+
+.glitch-line.red {
+  background-color: #E50914;
+  height: 4px;
+}
+
+.glitch-line.dark {
+  background-color: #020202;
+  height: 8px;
+  mix-blend-mode: normal;
 }
 
 /* --- Secret Section (Flashlight Mask) --- */

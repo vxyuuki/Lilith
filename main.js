@@ -565,9 +565,16 @@ function initScatteredText() {
   }
 
   // 3. Create Glitch Lines (Slices)
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 10; i++) {
     const el = document.createElement('div');
-    el.className = 'glitch-line flicker-text';
+    const type = Math.random();
+    if (type > 0.6) {
+      el.className = 'glitch-line red flicker-text';
+    } else if (type > 0.3) {
+      el.className = 'glitch-line dark flicker-text';
+    } else {
+      el.className = 'glitch-line flicker-text';
+    }
     el.style.animationDelay = (Math.random() * 3) + 's';
     mysteryContent.appendChild(el);
     shapes.push(el);
@@ -588,9 +595,8 @@ function initScatteredText() {
         el.style.left = Math.random() * 100 + '%';
         el.style.transform = `rotate(45deg) scale(${0.5 + Math.random() * 1.5})`;
       } else {
-        // Line slice
-        const rotate = Math.random() > 0.5 ? 15 : -15;
-        el.style.transform = `rotate(${rotate}deg)`;
+        // Horizontal tracking streak
+        el.style.transform = `scaleY(${Math.random() * 2})`;
       }
     });
   }, 1000);
