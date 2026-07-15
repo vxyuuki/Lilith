@@ -591,25 +591,39 @@ function initScatteredText() {
     shapes.push(el);
   }
 
+  // Get giant text to distort it
+  const giantTextToDistort = mysteryContent.querySelector('.giant-text');
+
   // Loop to change position every 1 second
   setInterval(() => {
+    // 1. Distort Main Text
+    if (giantTextToDistort) {
+      const skew = Math.random() * 30 - 15; // Extreme skew -15 to 15 deg
+      const scale = 0.9 + Math.random() * 0.2;
+      const xOffset = Math.random() * 10 - 5;
+      giantTextToDistort.style.transform = `skewX(${skew}deg) scale(${scale}) translateX(${xOffset}px)`;
+    }
+
+    // 2. Distort Scattered Texts
     texts.forEach(el => {
       el.style.left = Math.random() * 80 + 10 + '%';
       el.style.top = Math.random() * 80 + 10 + '%';
-      const rot = Math.random() * 20 - 10;
-      el.style.transform = `rotate(${rot}deg) scale(${0.8 + Math.random() * 0.5})`;
+      const rot = Math.random() * 40 - 20; // more chaotic rotation
+      const skew = Math.random() * 20 - 10;
+      el.style.transform = `rotate(${rot}deg) skewX(${skew}deg) scale(${0.8 + Math.random() * 0.5})`;
     });
 
+    // 3. Move Shapes and Lines
     shapes.forEach(el => {
       if (el.classList.contains('glitch-square')) {
         el.style.top = Math.random() * 100 + '%';
         el.style.left = Math.random() * 100 + '%';
         el.style.transform = `rotate(45deg) scale(${0.5 + Math.random() * 1.5})`;
       } else {
-        // Horizontal tracking streak on text - chaotic variation
+        // Horizontal tracking streak on text - confined tightly around text
         el.style.top = Math.random() * 100 + '%'; 
-        el.style.left = (Math.random() * -100) + '%'; // Jitter left edge
-        el.style.width = (Math.random() * 200 + 50) + '%'; // 50% to 250% width
+        el.style.left = (Math.random() * 40 - 20) + '%'; // Jitter -20% to 20%
+        el.style.width = (Math.random() * 80 + 40) + '%'; // 40% to 120% width (won't touch edges)
         el.style.transform = `scaleY(${Math.random() * 3})`; // Random thickness
       }
     });
