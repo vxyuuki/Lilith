@@ -830,14 +830,60 @@ body {
   text-align: center;
 }
 
-/* --- Flicker Effect --- */
+/* --- Advanced Glitch Effect --- */
+.glitch-core {
+  position: relative;
+  display: inline-block;
+}
+
+.glitch-core::before,
+.glitch-core::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  pointer-events: none;
+}
+
+.glitch-core::before {
+  left: 4px;
+  text-shadow: -2px 0 cyan, 2px 2px rgba(0, 255, 255, 0.5);
+  animation: glitch-anim-1 2s infinite linear alternate-reverse;
+  clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
+}
+
+.glitch-core::after {
+  left: -4px;
+  text-shadow: -2px 0 red, 2px -2px magenta;
+  animation: glitch-anim-2 3s infinite linear alternate-reverse;
+  clip-path: polygon(0 66%, 100% 66%, 100% 100%, 0 100%);
+}
+
+@keyframes glitch-anim-1 {
+  0% { clip-path: inset(20% 0 80% 0); transform: translate(-2px, 1px); }
+  20% { clip-path: inset(60% 0 10% 0); transform: translate(2px, -1px); }
+  40% { clip-path: inset(40% 0 50% 0); transform: translate(-2px, 2px); }
+  60% { clip-path: inset(80% 0 5% 0); transform: translate(2px, -2px); }
+  80% { clip-path: inset(10% 0 70% 0); transform: translate(-2px, 1px); }
+  100% { clip-path: inset(30% 0 50% 0); transform: translate(2px, -1px); }
+}
+
+@keyframes glitch-anim-2 {
+  0% { clip-path: inset(10% 0 60% 0); transform: translate(2px, 1px); }
+  20% { clip-path: inset(80% 0 5% 0); transform: translate(-2px, -1px); }
+  40% { clip-path: inset(30% 0 20% 0); transform: translate(2px, 2px); }
+  60% { clip-path: inset(70% 0 10% 0); transform: translate(-2px, -2px); }
+  80% { clip-path: inset(20% 0 50% 0); transform: translate(2px, 1px); }
+  100% { clip-path: inset(50% 0 30% 0); transform: translate(-2px, -1px); }
+}
+
+/* Original simple flicker to mix with glitch */
 @keyframes textFlicker {
-  0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
-    opacity: 1;
-  }
-  20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
-    opacity: 0.1;
-  }
+  0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% { opacity: 1; }
+  20%, 21.999%, 63%, 63.999%, 65%, 69.999% { opacity: 0.1; }
 }
 
 .flicker-text {
@@ -850,10 +896,44 @@ body {
   font-family: var(--font-sans);
   font-weight: 800;
   font-size: clamp(1.5rem, 4vw, 3rem);
-  color: #E50914; /* Red accent for the glitchy look */
+  color: #E50914; 
   mix-blend-mode: difference;
   z-index: 2;
   opacity: 0;
+  pointer-events: none;
+}
+
+/* --- Game-Style Glitch Geometric Elements --- */
+.glitch-square {
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  border: 3px solid #fff;
+  transform: rotate(45deg);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.glitch-square.red {
+  background-color: #E50914;
+  border: none;
+}
+
+.glitch-square.dark {
+  background-color: #020202;
+  border: none;
+}
+
+.glitch-line {
+  position: absolute;
+  background-color: #020202; /* Thick black glitch lines */
+  height: 8px;
+  width: 150vw;
+  left: -25vw;
+  z-index: 4;
+  opacity: 0;
+  transform: rotate(-15deg); /* Angled slice */
   pointer-events: none;
 }
 

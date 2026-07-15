@@ -526,35 +526,72 @@ function initScatteredText() {
   const mysteryContent = document.querySelector('.mystery-content');
   if (!mysteryContent) return;
 
-  const numTexts = 10; // 5 YES, 5 NO
+  const numTexts = 8; // 4 YES, 4 NO
   const texts = [];
+  const shapes = [];
 
+  // 1. Create Texts
   for (let i = 0; i < numTexts; i++) {
     const el = document.createElement('div');
-    el.className = 'scatter-text flicker-text';
-    el.textContent = i % 2 === 0 ? 'YES' : 'NO';
+    const word = i % 2 === 0 ? 'YES' : 'NO';
+    el.className = 'scatter-text glitch-core flicker-text';
+    el.textContent = word;
+    el.setAttribute('data-text', word);
     
     // Initial random position
     el.style.top = Math.random() * 80 + 10 + '%';
     el.style.left = Math.random() * 80 + 10 + '%';
-    // Random animation delay so they flicker out of sync
     el.style.animationDelay = (Math.random() * 3) + 's';
     
     mysteryContent.appendChild(el);
     texts.push(el);
   }
 
+  // 2. Create Glitch Geometric Shapes
+  for (let i = 0; i < 6; i++) {
+    const el = document.createElement('div');
+    const type = Math.random();
+    if (type > 0.6) {
+      el.className = 'glitch-square red flicker-text';
+    } else if (type > 0.3) {
+      el.className = 'glitch-square dark flicker-text';
+    } else {
+      el.className = 'glitch-square flicker-text'; // Outline
+    }
+    
+    el.style.animationDelay = (Math.random() * 3) + 's';
+    mysteryContent.appendChild(el);
+    shapes.push(el);
+  }
+
+  // 3. Create Glitch Lines (Slices)
+  for (let i = 0; i < 3; i++) {
+    const el = document.createElement('div');
+    el.className = 'glitch-line flicker-text';
+    el.style.animationDelay = (Math.random() * 3) + 's';
+    mysteryContent.appendChild(el);
+    shapes.push(el);
+  }
+
   // Loop to change position every 1 second
   setInterval(() => {
     texts.forEach(el => {
-      // Randomly position on screen
-      // Randomly position on screen
       el.style.left = Math.random() * 80 + 10 + '%';
       el.style.top = Math.random() * 80 + 10 + '%';
-      
-      // Random rotation for chaotic feel
       const rot = Math.random() * 20 - 10;
-      el.style.transform = `rotate(${rot}deg)`;
+      el.style.transform = `rotate(${rot}deg) scale(${0.8 + Math.random() * 0.5})`;
+    });
+
+    shapes.forEach(el => {
+      el.style.top = Math.random() * 100 + '%';
+      if (el.classList.contains('glitch-square')) {
+        el.style.left = Math.random() * 100 + '%';
+        el.style.transform = `rotate(45deg) scale(${0.5 + Math.random() * 1.5})`;
+      } else {
+        // Line slice
+        const rotate = Math.random() > 0.5 ? 15 : -15;
+        el.style.transform = `rotate(${rotate}deg)`;
+      }
     });
   }, 1000);
 }
