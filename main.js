@@ -519,3 +519,45 @@ if (charTextContainer) {
 }
 
 
+
+
+// --- Init Scattered Text (YES / NO Loop) ---
+function initScatteredText() {
+  const mysteryContent = document.querySelector('.mystery-content');
+  if (!mysteryContent) return;
+
+  const numTexts = 10; // 5 YES, 5 NO
+  const texts = [];
+
+  for (let i = 0; i < numTexts; i++) {
+    const el = document.createElement('div');
+    el.className = 'scatter-text flicker-text';
+    el.textContent = i % 2 === 0 ? 'YES' : 'NO';
+    
+    // Initial random position
+    el.style.top = Math.random() * 80 + 10 + '%';
+    el.style.left = Math.random() * 80 + 10 + '%';
+    // Random animation delay so they flicker out of sync
+    el.style.animationDelay = (Math.random() * 3) + 's';
+    
+    mysteryContent.appendChild(el);
+    texts.push(el);
+  }
+
+  // Loop to change position every 1 second
+  setInterval(() => {
+    texts.forEach(el => {
+      // Randomly position on screen
+      el.style.left = Math.random() * 80 + 10 + '%';
+      el.style.top = Math.random() * 80 + 10 + '%';
+      
+      // Random rotation for chaotic feel
+      const rot = Math.random() * 20 - 10;
+      el.style.transform =  + '' + otate(deg) + '' + ;
+    });
+  }, 1000);
+}
+
+// Initialize the scatter text logic
+initScatteredText();
+

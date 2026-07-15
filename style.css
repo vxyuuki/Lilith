@@ -830,6 +830,33 @@ body {
   text-align: center;
 }
 
+/* --- Flicker Effect --- */
+@keyframes textFlicker {
+  0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
+    opacity: 1;
+  }
+  20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
+    opacity: 0.1;
+  }
+}
+
+.flicker-text {
+  animation: textFlicker 3s infinite;
+}
+
+/* --- Scattered YES/NO Text --- */
+.scatter-text {
+  position: absolute;
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-size: clamp(1.5rem, 4vw, 3rem);
+  color: #E50914; /* Red accent for the glitchy look */
+  mix-blend-mode: difference;
+  z-index: 2;
+  opacity: 0;
+  pointer-events: none;
+}
+
 /* --- Secret Section (Flashlight Mask) --- */
 .secret {
   position: relative;
