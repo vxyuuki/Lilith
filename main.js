@@ -142,10 +142,15 @@ if (loader) {
     loadedCount++;
     const targetPercent = Math.round((loadedCount / totalImages) * 100);
     
+    // Enforce a cinematic minimum load time (e.g., 3.5s total from 0 to 100)
+    // If it jumps from 0 to 100 instantly, it takes exactly 3.5 seconds.
+    const dynamicDuration = ((targetPercent - progressObj.value) / 100) * 3.5;
+    
     gsap.to(progressObj, {
       value: targetPercent,
-      duration: 0.5,
-      ease: 'power2.out',
+      duration: Math.max(0.1, dynamicDuration),
+      ease: 'power1.out',
+      overwrite: true,
       onUpdate: () => {
         percentageEl.textContent = Math.round(progressObj.value) + '%';
       },
