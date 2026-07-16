@@ -41,92 +41,50 @@ export function initWebGLBackground() {
       
       varying vec2 vUv;
 
-      // Classic Perlin 2D Noise 
-      // by Stefan Gustavson
-      vec4 permute(vec4 x) { return mod(((x*34.0)+1.0)*x, 289.0); }
-      vec2 fade(vec2 t) { return t*t*t*(t*(t*6.0-15.0)+10.0); }
-
-      float cnoise(vec2 P) {
-        vec4 Pi = floor(P.xyxy) + vec4(0.0, 0.0, 1.0, 1.0);
-        vec4 Pf = fract(P.xyxy) - vec4(0.0, 0.0, 1.0, 1.0);
-        Pi = mod(Pi, 289.0); // To avoid truncation effects in permutation
-        vec4 ix = Pi.xzxz;
-        vec4 iy = Pi.yyww;
-        vec4 fx = Pf.xzxz;
-        vec4 fy = Pf.yyww;
-        vec4 i = permute(permute(ix) + iy);
-        vec4 gx = 2.0 * fract(i * 0.0243902439) - 1.0; // 1/41 = 0.024...
-        vec4 gy = abs(gx) - 0.5;
-        vec4 tx = floor(gx + 0.5);
-        gx = gx - tx;
-        vec2 g00 = vec2(gx.x,gy.x);
-        vec2 g10 = vec2(gx.y,gy.y);
-        vec2 g01 = vec2(gx.z,gy.z);
-        vec2 g11 = vec2(gx.w,gy.w);
-        vec4 norm = 1.79284291400159 - 0.85373472095314 * vec4(dot(g00, g00), dot(g01, g01), dot(g10, g10), dot(g11, g11));
-        g00 *= norm.x;
-        g01 *= norm.y;
-        g10 *= norm.z;
-        g11 *= norm.w;
-        float n00 = dot(g00, vec2(fx.x, fy.x));
-        float n10 = dot(g10, vec2(fx.y, fy.y));
-        float n01 = dot(g01, vec2(fx.z, fy.z));
-        float n11 = dot(g11, vec2(fx.w, fy.w));
-        vec2 fade_xy = fade(Pf.xy);
-        vec2 n_x = mix(vec2(n00, n01), vec2(n10, n11), fade_xy.x);
-        float n_xy = mix(n_x.x, n_x.y, fade_xy.y);
-        return 2.3 * n_xy;
-      }
-
-      // Fractional Brownian Motion
-      float fbm(vec2 x) {
-        float v = 0.0;
-        float a = 0.5;
-        vec2 shift = vec2(100.0);
-        // Rotate to reduce axial bias
-        mat2 rot = mat2(cos(0.5), sin(0.5), -sin(0.5), cos(0.5));
-        for (int i = 0; i < 4; ++i) {
-          v += a * cnoise(x);
-          x = rot * x * 2.0 + shift;
-          a *= 0.5;
-        }
-        return v;
+      // Pseudo-random noise function for film grain
+      float random(vec2 st) {
+          return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123);
       }
 
       void main() {
-        vec2 normUv = vUv;
-        vec2 st = normUv;
-        st.x *= uResolution.x / uResolution.y; // Correct aspect ratio
-
-        // Add slow movement and scroll influence
-        vec2 q = vec2(0.);
-        q.x = fbm(st + 0.00 * uTime);
-        q.y = fbm(st + vec2(1.0));
-
-        vec2 r = vec2(0.);
-        r.x = fbm(st + 1.0 * q + vec2(1.7, 9.2) + 0.15 * uTime + uScroll * 0.5);
-        r.y = fbm(st + 1.0 * q + vec2(8.3, 2.8) + 0.126 * uTime);
-
-        float f = fbm(st + r);
-
-        // Mix colors: Deep void black to cyber red
-        vec3 colorBlack = vec3(0.02, 0.02, 0.03); // base dark
-        vec3 colorRed = vec3(0.6, 0.05, 0.1);     // subtle accent
-        vec3 colorBrightRed = vec3(0.9, 0.1, 0.2); // high intensity
-
-        // Mouse interaction ripple
-        float distToMouse = distance(vUv, uMouse);
-        float mouseGlow = smoothstep(0.4, 0.0, distToMouse) * 0.5;
+        vec2 uv = vUv;
         
-        // Base smoke color
-        vec3 finalColor = mix(colorBlack, colorRed, clamp((f*f)*4.0, 0.0, 1.0));
+        // Base dark background (Cyber-minimalist black)
+        vec3 baseColor = vec3(0.04, 0.04, 0.05);
         
-        // Add brighter red edges
-        finalColor = mix(finalColor, colorBrightRed, clamp(length(q), 0.0, 1.0) * mouseGlow);
+        // --- 1. Dynamic CRT Film Grain ---
+        // Fast-moving, high-frequency noise
+        vec2 grainUv = uv * uResolution * 0.8; 
+        grainUv += vec2(uTime * 15.0, uTime * 25.0); 
+        float noise = random(grainUv);
         
-        // Vignette uses perfectly normalized vUv!
-        float vignette = normUv.x * normUv.y * (1.0 - normUv.x) * (1.0 - normUv.y);
-        vignette = clamp(pow(abs(vignette) * 15.0, 0.25), 0.0, 1.0);
+        // "Tipis" (subtle) grain: map noise (0 to 1) to a very small range (-0.03 to +0.03)
+        float grainIntensity = 0.08;
+        float grain = (noise - 0.5) * grainIntensity;
+        
+        // --- 2. Subtle Scanlines ---
+        // Moving horizontal lines simulating old CRT monitors
+        float scanline = sin(uv.y * uResolution.y * 0.4 - uTime * 3.0);
+        float scanlineIntensity = 0.02;
+        float scan = (scanline * 0.5 + 0.5) * scanlineIntensity;
+        
+        // --- 3. Interaction & Subtle Scroll Banding ---
+        // Adding a very faint, slow-moving red band affected by scroll
+        float band = sin(uv.y * 5.0 + uScroll * 10.0 + uTime * 0.5) * 0.015;
+        baseColor.r += band;
+        
+        // Mouse glow for interactivity
+        float distToMouse = distance(uv, uMouse);
+        float glow = smoothstep(0.6, 0.0, distToMouse) * 0.04;
+        baseColor += vec3(glow * 0.9, glow * 0.1, glow * 0.1); // Faint red glow
+        
+        // Combine layers
+        vec3 finalColor = baseColor + vec3(grain) - vec3(scan);
+        
+        // --- 4. Soft Vignette ---
+        // Darkens the corners to focus the center
+        float vignette = uv.x * uv.y * (1.0 - uv.x) * (1.0 - uv.y);
+        vignette = clamp(pow(abs(vignette) * 15.0, 0.3), 0.0, 1.0);
         
         gl_FragColor = vec4(finalColor * vignette, 1.0);
       }
