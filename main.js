@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { initWebGLBackground } from './webgl.js';
 import { initGalleryHovers } from './imageHover.js';
+import { playHoverClick, playGlitchNoise, setSoundEnabled } from './audio.js';
 import barba from '@barba/core';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -612,6 +613,7 @@ barba.init({
     name: 'glitch-transition',
     leave(data) {
       cleanupPageAnimations();
+      playGlitchNoise(); // Play static TV glitch SFX
       return new Promise(resolve => {
         const tl = gsap.timeline({ onComplete: resolve });
         tl.to('.page-transition-layer', { y: '0%', duration: 0.5, ease: 'power3.inOut' })
@@ -634,6 +636,32 @@ barba.init({
       });
     }
   }]
+});
+
+// --- GLOBAL UI & AUDIO SETUP ---
+let isSoundOn = false;
+const soundToggle = document.querySelector('.sound-toggle');
+if (soundToggle) {
+    const soundText = soundToggle.querySelector('.sound-text');
+    soundToggle.addEventListener('click', () => {
+        isSoundOn = !isSoundOn;
+        setSoundEnabled(isSoundOn);
+        if (soundText) {
+            soundText.innerText = isSoundOn ? 'SOUND ON' : 'SOUND OFF';
+        }
+    });
+}
+
+// Global hover listener for digital click SFX
+document.addEventListener('mouseover', (e) => {
+    const target = e.target.closest('a, button, .quote-hover-item, .nav-link, .sound-toggle');
+    if (target && !target.dataset.sfxHovered) {
+        target.dataset.sfxHovered = 'true';
+        playHoverClick();
+        target.addEventListener('mouseleave', () => {
+            target.dataset.sfxHovered = 'false';
+        }, { once: true });
+    }
 });
 
 // Initial run
