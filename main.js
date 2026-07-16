@@ -638,3 +638,124 @@ barba.init({
 
 // Initial run
 initPageAnimations(document.body);
+
+// ==========================================
+// EASTER EGG (L-I-L-I-T-H)
+// ==========================================
+const secretCode = ['l', 'i', 'l', 'i', 't', 'h'];
+let keyBuffer = [];
+
+window.addEventListener('keydown', (e) => {
+  keyBuffer.push(e.key.toLowerCase());
+  if (keyBuffer.length > secretCode.length) {
+    keyBuffer.shift();
+  }
+  if (keyBuffer.join('') === secretCode.join('')) {
+    triggerEasterEgg();
+    keyBuffer = []; // Reset buffer
+  }
+});
+
+function triggerEasterEgg() {
+  if (document.getElementById('lilith-easter-egg')) return;
+  
+  const overlay = document.createElement('div');
+  overlay.id = 'lilith-easter-egg';
+  overlay.style.position = 'fixed';
+  overlay.style.top = '0';
+  overlay.style.left = '0';
+  overlay.style.width = '100vw';
+  overlay.style.height = '100vh';
+  overlay.style.backgroundColor = '#8a0303'; // Blood red
+  overlay.style.zIndex = '999999';
+  overlay.style.display = 'flex';
+  overlay.style.flexDirection = 'column';
+  overlay.style.justifyContent = 'center';
+  overlay.style.alignItems = 'center';
+  overlay.style.color = '#000';
+  overlay.style.fontFamily = 'var(--font-mono, monospace)';
+  overlay.style.opacity = '0';
+  overlay.style.pointerEvents = 'none';
+  overlay.style.transition = 'opacity 1.5s ease-in-out';
+  
+  // Static noise
+  const staticNoise = document.createElement('div');
+  staticNoise.style.position = 'absolute';
+  staticNoise.style.top = '0';
+  staticNoise.style.left = '0';
+  staticNoise.style.width = '100%';
+  staticNoise.style.height = '100%';
+  staticNoise.style.backgroundImage = 'url("https://www.transparenttextures.com/patterns/stardust.png")';
+  staticNoise.style.opacity = '0.3';
+  staticNoise.style.zIndex = '-1';
+  overlay.appendChild(staticNoise);
+
+  const lore = document.createElement('div');
+  lore.style.maxWidth = '600px';
+  lore.style.textAlign = 'center';
+  lore.style.padding = '2rem';
+  
+  const title = document.createElement('h1');
+  title.innerText = "ERROR: PROTOCOL OVERRIDE";
+  title.style.fontSize = 'clamp(2rem, 5vw, 3.5rem)';
+  title.style.marginBottom = '2rem';
+  title.style.textShadow = '4px 4px 0px #000, -2px -2px 0px #fff';
+  title.style.letterSpacing = '5px';
+  
+  const p1 = document.createElement('p');
+  p1.innerText = "SUBJECT: LILITH\\nSTATUS: AWARE";
+  p1.style.fontSize = '1.5rem';
+  p1.style.marginBottom = '3rem';
+  p1.style.fontWeight = 'bold';
+
+  const p2 = document.createElement('p');
+  p2.innerText = "You shouldn't have dug this deep.\\nShe knows you are watching.\\nShe remembers every keystroke.\\n\\nAre you still in control?";
+  p2.style.fontSize = '1.2rem';
+  p2.style.lineHeight = '2';
+  
+  const exitBtn = document.createElement('button');
+  exitBtn.innerText = "[ TERMINATE CONNECTION ]";
+  exitBtn.style.marginTop = '4rem';
+  exitBtn.style.padding = '15px 30px';
+  exitBtn.style.background = 'transparent';
+  exitBtn.style.border = '2px solid #000';
+  exitBtn.style.color = '#000';
+  exitBtn.style.cursor = 'pointer';
+  exitBtn.style.fontFamily = 'inherit';
+  exitBtn.style.fontSize = '1.1rem';
+  exitBtn.style.fontWeight = 'bold';
+  exitBtn.style.transition = 'all 0.3s';
+  exitBtn.onmouseover = () => {
+    exitBtn.style.background = '#000';
+    exitBtn.style.color = '#8a0303';
+  };
+  exitBtn.onmouseout = () => {
+    exitBtn.style.background = 'transparent';
+    exitBtn.style.color = '#000';
+  };
+  exitBtn.onclick = () => {
+    overlay.style.opacity = '0';
+    setTimeout(() => overlay.remove(), 1500);
+  };
+
+  lore.appendChild(title);
+  lore.appendChild(p1);
+  lore.appendChild(p2);
+  lore.appendChild(exitBtn);
+  overlay.appendChild(lore);
+  document.body.appendChild(overlay);
+
+  // Glitch
+  gsap.to(document.body, {
+    x: () => Math.random() * 30 - 15,
+    y: () => Math.random() * 30 - 15,
+    duration: 0.05,
+    repeat: 15,
+    yoyo: true,
+    onComplete: () => {
+      gsap.set(document.body, { x: 0, y: 0 });
+      overlay.style.pointerEvents = 'auto';
+      overlay.style.opacity = '1';
+    }
+  });
+}
