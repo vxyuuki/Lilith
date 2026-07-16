@@ -41,7 +41,6 @@ export function initWebGLBackground() {
       
       varying vec2 vUv;
 
-      // Pseudo-random noise function for film grain
       float random(vec2 st) {
           return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123);
       }
@@ -53,61 +52,86 @@ export function initWebGLBackground() {
       void main() {
         vec2 uv = vUv;
         
-        // --- 1. Glitch offset (Horizontal tearing) ---
-        // Create blocky rows for glitches
-        float glitchRow = floor(uv.y * uResolution.y / 20.0);
-        // Randomly trigger a glitch on this row (only occasionally)
-        float isGlitch = step(0.97, random1D(glitchRow + floor(uTime * 15.0))); 
-        // Random horizontal shift amount for the glitch
-        float glitchOffset = (random1D(glitchRow + 100.0) - 0.5) * 0.15 * isGlitch;
+        // ==========================================
+        // MACRO GLITCH & DISTORTION ENGINE
+        // ==========================================
         
-        uv.x += glitchOffset;
+        // 1. WAVE TEARING (VHS Tracking Error)
+        // Periodically the whole screen warps like a broken VHS tape
+        float isTearing = step(0.9, random1D(floor(uTime * 4.0)));
+        float tearingOffset = sin(uv.y * 15.0 + uTime * 30.0) * sin(uv.y * 3.0 - uTime * 10.0);
+        uv.x += tearingOffset * 0.1 * isTearing;
+        
+        // 2. DATA MOSHING (Barcode Stretching)
+        // Divide screen into large chunky blocks
+        vec2 blockUv = floor(uv * vec2(4.0, 12.0)); 
+        // 10% chance for a block to be completely destroyed
+        float blockGlitch = step(0.9, random(blockUv + floor(uTime * 10.0)));
+        
+        if (blockGlitch > 0.0) {
+            // Stretch the UV space horizontally massively, turning noise into horizontal barcodes
+            uv.x *= 0.01; 
+            // Make the barcode slide violently
+            uv.x += uTime * 5.0 * (random1D(blockUv.y) > 0.5 ? 1.0 : -1.0);
+        }
+        
+        // 3. VIOLENT ROW SHIFTS (Digital Artifacts)
+        // Thin, sharp horizontal cuts
+        float glitchRow = floor(uv.y * uResolution.y / 12.0);
+        float rowShift = step(0.93, random1D(glitchRow + floor(uTime * 18.0)));
+        uv.x += (random1D(glitchRow + 50.0) - 0.5) * 0.6 * rowShift;
 
-        // --- 2. TV Static Noise ---
-        // Scale UV for slightly chunky pixels (classic TV static feel)
-        vec2 fineUv = floor(uv * uResolution * 0.4); 
-        // Fast changing random noise
-        float n = random(fineUv + vec2(floor(uTime * 25.0), floor(uTime * 35.0)));
+        // ==========================================
+        // NOISE & COLOR GENERATION
+        // ==========================================
         
-        // --- 3. Color Mapping (Black, White, Red) ---
-        // Using step functions to map random noise to distinct colors
-        // Keep it mostly dark (85%) so the website text remains readable!
-        float isWhite = step(0.85, n) * (1.0 - step(0.95, n)); // 10% White
-        float isRed   = step(0.95, n);                         // 5% Red
-        float isBlack = 1.0 - step(0.85, n);                   // 85% Black
+        // Base scale for fine TV static
+        vec2 fineUv = floor(uv * uResolution * 0.35); 
+        
+        // Fast time evolution
+        vec2 timeOff = vec2(floor(uTime * 30.0), floor(uTime * 40.0));
+        float n = random(fineUv + timeOff);
+        
+        // Map noise to colors (Strictly Black, White, Red)
+        // To make it look extremely distorted, we increase the Red and White during glitches!
+        
+        // Calculate dynamic thresholds. If a macro glitch is happening, explode the reds and whites!
+        float glitchIntensity = max(blockGlitch, rowShift);
+        float whiteThresh = mix(0.85, 0.70, glitchIntensity); // Normal: 15% white. Glitch: 30% white
+        float redThresh = mix(0.95, 0.85, glitchIntensity);   // Normal: 5% red. Glitch: 15% red
+        
+        float isWhite = step(whiteThresh, n) * (1.0 - step(redThresh, n));
+        float isRed   = step(redThresh, n);
+        float isBlack = 1.0 - step(whiteThresh, n);
         
         vec3 colorBlack = vec3(0.04, 0.04, 0.05);
-        vec3 colorWhite = vec3(0.85, 0.85, 0.9);
-        vec3 colorRed   = vec3(0.9, 0.1, 0.2);
+        vec3 colorWhite = vec3(0.9, 0.9, 0.9);
+        vec3 colorRed   = vec3(1.0, 0.05, 0.1);
         
         vec3 finalColor = isBlack * colorBlack + isWhite * colorWhite + isRed * colorRed;
-        
-        // --- 4. Chromatic Glitch Aberration ---
-        // If this row is glitching, intensify and shift the red channel
-        if (isGlitch > 0.0) {
-            float nRed = random(fineUv + vec2(floor(uTime * 30.0) + 10.0, 0.0));
-            if (nRed > 0.3) finalColor = mix(finalColor, colorRed, 0.8);
-        }
 
-        // --- 5. Scanlines ---
-        // High frequency horizontal lines
-        float scanline = sin(vUv.y * uResolution.y * 1.5);
-        finalColor *= (scanline * 0.15 + 0.85); // Darken gaps by 15%
+        // ==========================================
+        // POST-PROCESSING (Scanlines, Banding, Vignette)
+        // ==========================================
         
-        // --- 6. Scroll Banding & Mouse Glow ---
-        // Gentle dark bands moving during scroll
-        float band = sin(vUv.y * 10.0 + uScroll * 15.0 - uTime * 2.0);
-        finalColor -= (band * 0.05);
+        // Scanlines
+        float scanline = sin(vUv.y * uResolution.y * 1.5); // use vUv so scanlines don't warp!
+        finalColor *= mix(1.0, (scanline * 0.5 + 0.5), 0.3); // 30% opacity scanlines
+        
+        // Dark scrolling band
+        float band = sin(vUv.y * 8.0 + uScroll * 20.0 - uTime * 3.0);
+        finalColor -= (band * 0.08);
 
+        // Interactive Cursor (Lilith's Eye effect)
         float distToMouse = distance(vUv, uMouse); 
-        float glow = smoothstep(0.5, 0.0, distToMouse) * 0.6;
+        float glow = smoothstep(0.4, 0.0, distToMouse) * 0.8;
         
-        // Mouse reveals intense red static
-        if (n > 0.2 && n < 0.2 + glow) {
+        // Mouse locally tears the fabric of reality into pure red static
+        if (n > 0.1 && n < 0.1 + glow) {
              finalColor = mix(finalColor, colorRed, glow);
         }
 
-        // --- 7. Vignette ---
+        // Vignette
         float vignette = vUv.x * vUv.y * (1.0 - vUv.x) * (1.0 - vUv.y);
         vignette = clamp(pow(abs(vignette) * 15.0, 0.4), 0.0, 1.0);
         
