@@ -88,8 +88,9 @@ body {
   font-family: var(--font-mono);
   font-size: clamp(4rem, 15vw, 12rem);
   font-weight: 800;
-  color: transparent;
-  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  -webkit-text-stroke: 0px;
+  text-shadow: 0 0 20px var(--accent), 5px 5px 0px rgba(225, 29, 72, 0.5);
   z-index: 3;
 }
 

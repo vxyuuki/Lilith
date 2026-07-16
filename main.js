@@ -160,6 +160,8 @@ if (loader) {
           // Add a tiny delay at 100% so it feels satisfying before exploding
           setTimeout(() => {
             gsap.killTweensOf(gif); // Stop ambient flicker
+            gsap.killTweensOf(texts[0]);
+            gsap.set(texts[0], { opacity: 0 }); // Hide text 0
             exitTl.play();
           }, 400);
         }
@@ -173,6 +175,7 @@ if (loader) {
   } else {
     // Ambient loading animation while waiting
     gsap.to(gif, { opacity: 0.2, duration: 0.1, yoyo: true, repeat: -1 });
+    gsap.to(texts[0], { opacity: 1, duration: 0.1, yoyo: true, repeat: -1 }); // MENCARI MEMORI...
     
     uniqueImages.forEach(src => {
       const img = new Image();
