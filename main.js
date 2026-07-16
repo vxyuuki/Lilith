@@ -3,6 +3,7 @@ import { animate, createTimeline, stagger, splitText, utils } from 'animejs';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { initWebGLBackground } from './webgl.js';
+import { initGalleryHovers } from './imageHover.js';
 import barba from '@barba/core';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -216,6 +217,13 @@ function cleanupPageAnimations() {
     window.extremeIntervals.forEach(id => clearInterval(id));
     window.extremeIntervals = [];
   }
+
+  
+  // Clean up WebGL Gallery Hovers
+  const galleryImages = document.querySelectorAll('.gallery-item .img-wrapper img');
+  galleryImages.forEach(img => {
+    if (img.cleanupWebGL) img.cleanupWebGL();
+  });
 
   if (scatterIntervalId) {
     clearInterval(scatterIntervalId);
@@ -577,6 +585,10 @@ function initPageAnimations(container) {
   }, { threshold: 0.1 });
   
   container.querySelectorAll('.split-target, .fade-target, .game-title').forEach(el => pageObserver.observe(el));
+
+  // 11. Initialize WebGL Gallery Hovers
+  initGalleryHovers(container);
+
 }
 
 // --- BARBA TRANSITIONS ---
