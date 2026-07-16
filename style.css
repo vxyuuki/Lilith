@@ -57,6 +57,72 @@ body {
   cursor: none;
 }
 
+/* --- Navigation --- */
+.cyber-nav {
+  position: fixed;
+  top: 30px;
+  left: 5vw;
+  z-index: 1000;
+  display: flex;
+  gap: 30px;
+  mix-blend-mode: difference;
+}
+
+.nav-link {
+  color: #fff;
+  text-decoration: none;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.2em;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--accent);
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+.nav-link:hover {
+  color: var(--accent);
+}
+
+/* --- Page Transition Layer --- */
+.page-transition-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #020202;
+  z-index: 9999;
+  pointer-events: none;
+  transform: translateY(100%); /* Hidden initially */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.transition-glitch-text {
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-size: 5rem;
+  color: #fff;
+  text-transform: uppercase;
+  opacity: 0;
+}
+
 /* --- Anti-Mainstream Lilith Preloader --- */
 .lilith-loader {
   position: fixed;

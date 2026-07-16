@@ -3,6 +3,7 @@ import { animate, createTimeline, stagger, splitText, utils } from 'animejs';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { initWebGLBackground } from './webgl.js';
+import barba from '@barba/core';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -30,8 +31,7 @@ function raf(time) {
 }
 requestAnimationFrame(raf);
 
-
-// --- Image Trail Effect Arrays (Moved up for preloader) ---
+// --- Image Trail Effect Arrays ---
 const trailImages = [
   '/Image/125966425_p0.png',
   '/Image/135330897_p0.jpg',
@@ -44,24 +44,26 @@ const trailImages = [
   '/Image/Lilith(6).png'
 ];
 
-// --- PRELOADER LOGIC ---
-// Prevent scrolling during preload
-lenis.stop();
-
-const loader = document.getElementById('lilith-loader');
-if (loader) {
+// --- PRELOADER LOGIC (Runs only on initial load) ---
+let initialLoadComplete = false;
+function initPreloader() {
+  const loader = document.getElementById('lilith-loader');
+  if (!loader) {
+    initialLoadComplete = true;
+    return;
+  }
+  
+  lenis.stop();
   const eye = loader.querySelector('.loader-red-eye');
   const texts = loader.querySelectorAll('.loader-txt');
   const gif = loader.querySelector('.loader-gif');
   const percentageEl = loader.querySelector('.loader-percentage');
   
-  // Prepare hero text for after-load animation
   const heroH1 = document.querySelector('.hero-main-title');
   const heroSub = document.querySelector('.hero-subtitle');
   if (heroH1) heroH1.style.opacity = '0';
   if (heroSub) heroSub.style.opacity = '0';
 
-  // Gather all images to preload
   const htmlImages = Array.from(document.querySelectorAll('img')).map(img => img.src);
   const allImagesToLoad = [...htmlImages, ...trailImages];
   const uniqueImages = [...new Set(allImagesToLoad)].filter(src => src);
@@ -71,14 +73,14 @@ if (loader) {
   const progressObj = { value: 0 };
   let isExiting = false;
 
-  // The final exit explosion timeline (paused initially)
   const exitTl = gsap.timeline({ 
     paused: true, 
     onComplete: () => {
       loader.style.display = 'none';
-      lenis.start(); // Allow scrolling
+      lenis.start();
+      initialLoadComplete = true;
       
-      // --- AWWARDS STYLE TEXT REVEAL (Hero) ---
+      // Awwards Hero Text Reveal
       if (heroH1 && heroSub) {
         heroH1.style.opacity = '1';
         splitText(heroH1, { chars: true });
@@ -109,41 +111,28 @@ if (loader) {
         });
       }
       
-      // Try autoplaying audio when loader finishes
       const audio = document.getElementById('bg-audio');
       const soundBtn = document.querySelector('.sound-toggle');
       if (audio && soundBtn) {
         audio.play().then(() => {
           soundBtn.classList.add('playing');
           soundBtn.querySelector('.sound-text').textContent = 'SOUND ON';
-        }).catch(() => {
-          console.log("Autoplay blocked. User needs to click SOUND OFF to play.");
-        });
+        }).catch(() => {});
       }
     }
   });
 
-  // Final explosion sequence
   exitTl.to(percentageEl, { opacity: 0, scale: 1.5, filter: 'blur(10px)', duration: 0.4 })
         .to(texts[2], { opacity: 1, scale: 1.2, duration: 0.6, ease: 'back.out(2)' })
-        // Violent glitch shake + flashing white for ~0.5s
         .to(texts[2], { x: () => Math.random()*20-10, y: () => Math.random()*20-10, color: '#ffffff', duration: 0.05, yoyo: true, repeat: 10 }) 
-        // GIF goes completely berserk with contrast and rotation
         .to(gif, { opacity: 1, filter: 'contrast(300%) hue-rotate(90deg)', duration: 0.05, yoyo: true, repeat: 10 }, '<')
-        // The red eye suddenly appears at the very end...
         .to(eye, { scale: 1, opacity: 1, duration: 0.2, ease: 'back.out(2)' })
-        // ...and explodes massively to swallow the screen
         .to(eye, { scale: 200, duration: 1.0, ease: 'power4.in' }, '-=0.1')
-        // The red void elegantly dissolves into the website
         .to(loader, { opacity: 0, filter: 'blur(20px)', duration: 0.6, ease: 'power2.out' });
 
-  // Update progress visually using GSAP for a smooth numeric count
   function updateProgress() {
     loadedCount++;
     const targetPercent = Math.round((loadedCount / totalImages) * 100);
-    
-    // Enforce a cinematic minimum load time (e.g., 3.5s total from 0 to 100)
-    // If it jumps from 0 to 100 instantly, it takes exactly 3.5 seconds.
     const dynamicDuration = ((targetPercent - progressObj.value) / 100) * 3.5;
     
     gsap.to(progressObj, {
@@ -157,11 +146,10 @@ if (loader) {
       onComplete: () => {
         if (Math.round(progressObj.value) === 100 && !isExiting) {
           isExiting = true;
-          // Add a tiny delay at 100% so it feels satisfying before exploding
           setTimeout(() => {
-            gsap.killTweensOf(gif); // Stop ambient flicker
+            gsap.killTweensOf(gif);
             gsap.killTweensOf(texts[0]);
-            gsap.set(texts[0], { opacity: 0 }); // Hide text 0
+            gsap.set(texts[0], { opacity: 0 });
             exitTl.play();
           }, 400);
         }
@@ -169,145 +157,33 @@ if (loader) {
     });
   }
 
-  // Start real asset loading
   if (uniqueImages.length === 0) {
     updateProgress();
   } else {
-    // Ambient loading animation while waiting
     gsap.to(gif, { opacity: 0.2, duration: 0.1, yoyo: true, repeat: -1 });
-    gsap.to(texts[0], { opacity: 1, duration: 0.1, yoyo: true, repeat: -1 }); // MENCARI MEMORI...
-    
+    gsap.to(texts[0], { opacity: 1, duration: 0.1, yoyo: true, repeat: -1 }); 
     uniqueImages.forEach(src => {
       const img = new Image();
       img.onload = updateProgress;
-      img.onerror = updateProgress; // continue even if 404
+      img.onerror = updateProgress;
       img.src = src;
     });
   }
 }
+initPreloader();
 
-const trailContainer = document.querySelector('.image-trail-container');
-
-if (trailContainer) {
-  // 1. Generate Hidden Interactive Collage
-  const totalImages = 40; // Increased density so the screen is packed
-  
-  for (let i = 0; i < totalImages; i++) {
-    const img = document.createElement('img');
-    img.src = trailImages[i % trailImages.length];
-    
-    const width = 120 + (Math.random() * 180);
-    const height = width * (1.1 + Math.random() * 0.4);
-    
-    img.style.position = 'absolute';
-    img.style.width = `${width}px`;
-    img.style.height = `${height}px`;
-    img.style.objectFit = 'cover';
-    img.style.borderRadius = '12px';
-    img.style.boxShadow = '0 15px 40px rgba(0,0,0,0.6)';
-    img.style.opacity = '0';
-    img.style.filter = 'brightness(0.5) sepia(0.3)'; // Make images dark and moody
-    
-    // Make them detect mouse interactions
-    img.style.pointerEvents = 'auto'; 
-    img.style.cursor = 'crosshair'; // subtle interaction hint
-    
-    // Random positions covering the whole hero section
-    img.style.left = `${Math.random() * 90}vw`; 
-    img.style.top = `${Math.random() * 90}vh`;
-    
-    const rotation = (Math.random() * 50) - 25;
-    img.dataset.rotation = rotation; // Store for animation
-    
-    img.style.transform = `scale(0.8) rotate(${rotation}deg)`;
-    img.style.transition = 'opacity 0.5s ease-out, transform 0.5s ease-out';
-    
-    // 2. Interactive Hover Reveal Logic
-    img.addEventListener('mouseenter', () => {
-      // Reveal dark memory
-      img.style.transition = 'opacity 0.2s ease-out, transform 0.2s ease-out';
-      img.style.opacity = '0.25';
-      img.style.transform = `scale(1) rotate(${rotation}deg)`;
-      
-      // Auto-hide when mouse leaves or shortly after
-      clearTimeout(img.hideTimeout);
-      img.hideTimeout = setTimeout(() => {
-        img.style.transition = 'opacity 0.5s ease-in, transform 0.5s ease-in';
-        img.style.opacity = '0';
-        img.style.transform = `scale(0.8) rotate(${rotation}deg)`;
-      }, 400); // Wait 0.4s before fading back to darkness
-    });
-    
-    trailContainer.appendChild(img);
-  }
-}
-
-// 2. Custom Cursor (Interactive Element)
+// --- GLOBALS ---
 const cursor = document.querySelector('.cursor');
 const cursorText = document.querySelector('.cursor-text');
-
 window.addEventListener('mousemove', (e) => {
-  cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%, -50%)`;
+  if(cursor) cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%, -50%)`;
 });
 
-// Hover effect for basic cursor
-document.querySelectorAll('a, button, h1, h2, h3').forEach(el => {
-  el.addEventListener('mouseenter', () => cursor.classList.add('active'));
-  el.addEventListener('mouseleave', () => cursor.classList.remove('active'));
-});
-
-// Advanced Cursor Logic (Explore Hover)
-document.querySelectorAll('.hover-explore').forEach(el => {
-  el.addEventListener('mouseenter', () => {
-    cursor.classList.add('explore');
-    cursorText.innerText = 'EXPLORE';
-  });
-  el.addEventListener('mouseleave', () => {
-    cursor.classList.remove('explore');
-  });
-});
-
-// Magnetic Buttons
-document.querySelectorAll('.magnetic').forEach(btn => {
-  btn.addEventListener('mousemove', (e) => {
-    const rect = btn.getBoundingClientRect();
-    const x = e.clientX - rect.left - rect.width / 2;
-    const y = e.clientY - rect.top - rect.height / 2;
-    
-    // Move the button itself slightly
-    btn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
-    // Move the inner text slightly more for depth
-    btn.querySelector('.magnetic-inner').style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
-    
-    // Shrink cursor
-    cursor.classList.add('magnetic-active');
-  });
-  
-  btn.addEventListener('mouseleave', () => {
-    // Reset positions smoothly
-    btn.style.transform = 'translate(0px, 0px)';
-    btn.querySelector('.magnetic-inner').style.transform = 'translate(0px, 0px)';
-    btn.style.transition = 'transform 0.5s ease-out';
-    btn.querySelector('.magnetic-inner').style.transition = 'transform 0.5s ease-out';
-    
-    cursor.classList.remove('magnetic-active');
-    
-    // Remove transition after it completes to allow instant tracking again
-    setTimeout(() => {
-      btn.style.transition = '';
-      btn.querySelector('.magnetic-inner').style.transition = '';
-    }, 500);
-  });
-});
-
-// --- AUDIO CONTROL ---
 const bgAudio = document.getElementById('bg-audio');
 const soundToggle = document.querySelector('.sound-toggle');
 const soundText = document.querySelector('.sound-text');
-
 if (bgAudio && soundToggle && soundText) {
-  bgAudio.volume = 0.4; // Soft background ambient volume
-  
+  bgAudio.volume = 0.4;
   soundToggle.addEventListener('click', () => {
     if (bgAudio.paused) {
       bgAudio.play();
@@ -321,376 +197,366 @@ if (bgAudio && soundToggle && soundText) {
   });
 }
 
-// --- Flashlight Secret Section ---
-const secretSection = document.querySelector('.secret');
-if (secretSection) {
-  secretSection.addEventListener('mousemove', (e) => {
-    const rect = secretSection.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    
-    secretSection.style.setProperty('--mouse-x', `${x}px`);
-    secretSection.style.setProperty('--mouse-y', `${y}px`);
-  });
-  
-  // Hide global cursor when inside this section to prevent overlap
-  secretSection.addEventListener('mouseenter', () => {
-    if (cursor) cursor.classList.add('hidden');
-  });
-  secretSection.addEventListener('mouseleave', () => {
-    if (cursor) cursor.classList.remove('hidden');
-  });
+// --- STATE FOR CURRENT PAGE ---
+let scatterIntervalId = null;
+let currentScrollHandler = null;
+let pageObserver = null;
+
+function cleanupPageAnimations() {
+  if (pageObserver) {
+    pageObserver.disconnect();
+    pageObserver = null;
+  }
+  if (currentScrollHandler) {
+    lenis.off('scroll', currentScrollHandler);
+    currentScrollHandler = null;
+  }
+  if (scatterIntervalId) {
+    clearInterval(scatterIntervalId);
+    scatterIntervalId = null;
+  }
+  ScrollTrigger.getAll().forEach(t => t.kill());
 }
 
-// 3. Text Splitting Preparation (Original elements)
-document.querySelectorAll('.split-target').forEach(el => {
-  splitText(el, { words: false, chars: true });
-  const chars = el.querySelectorAll('span');
-  chars.forEach(char => {
-    char.style.opacity = '0';
-    char.style.transform = 'translateY(100px) rotate(10deg)';
+function initPageAnimations(container) {
+  // 1. Hover effects
+  container.querySelectorAll('a, button, h1, h2, h3').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor && cursor.classList.add('active'));
+    el.addEventListener('mouseleave', () => cursor && cursor.classList.remove('active'));
   });
-});
 
-// Initialize Game Title Art
-document.querySelectorAll('.game-title .border-frame, .game-title .word-the, .game-title .red-slash, .game-title .glitch-text, .game-title .word-of, .game-title .red-and').forEach(el => {
-  el.style.opacity = '0';
-});
-
-// 4. Viewport Detection (Intersection Observer)
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      const target = entry.target;
-      
-      // Animate split text
-      if (target.classList.contains('split-target')) {
-         const chars = target.querySelectorAll('span');
-         animate(chars, {
-           y: [100, 0],
-           rotate: [10, 0],
-           opacity: [0, 1],
-           delay: stagger(30, { start: 100 }),
-           duration: 1200,
-           ease: 'outExpo'
-         });
-         observer.unobserve(target);
-      }
-      
-      // Animate Game Title
-      if (target.classList.contains('game-title') && !target.dataset.animated) {
-         target.dataset.animated = 'true';
-         
-         const tl = createTimeline({ loop: false }); 
-         
-         tl.add('.border-frame', {
-           scale: [0.9, 1],
-           opacity: [0, 1],
-           duration: 800,
-           ease: 'easeOutElastic(1, .8)'
-         })
-         .add('.word-the', { opacity: [0, 1], translateX: ['-50%', '-50%'], translateY: [-20, 0], duration: 400, ease: 'outExpo' }, '-=400')
-         .add('.red-slash', { opacity: [0, 1], scale: [1.5, 1], duration: 600, ease: 'outExpo', delay: stagger(200) }, '-=200')
-         .add('.glitch-text', { opacity: [0, 1], skewX: [20, 0], duration: 500, ease: 'outExpo', delay: stagger(100) }, '-=400')
-         .add('.word-of, .red-and', { opacity: [0, 1], scale: [0.5, 1], duration: 400, ease: 'outBack', delay: stagger(100) }, '-=200');
-         
-         observer.unobserve(target);
-      }
-
-      
-      // Animate basic fade elements (like paragraphs)
-      if (target.classList.contains('fade-target')) {
-         target.style.opacity = '0'; 
-         animate(target, {
-           opacity: [0, 1],
-           y: [40, 0],
-           duration: 1200,
-           delay: 200,
-           ease: 'outCirc'
-         });
-         observer.unobserve(target);
-      }
-    }
-  });
-}, { threshold: 0.1 });
-
-// Observe elements
-document.querySelectorAll('.split-target, .fade-target, .game-title').forEach(el => observer.observe(el));
-
-
-// 5. Scroll Tracking (Parallax, Transforms, & Horizontal Scroll)
-const heroSection = document.getElementById('hero');
-const charSection = document.getElementById('character');
-const gallerySection = document.getElementById('gallery');
-const mysterySection = document.getElementById('mystery');
-
-const revealImg = document.querySelector('.reveal-img');
-const galleryTrack = document.querySelector('.gallery-track');
-
-lenis.on('scroll', () => {
-  const scrollY = window.scrollY;
-  const vh = window.innerHeight;
-  const vw = window.innerWidth;
-  
-  // -- Hero Section Scroll Tracking --
-  const heroProgress = Math.max(0, Math.min(1, scrollY / (heroSection.offsetHeight - vh)));
-  if (heroProgress >= 0 && heroProgress <= 1) {
-    const heroTitle = heroSection.querySelector('.hero-titles');
-    
-    if (heroTitle) {
-      heroTitle.style.transform = `translate(-50%, -50%) scale(${1 + heroProgress * 0.5}) translateY(${heroProgress * 100}px)`;
-      heroTitle.style.opacity = 1 - (heroProgress * 1.5);
-    }
-  }
-  
-  // -- Character Section Scroll Tracking (GSAP handles Parallax Cards now) --
-  // Removed old manual parallax logic
-  
-  // -- Gallery Horizontal Scroll Tracking --
-  // Handled by GSAP ScrollTrigger below
-  
-  // -- Mystery Section Scroll Tracking (Image Reveal) --
-  const mysteryOffset = mysterySection.offsetTop;
-  if (scrollY > mysteryOffset - vh) {
-    const mystProgress = Math.max(0, Math.min(1, (scrollY - mysteryOffset + vh / 2) / vh));
-    revealImg.style.transform = `scale(${1.2 - mystProgress * 0.2})`;
-    revealImg.style.filter = `sepia(${0.8 - mystProgress*0.8}) hue-rotate(${-30 + mystProgress*30}deg) saturate(${2 - mystProgress})`;
-  }
-});
-
-
-
-// GSAP Horizontal Scroll Gallery (Scroll Hijacking / Pinned)
-if (galleryTrack && gallerySection) {
-  gsap.to(galleryTrack, {
-    x: () => -(galleryTrack.scrollWidth - window.innerWidth) + "px",
-    ease: "none",
-    scrollTrigger: {
-      trigger: gallerySection,
-      start: "top top",
-      end: () => "+=" + (galleryTrack.scrollWidth - window.innerWidth),
-      pin: true,
-      scrub: 1, // Smooth interpolation
-      invalidateOnRefresh: true, // Recalculate on window resize
-    }
-  });
-}
-
-// 6. GSAP Text Animation for Character Section
-const charTextContainer = document.querySelector('.gsap-text-container');
-if (charTextContainer) {
-  const title = charTextContainer.querySelector('.gsap-title');
-  const desc = charTextContainer.querySelector('.gsap-desc');
-  
-  if (title && desc) {
-    // Split title into individual spans
-    const text = title.textContent;
-    title.innerHTML = text.split('').map(char => {
-      return char === ' ' ? '&nbsp;' : `<span class="gsap-char" style="display:inline-block;">${char}</span>`;
-    }).join('');
-    
-    // Split description into individual words for animation
-    const descText = desc.textContent.trim().split(' ');
-    desc.innerHTML = descText.map(word => {
-      return `<span class="gsap-word" style="display:inline-block; margin-right:5px;">${word}</span>`;
-    }).join('');
-    
-    const chars = title.querySelectorAll('.gsap-char');
-    const words = desc.querySelectorAll('.gsap-word');
-    
-    // Initial states
-    gsap.set(chars, { opacity: 0, y: 50, rotationX: -90, z: -100 });
-    gsap.set(words, { opacity: 0, y: 20, filter: 'blur(5px)' });
-    
-    // Infinite looping timeline with a pause for readability
-    const textTl = gsap.timeline({
-      repeat: -1, // Loop infinitely
-      repeatDelay: 3, // Readability pause before it reverses
-      yoyo: true // Reverses smoothly before starting again
+  container.querySelectorAll('.hover-explore').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      if(cursor) { cursor.classList.add('explore'); cursorText.innerText = 'EXPLORE'; }
     });
-    
-    // 1. Chaotic/Random Title Reveal (Cyber Matrix Style)
-    textTl.to(chars, {
-      opacity: 1,
-      y: 0,
-      rotationX: 0,
-      z: 0,
-      duration: 1,
-      stagger: {
-        amount: 0.8,
-        from: 'random' // Random letter pop in
-      },
-      ease: 'back.out(2)'
-    })
-    // 2. White Neon Flash on Title
-    .to(chars, {
-      color: '#ffffff',
-      textShadow: '0 0 30px #ffffff, 0 0 60px #ffffff',
-      duration: 0.15,
-      yoyo: true, // flash back to original red
-      repeat: 1,
-      stagger: 0.05
-    }, '-=0.5')
-    // 3. Stagger Word Reveal for Description
-    .to(words, {
-      opacity: 1,
-      y: 0,
-      filter: 'blur(0px)',
-      duration: 0.6,
-      stagger: 0.05,
-      ease: 'power2.out'
-    }, '-=0.8');
-  }
-}
-
-
-
-
-// --- Init Scattered Text (YES / NO Loop) ---
-function initScatteredText() {
-  const mysteryContent = document.querySelector('.mystery-content');
-  if (!mysteryContent) return;
-
-  const numTexts = 8; // 4 YES, 4 NO
-  const texts = [];
-  const shapes = [];
-
-  // Helper to add glitch lines to a text element
-  function attachLinesToText(textElement, count) {
-    for (let i = 0; i < count; i++) {
-      const line = document.createElement('div');
-      const type = Math.random();
-      if (type > 0.6) {
-        line.className = 'glitch-line red flicker-text';
-      } else if (type > 0.3) {
-        line.className = 'glitch-line dark flicker-text';
-      } else {
-        line.className = 'glitch-line flicker-text';
-      }
-      line.style.animationDelay = (Math.random() * 3) + 's';
-      line.style.top = Math.random() * 100 + '%'; // Random vertical pos inside text
-      textElement.appendChild(line);
-      shapes.push(line);
-    }
-  }
-
-  // 1. Create Texts
-  for (let i = 0; i < numTexts; i++) {
-    const el = document.createElement('div');
-    const word = i % 2 === 0 ? 'YES' : 'NO';
-    el.className = 'scatter-text glitch-core flicker-text';
-    el.textContent = word;
-    el.setAttribute('data-text', word);
-    
-    // Initial random position
-    el.style.top = Math.random() * 80 + 10 + '%';
-    el.style.left = Math.random() * 80 + 10 + '%';
-    el.style.animationDelay = (Math.random() * 3) + 's';
-    
-    attachLinesToText(el, 3); // Attach 3 lines directly to each YES/NO
-    
-    mysteryContent.appendChild(el);
-    texts.push(el);
-  }
-
-  // Attach lines to the main giant text too!
-  const giantText = mysteryContent.querySelector('.giant-text');
-  if (giantText) {
-    attachLinesToText(giantText, 8);
-  }
-
-  // 2. Create Glitch Geometric Shapes
-  for (let i = 0; i < 6; i++) {
-    const el = document.createElement('div');
-    const type = Math.random();
-    if (type > 0.6) {
-      el.className = 'glitch-square red flicker-text';
-    } else if (type > 0.3) {
-      el.className = 'glitch-square dark flicker-text';
-    } else {
-      el.className = 'glitch-square flicker-text'; // Outline
-    }
-    
-    el.style.animationDelay = (Math.random() * 3) + 's';
-    mysteryContent.appendChild(el);
-    shapes.push(el);
-  }
-
-  // Get giant text to distort it
-  const giantTextToDistort = mysteryContent.querySelector('.giant-text');
-
-  // Loop to change position every 1 second
-  setInterval(() => {
-    // 1. Distort Main Text
-    if (giantTextToDistort) {
-      const skew = Math.random() * 30 - 15; // Extreme skew -15 to 15 deg
-      const scale = 0.9 + Math.random() * 0.2;
-      const xOffset = Math.random() * 10 - 5;
-      giantTextToDistort.style.transform = `skewX(${skew}deg) scale(${scale}) translateX(${xOffset}px)`;
-    }
-
-    // 2. Distort Scattered Texts
-    texts.forEach(el => {
-      el.style.left = Math.random() * 80 + 10 + '%';
-      el.style.top = Math.random() * 80 + 10 + '%';
-      const rot = Math.random() * 40 - 20; // more chaotic rotation
-      const skew = Math.random() * 20 - 10;
-      el.style.transform = `rotate(${rot}deg) skewX(${skew}deg) scale(${0.8 + Math.random() * 0.5})`;
+    el.addEventListener('mouseleave', () => {
+      if(cursor) cursor.classList.remove('explore');
     });
-
-    // 3. Move Shapes and Lines
-    shapes.forEach(el => {
-      if (el.classList.contains('glitch-square')) {
-        el.style.top = Math.random() * 100 + '%';
-        el.style.left = Math.random() * 100 + '%';
-        el.style.transform = `rotate(45deg) scale(${0.5 + Math.random() * 1.5})`;
-      } else {
-        // Horizontal tracking streak on text - confined tightly around text
-        el.style.top = Math.random() * 100 + '%'; 
-        el.style.left = (Math.random() * 40 - 20) + '%'; // Jitter -20% to 20%
-        el.style.width = (Math.random() * 80 + 40) + '%'; // 40% to 120% width (won't touch edges)
-        el.style.transform = `scaleY(${Math.random() * 3})`; // Random thickness
-      }
-    });
-  }, 1000);
-}
-
-// Initialize the scatter text logic
-initScatteredText();
-
-// --- Monologue Animation ---
-const monoLines = document.querySelectorAll('.mono-line');
-const monoAuthor = document.querySelector('.mono-author');
-
-if (monoLines.length > 0) {
-  const monoTl = gsap.timeline({
-    scrollTrigger: {
-      trigger: '.monologue',
-      start: 'top 50%',
-      end: 'bottom 80%',
-      scrub: 1
-    }
   });
 
-  // Stagger fade up each line
-  monoTl.to(monoLines, { 
-    opacity: 1, 
-    y: 0, 
-    filter: 'blur(0px)',
-    stagger: 0.5 
+  container.querySelectorAll('.magnetic').forEach(btn => {
+    btn.addEventListener('mousemove', (e) => {
+      const rect = btn.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      btn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+      const inner = btn.querySelector('.magnetic-inner');
+      if (inner) inner.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+      if(cursor) cursor.classList.add('magnetic-active');
+    });
+    btn.addEventListener('mouseleave', () => {
+      btn.style.transform = 'translate(0px, 0px)';
+      const inner = btn.querySelector('.magnetic-inner');
+      if (inner) inner.style.transform = 'translate(0px, 0px)';
+      btn.style.transition = 'transform 0.5s ease-out';
+      if (inner) inner.style.transition = 'transform 0.5s ease-out';
+      if(cursor) cursor.classList.remove('magnetic-active');
+      setTimeout(() => {
+        btn.style.transition = '';
+        if (inner) inner.style.transition = '';
+      }, 500);
+    });
   });
-  
-  if (monoAuthor) {
-    gsap.to(monoAuthor, {
-      opacity: 1, 
-      x: 0, 
-      filter: 'blur(0px)',
+
+  // 2. Image Trail Effect
+  const trailContainer = container.querySelector('.image-trail-container');
+  if (trailContainer) {
+    const totalImages = 40;
+    for (let i = 0; i < totalImages; i++) {
+      const img = document.createElement('img');
+      img.src = trailImages[i % trailImages.length];
+      const width = 120 + (Math.random() * 180);
+      const height = width * (1.1 + Math.random() * 0.4);
+      img.style.position = 'absolute';
+      img.style.width = `${width}px`;
+      img.style.height = `${height}px`;
+      img.style.objectFit = 'cover';
+      img.style.borderRadius = '12px';
+      img.style.boxShadow = '0 15px 40px rgba(0,0,0,0.6)';
+      img.style.opacity = '0';
+      img.style.filter = 'brightness(0.5) sepia(0.3)';
+      img.style.pointerEvents = 'auto'; 
+      img.style.cursor = 'crosshair'; 
+      img.style.left = `${Math.random() * 90}vw`; 
+      img.style.top = `${Math.random() * 90}vh`;
+      const rotation = (Math.random() * 50) - 25;
+      img.dataset.rotation = rotation;
+      img.style.transform = `scale(0.8) rotate(${rotation}deg)`;
+      img.style.transition = 'opacity 0.5s ease-out, transform 0.5s ease-out';
+      
+      img.addEventListener('mouseenter', () => {
+        img.style.transition = 'opacity 0.2s ease-out, transform 0.2s ease-out';
+        img.style.opacity = '0.25';
+        img.style.transform = `scale(1) rotate(${rotation}deg)`;
+        clearTimeout(img.hideTimeout);
+        img.hideTimeout = setTimeout(() => {
+          img.style.transition = 'opacity 0.5s ease-in, transform 0.5s ease-in';
+          img.style.opacity = '0';
+          img.style.transform = `scale(0.8) rotate(${rotation}deg)`;
+        }, 400);
+      });
+      trailContainer.appendChild(img);
+    }
+  }
+
+  // 3. Scroll Tracking
+  const heroSection = container.querySelector('#hero');
+  const mysterySection = container.querySelector('#mystery');
+  const revealImg = container.querySelector('.reveal-img');
+
+  currentScrollHandler = () => {
+    const scrollY = window.scrollY;
+    const vh = window.innerHeight;
+    if (heroSection) {
+      const heroProgress = Math.max(0, Math.min(1, scrollY / (heroSection.offsetHeight - vh)));
+      if (heroProgress >= 0 && heroProgress <= 1) {
+        const heroTitle = heroSection.querySelector('.hero-titles');
+        if (heroTitle) {
+          heroTitle.style.transform = `translate(-50%, -50%) scale(${1 + heroProgress * 0.5}) translateY(${heroProgress * 100}px)`;
+          heroTitle.style.opacity = 1 - (heroProgress * 1.5);
+        }
+      }
+    }
+    if (mysterySection && revealImg) {
+      const mysteryOffset = mysterySection.offsetTop;
+      if (scrollY > mysteryOffset - vh) {
+        const mystProgress = Math.max(0, Math.min(1, (scrollY - mysteryOffset + vh / 2) / vh));
+        revealImg.style.transform = `scale(${1.2 - mystProgress * 0.2})`;
+        revealImg.style.filter = `sepia(${0.8 - mystProgress*0.8}) hue-rotate(${-30 + mystProgress*30}deg) saturate(${2 - mystProgress})`;
+      }
+    }
+  };
+  lenis.on('scroll', currentScrollHandler);
+
+  // 4. GSAP Horizontal Scroll Gallery
+  const gallerySection = container.querySelector('#gallery');
+  const galleryTrack = container.querySelector('.gallery-track');
+  if (galleryTrack && gallerySection) {
+    gsap.to(galleryTrack, {
+      x: () => -(galleryTrack.scrollWidth - window.innerWidth) + "px",
+      ease: "none",
       scrollTrigger: {
-        trigger: '.monologue',
-        start: 'bottom 90%',
-        end: 'bottom 70%',
+        trigger: gallerySection,
+        start: "top top",
+        end: () => "+=" + (galleryTrack.scrollWidth - window.innerWidth),
+        pin: true,
+        scrub: 1,
+        invalidateOnRefresh: true,
+      }
+    });
+  }
+
+  // 5. Text Animation Character
+  const charTextContainer = container.querySelector('.gsap-text-container');
+  if (charTextContainer) {
+    const title = charTextContainer.querySelector('.gsap-title');
+    const desc = charTextContainer.querySelector('.gsap-desc');
+    if (title && desc) {
+      const text = title.textContent;
+      title.innerHTML = text.split('').map(char => char === ' ' ? '&nbsp;' : `<span class="gsap-char" style="display:inline-block;">${char}</span>`).join('');
+      const descText = desc.textContent.trim().split(' ');
+      desc.innerHTML = descText.map(word => `<span class="gsap-word" style="display:inline-block; margin-right:5px;">${word}</span>`).join('');
+      const chars = title.querySelectorAll('.gsap-char');
+      const words = desc.querySelectorAll('.gsap-word');
+      gsap.set(chars, { opacity: 0, y: 50, rotationX: -90, z: -100 });
+      gsap.set(words, { opacity: 0, y: 20, filter: 'blur(5px)' });
+      
+      const textTl = gsap.timeline({ repeat: -1, repeatDelay: 3, yoyo: true });
+      textTl.to(chars, { opacity: 1, y: 0, rotationX: 0, z: 0, duration: 1, stagger: { amount: 0.8, from: 'random' }, ease: 'back.out(2)' })
+            .to(chars, { color: '#ffffff', textShadow: '0 0 30px #ffffff, 0 0 60px #ffffff', duration: 0.15, yoyo: true, repeat: 1, stagger: 0.05 }, '-=0.5')
+            .to(words, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.6, stagger: 0.05, ease: 'power2.out' }, '-=0.8');
+    }
+  }
+
+  // 6. Init Scattered Text (YES / NO Loop)
+  const mysteryContent = container.querySelector('.mystery-content');
+  if (mysteryContent) {
+    const numTexts = 8; 
+    const texts = [];
+    const shapes = [];
+    function attachLinesToText(textElement, count) {
+      for (let i = 0; i < count; i++) {
+        const line = document.createElement('div');
+        const type = Math.random();
+        if (type > 0.6) line.className = 'glitch-line red flicker-text';
+        else if (type > 0.3) line.className = 'glitch-line dark flicker-text';
+        else line.className = 'glitch-line flicker-text';
+        line.style.animationDelay = (Math.random() * 3) + 's';
+        line.style.top = Math.random() * 100 + '%';
+        textElement.appendChild(line);
+        shapes.push(line);
+      }
+    }
+    for (let i = 0; i < numTexts; i++) {
+      const el = document.createElement('div');
+      const word = i % 2 === 0 ? 'YES' : 'NO';
+      el.className = 'scatter-text glitch-core flicker-text';
+      el.textContent = word;
+      el.setAttribute('data-text', word);
+      el.style.top = Math.random() * 80 + 10 + '%';
+      el.style.left = Math.random() * 80 + 10 + '%';
+      el.style.animationDelay = (Math.random() * 3) + 's';
+      attachLinesToText(el, 3);
+      mysteryContent.appendChild(el);
+      texts.push(el);
+    }
+    const giantText = mysteryContent.querySelector('.giant-text');
+    if (giantText) attachLinesToText(giantText, 8);
+    for (let i = 0; i < 6; i++) {
+      const el = document.createElement('div');
+      const type = Math.random();
+      if (type > 0.6) el.className = 'glitch-square red flicker-text';
+      else if (type > 0.3) el.className = 'glitch-square dark flicker-text';
+      else el.className = 'glitch-square flicker-text';
+      el.style.animationDelay = (Math.random() * 3) + 's';
+      mysteryContent.appendChild(el);
+      shapes.push(el);
+    }
+    const giantTextToDistort = mysteryContent.querySelector('.giant-text');
+    scatterIntervalId = setInterval(() => {
+      if (giantTextToDistort) {
+        const skew = Math.random() * 30 - 15;
+        const scale = 0.9 + Math.random() * 0.2;
+        const xOffset = Math.random() * 10 - 5;
+        giantTextToDistort.style.transform = `skewX(${skew}deg) scale(${scale}) translateX(${xOffset}px)`;
+      }
+      texts.forEach(el => {
+        el.style.left = Math.random() * 80 + 10 + '%';
+        el.style.top = Math.random() * 80 + 10 + '%';
+        const rot = Math.random() * 40 - 20;
+        const skew = Math.random() * 20 - 10;
+        el.style.transform = `rotate(${rot}deg) skewX(${skew}deg) scale(${0.8 + Math.random() * 0.5})`;
+      });
+      shapes.forEach(el => {
+        if (el.classList.contains('glitch-square')) {
+          el.style.top = Math.random() * 100 + '%';
+          el.style.left = Math.random() * 100 + '%';
+          el.style.transform = `rotate(45deg) scale(${0.5 + Math.random() * 1.5})`;
+        } else {
+          el.style.top = Math.random() * 100 + '%'; 
+          el.style.left = (Math.random() * 40 - 20) + '%'; 
+          el.style.width = (Math.random() * 80 + 40) + '%'; 
+          el.style.transform = `scaleY(${Math.random() * 3})`; 
+        }
+      });
+    }, 1000);
+  }
+
+  // 7. Monologue Animation
+  const monoLines = container.querySelectorAll('.mono-line');
+  const monoAuthor = container.querySelector('.mono-author');
+  if (monoLines.length > 0) {
+    const monoTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: container.querySelector('.monologue'),
+        start: 'top 50%',
+        end: 'bottom 80%',
         scrub: 1
       }
     });
+    monoTl.to(monoLines, { opacity: 1, y: 0, filter: 'blur(0px)', stagger: 0.5 });
+    if (monoAuthor) {
+      gsap.to(monoAuthor, {
+        opacity: 1, x: 0, filter: 'blur(0px)',
+        scrollTrigger: {
+          trigger: container.querySelector('.monologue'),
+          start: 'bottom 90%',
+          end: 'bottom 70%',
+          scrub: 1
+        }
+      });
+    }
   }
+
+  // 8. Flashlight Secret Section
+  const secretSection = container.querySelector('.secret');
+  if (secretSection) {
+    secretSection.addEventListener('mousemove', (e) => {
+      const rect = secretSection.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      secretSection.style.setProperty('--mouse-x', `${x}px`);
+      secretSection.style.setProperty('--mouse-y', `${y}px`);
+    });
+    secretSection.addEventListener('mouseenter', () => { if (cursor) cursor.classList.add('hidden'); });
+    secretSection.addEventListener('mouseleave', () => { if (cursor) cursor.classList.remove('hidden'); });
+  }
+
+  // 9. Text Splitting Preparation
+  container.querySelectorAll('.split-target').forEach(el => {
+    splitText(el, { words: false, chars: true });
+    const chars = el.querySelectorAll('span');
+    chars.forEach(char => {
+      char.style.opacity = '0';
+      char.style.transform = 'translateY(100px) rotate(10deg)';
+    });
+  });
+
+  container.querySelectorAll('.game-title .border-frame, .game-title .word-the, .game-title .red-slash, .game-title .glitch-text, .game-title .word-of, .game-title .red-and').forEach(el => {
+    el.style.opacity = '0';
+  });
+
+  // 10. Intersection Observer
+  pageObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const target = entry.target;
+        if (target.classList.contains('split-target')) {
+           const chars = target.querySelectorAll('span');
+           animate(chars, { y: [100, 0], rotate: [10, 0], opacity: [0, 1], delay: stagger(30, { start: 100 }), duration: 1200, ease: 'outExpo' });
+           pageObserver.unobserve(target);
+        }
+        if (target.classList.contains('game-title') && !target.dataset.animated) {
+           target.dataset.animated = 'true';
+           const tl = createTimeline({ loop: false }); 
+           tl.add('.border-frame', { scale: [0.9, 1], opacity: [0, 1], duration: 800, ease: 'easeOutElastic(1, .8)' })
+             .add('.word-the', { opacity: [0, 1], translateX: ['-50%', '-50%'], translateY: [-20, 0], duration: 400, ease: 'outExpo' }, '-=400')
+             .add('.red-slash', { opacity: [0, 1], scale: [1.5, 1], duration: 600, ease: 'outExpo', delay: stagger(200) }, '-=200')
+             .add('.glitch-text', { opacity: [0, 1], skewX: [20, 0], duration: 500, ease: 'outExpo', delay: stagger(100) }, '-=400')
+             .add('.word-of, .red-and', { opacity: [0, 1], scale: [0.5, 1], duration: 400, ease: 'outBack', delay: stagger(100) }, '-=200');
+           pageObserver.unobserve(target);
+        }
+        if (target.classList.contains('fade-target')) {
+           target.style.opacity = '0'; 
+           animate(target, { opacity: [0, 1], y: [40, 0], duration: 1200, delay: 200, ease: 'outCirc' });
+           pageObserver.unobserve(target);
+        }
+      }
+    });
+  }, { threshold: 0.1 });
+  
+  container.querySelectorAll('.split-target, .fade-target, .game-title').forEach(el => pageObserver.observe(el));
 }
+
+// --- BARBA TRANSITIONS ---
+barba.init({
+  transitions: [{
+    name: 'glitch-transition',
+    leave(data) {
+      cleanupPageAnimations();
+      return new Promise(resolve => {
+        const tl = gsap.timeline({ onComplete: resolve });
+        tl.to('.page-transition-layer', { y: '0%', duration: 0.5, ease: 'power3.inOut' })
+          .to('.transition-glitch-text', { opacity: 1, duration: 0.1, yoyo: true, repeat: 3 }, '+=0');
+      });
+    },
+    enter(data) {
+      lenis.scrollTo(0, { immediate: true });
+      initPageAnimations(data.next.container);
+      
+      gsap.to('.page-transition-layer', { 
+         y: '-100%', 
+         duration: 0.5, 
+         delay: 0.3, // Brief pause for suspense
+         ease: 'power3.inOut',
+         onComplete: () => {
+            gsap.set('.page-transition-layer', { y: '100%' });
+            gsap.set('.transition-glitch-text', { opacity: 0 });
+         }
+      });
+    }
+  }]
+});
+
+// Initial run
+initPageAnimations(document.body);

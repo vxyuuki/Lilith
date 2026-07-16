@@ -17,7 +17,13 @@
   <link rel="stylesheet" href="./style.css">
 </head>
 
-<body>
+<body data-barba="wrapper">
+  
+  <!-- Minimalist Navigation -->
+  <nav class="cyber-nav">
+    <a href="/index.html" class="nav-link">HOME</a>
+    <a href="/about.html" class="nav-link">ABOUT LILITH</a>
+  </nav>
   <!-- WebGL Background -->
   <canvas id="webgl-bg"></canvas>
 
@@ -48,7 +54,7 @@
     </div>
   </div>
 
-  <main class="smooth-scroll">
+  <main class="smooth-scroll" data-barba="container" data-barba-namespace="home">
     <!-- Hero Section -->
     <section class="hero sticky-wrapper" id="hero">
       <div class="sticky-content flex-center">
@@ -286,6 +292,10 @@
       </div>
     </footer>
   </main>
+
+  <div class="page-transition-layer">
+    <div class="transition-glitch-text glitch-core flicker-text" data-text="SYSTEM ERROR">SYSTEM ERROR</div>
+  </div>
 
   <!-- Main JS -->
   <script type="module" src="./main.js"></script>
