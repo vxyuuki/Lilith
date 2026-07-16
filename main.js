@@ -293,43 +293,6 @@ if (secretSection) {
   });
 }
 
-// --- Monologue Animation ---
-const monoLines = document.querySelectorAll('.mono-line');
-const monoAuthor = document.querySelector('.mono-author');
-
-if (monoLines.length > 0) {
-  const monoTl = gsap.timeline({
-    scrollTrigger: {
-      trigger: '.monologue',
-      start: 'top 50%',
-      end: 'bottom 80%',
-      scrub: 1
-    }
-  });
-
-  // Stagger fade up each line
-  monoTl.to(monoLines, { 
-    opacity: 1, 
-    y: 0, 
-    filter: 'blur(0px)',
-    stagger: 0.5 
-  });
-  
-  if (monoAuthor) {
-    gsap.to(monoAuthor, {
-      opacity: 1, 
-      x: 0, 
-      filter: 'blur(0px)',
-      scrollTrigger: {
-        trigger: '.monologue',
-        start: 'bottom 90%',
-        end: 'bottom 70%',
-        scrub: 1
-      }
-    });
-  }
-}
-
 // 3. Text Splitting Preparation (Original elements)
 document.querySelectorAll('.split-target').forEach(el => {
   splitText(el, { words: false, chars: true });
@@ -645,3 +608,40 @@ function initScatteredText() {
 
 // Initialize the scatter text logic
 initScatteredText();
+
+// --- Monologue Animation ---
+const monoLines = document.querySelectorAll('.mono-line');
+const monoAuthor = document.querySelector('.mono-author');
+
+if (monoLines.length > 0) {
+  const monoTl = gsap.timeline({
+    scrollTrigger: {
+      trigger: '.monologue',
+      start: 'top 50%',
+      end: 'bottom 80%',
+      scrub: 1
+    }
+  });
+
+  // Stagger fade up each line
+  monoTl.to(monoLines, { 
+    opacity: 1, 
+    y: 0, 
+    filter: 'blur(0px)',
+    stagger: 0.5 
+  });
+  
+  if (monoAuthor) {
+    gsap.to(monoAuthor, {
+      opacity: 1, 
+      x: 0, 
+      filter: 'blur(0px)',
+      scrollTrigger: {
+        trigger: '.monologue',
+        start: 'bottom 90%',
+        end: 'bottom 70%',
+        scrub: 1
+      }
+    });
+  }
+}
