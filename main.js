@@ -206,11 +206,20 @@ if (bgAudio && soundToggle && soundText) {
       bgAudio.play();
       soundToggle.classList.add('playing');
       soundText.textContent = 'SOUND ON';
+      setSoundEnabled(true);
     } else {
       bgAudio.pause();
       soundToggle.classList.remove('playing');
       soundText.textContent = 'SOUND OFF';
+      setSoundEnabled(false);
     }
+  });
+} else if (soundToggle && soundText) {
+  // Fallback if no background audio element is present
+  soundToggle.addEventListener('click', () => {
+    const isPlaying = soundToggle.classList.toggle('playing');
+    soundText.textContent = isPlaying ? 'SOUND ON' : 'SOUND OFF';
+    setSoundEnabled(isPlaying);
   });
 }
 
@@ -637,20 +646,6 @@ barba.init({
     }
   }]
 });
-
-// --- GLOBAL UI & AUDIO SETUP ---
-let isSoundOn = false;
-const soundToggle = document.querySelector('.sound-toggle');
-if (soundToggle) {
-    const soundText = soundToggle.querySelector('.sound-text');
-    soundToggle.addEventListener('click', () => {
-        isSoundOn = !isSoundOn;
-        setSoundEnabled(isSoundOn);
-        if (soundText) {
-            soundText.innerText = isSoundOn ? 'SOUND ON' : 'SOUND OFF';
-        }
-    });
-}
 
 // Global hover listener for digital click SFX
 document.addEventListener('mouseover', (e) => {
