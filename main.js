@@ -30,101 +30,8 @@ function raf(time) {
 }
 requestAnimationFrame(raf);
 
-// --- PRELOADER LOGIC ---
-// Prevent scrolling during preload
-lenis.stop();
 
-const loader = document.getElementById('lilith-loader');
-if (loader) {
-  const eye = loader.querySelector('.loader-red-eye');
-  const texts = loader.querySelectorAll('.loader-txt');
-  const gif = loader.querySelector('.loader-gif');
-  
-  // Prepare hero text for after-load animation
-  const heroH1 = document.querySelector('.hero-main-title');
-  const heroSub = document.querySelector('.hero-subtitle');
-  if (heroH1) heroH1.style.opacity = '0';
-  if (heroSub) heroSub.style.opacity = '0';
-
-  const tl = gsap.timeline({
-    onComplete: () => {
-      loader.style.display = 'none';
-      lenis.start(); // Allow scrolling
-      
-      // --- AWWARDS STYLE TEXT REVEAL (Hero) ---
-        if (heroH1 && heroSub) {
-          heroH1.style.opacity = '1';
-          splitText(heroH1, { chars: true });
-          const chars = heroH1.querySelectorAll('span');
-          chars.forEach(c => { 
-            c.style.display = 'inline-block'; 
-            c.style.opacity = '0';
-          });
-          
-          animate(chars, {
-            translateY: [100, 0],
-            translateZ: [400, 0],
-            rotateX: [-90, 0],
-            opacity: [0, 1],
-            filter: ['blur(10px)', 'blur(0px)'],
-            duration: 1200,
-            delay: stagger(60),
-            ease: 'outExpo'
-          });
-          
-          animate(heroSub, {
-            opacity: [0, 1],
-            letterSpacing: ['1em', '0.5em'],
-            filter: ['blur(10px)', 'blur(0px)'],
-            duration: 1500,
-            delay: 800,
-            ease: 'outQuart'
-          });
-        }
-        
-        // Try autoplaying audio when loader finishes
-        const audio = document.getElementById('bg-audio');
-        const soundBtn = document.querySelector('.sound-toggle');
-        if (audio && soundBtn) {
-          audio.play().then(() => {
-            soundBtn.classList.add('playing');
-            soundBtn.querySelector('.sound-text').textContent = 'SOUND ON';
-          }).catch(() => {
-            console.log("Autoplay blocked. User needs to click SOUND OFF to play.");
-          });
-        }
-    }
-  });
-
-  // --- LILITH PRELOADER ANIMATION SEQUENCE (5 Seconds) ---
-  
-  // 1. Rapid text flashes (MENCARI MEMORI...) - flashes 6 times total
-  tl.to(texts[0], { opacity: 1, duration: 0.1, yoyo: true, repeat: 5 })
-  // GIF starts flickering weakly here
-  .to(gif, { opacity: 0.3, duration: 0.05, yoyo: true, repeat: 11 }, '<')
-  
-  // 2. (MENEMUKAN ENTITAS...) - flashes 6 times total
-  .to(texts[1], { opacity: 1, duration: 0.1, yoyo: true, repeat: 5 })
-  // GIF flickers harder and inverts colors!
-  .to(gif, { opacity: 0.6, filter: 'invert(1) grayscale(100%)', duration: 0.05, yoyo: true, repeat: 11 }, '<')
-  
-  // 3. LILITH appears majestically then violently glitches
-  .to(texts[2], { opacity: 1, scale: 1.2, duration: 0.6, ease: 'back.out(2)' })
-  // Violent glitch shake + flashing white for ~0.5s
-  .to(texts[2], { x: () => Math.random()*20-10, y: () => Math.random()*20-10, color: '#ffffff', duration: 0.05, yoyo: true, repeat: 10 }) 
-  // GIF goes completely berserk with contrast and rotation
-  .to(gif, { opacity: 1, filter: 'contrast(300%) hue-rotate(90deg)', duration: 0.05, yoyo: true, repeat: 10 }, '<')
-  
-  // 4. The red eye suddenly appears at the very end...
-  .to(eye, { scale: 1, opacity: 1, duration: 0.2, ease: 'back.out(2)' })
-  // 5. ...and explodes massively to swallow the screen
-  .to(eye, { scale: 200, duration: 1.0, ease: 'power4.in' }, '-=0.1')
-  
-  // 6. The red void elegantly dissolves into the website
-  .to(loader, { opacity: 0, filter: 'blur(20px)', duration: 0.6, ease: 'power2.out' });
-}
-
-// --- Image Trail Effect ---
+// --- Image Trail Effect Arrays (Moved up for preloader) ---
 const trailImages = [
   '/Image/125966425_p0.png',
   '/Image/135330897_p0.jpg',
@@ -136,6 +43,140 @@ const trailImages = [
   '/Image/Lilith(5).png',
   '/Image/Lilith(6).png'
 ];
+
+// --- PRELOADER LOGIC ---
+// Prevent scrolling during preload
+lenis.stop();
+
+const loader = document.getElementById('lilith-loader');
+if (loader) {
+  const eye = loader.querySelector('.loader-red-eye');
+  const texts = loader.querySelectorAll('.loader-txt');
+  const gif = loader.querySelector('.loader-gif');
+  const percentageEl = loader.querySelector('.loader-percentage');
+  
+  // Prepare hero text for after-load animation
+  const heroH1 = document.querySelector('.hero-main-title');
+  const heroSub = document.querySelector('.hero-subtitle');
+  if (heroH1) heroH1.style.opacity = '0';
+  if (heroSub) heroSub.style.opacity = '0';
+
+  // Gather all images to preload
+  const htmlImages = Array.from(document.querySelectorAll('img')).map(img => img.src);
+  const allImagesToLoad = [...htmlImages, ...trailImages];
+  const uniqueImages = [...new Set(allImagesToLoad)].filter(src => src);
+
+  let loadedCount = 0;
+  const totalImages = uniqueImages.length || 1;
+  const progressObj = { value: 0 };
+  let isExiting = false;
+
+  // The final exit explosion timeline (paused initially)
+  const exitTl = gsap.timeline({ 
+    paused: true, 
+    onComplete: () => {
+      loader.style.display = 'none';
+      lenis.start(); // Allow scrolling
+      
+      // --- AWWARDS STYLE TEXT REVEAL (Hero) ---
+      if (heroH1 && heroSub) {
+        heroH1.style.opacity = '1';
+        splitText(heroH1, { chars: true });
+        const chars = heroH1.querySelectorAll('span');
+        chars.forEach(c => { 
+          c.style.display = 'inline-block'; 
+          c.style.opacity = '0';
+        });
+        
+        animate(chars, {
+          translateY: [100, 0],
+          translateZ: [400, 0],
+          rotateX: [-90, 0],
+          opacity: [0, 1],
+          filter: ['blur(10px)', 'blur(0px)'],
+          duration: 1200,
+          delay: stagger(60),
+          ease: 'outExpo'
+        });
+        
+        animate(heroSub, {
+          opacity: [0, 1],
+          letterSpacing: ['1em', '0.5em'],
+          filter: ['blur(10px)', 'blur(0px)'],
+          duration: 1500,
+          delay: 800,
+          ease: 'outQuart'
+        });
+      }
+      
+      // Try autoplaying audio when loader finishes
+      const audio = document.getElementById('bg-audio');
+      const soundBtn = document.querySelector('.sound-toggle');
+      if (audio && soundBtn) {
+        audio.play().then(() => {
+          soundBtn.classList.add('playing');
+          soundBtn.querySelector('.sound-text').textContent = 'SOUND ON';
+        }).catch(() => {
+          console.log("Autoplay blocked. User needs to click SOUND OFF to play.");
+        });
+      }
+    }
+  });
+
+  // Final explosion sequence
+  exitTl.to(percentageEl, { opacity: 0, scale: 1.5, filter: 'blur(10px)', duration: 0.4 })
+        .to(texts[2], { opacity: 1, scale: 1.2, duration: 0.6, ease: 'back.out(2)' })
+        // Violent glitch shake + flashing white for ~0.5s
+        .to(texts[2], { x: () => Math.random()*20-10, y: () => Math.random()*20-10, color: '#ffffff', duration: 0.05, yoyo: true, repeat: 10 }) 
+        // GIF goes completely berserk with contrast and rotation
+        .to(gif, { opacity: 1, filter: 'contrast(300%) hue-rotate(90deg)', duration: 0.05, yoyo: true, repeat: 10 }, '<')
+        // The red eye suddenly appears at the very end...
+        .to(eye, { scale: 1, opacity: 1, duration: 0.2, ease: 'back.out(2)' })
+        // ...and explodes massively to swallow the screen
+        .to(eye, { scale: 200, duration: 1.0, ease: 'power4.in' }, '-=0.1')
+        // The red void elegantly dissolves into the website
+        .to(loader, { opacity: 0, filter: 'blur(20px)', duration: 0.6, ease: 'power2.out' });
+
+  // Update progress visually using GSAP for a smooth numeric count
+  function updateProgress() {
+    loadedCount++;
+    const targetPercent = Math.round((loadedCount / totalImages) * 100);
+    
+    gsap.to(progressObj, {
+      value: targetPercent,
+      duration: 0.5,
+      ease: 'power2.out',
+      onUpdate: () => {
+        percentageEl.textContent = Math.round(progressObj.value) + '%';
+      },
+      onComplete: () => {
+        if (Math.round(progressObj.value) === 100 && !isExiting) {
+          isExiting = true;
+          // Add a tiny delay at 100% so it feels satisfying before exploding
+          setTimeout(() => {
+            gsap.killTweensOf(gif); // Stop ambient flicker
+            exitTl.play();
+          }, 400);
+        }
+      }
+    });
+  }
+
+  // Start real asset loading
+  if (uniqueImages.length === 0) {
+    updateProgress();
+  } else {
+    // Ambient loading animation while waiting
+    gsap.to(gif, { opacity: 0.2, duration: 0.1, yoyo: true, repeat: -1 });
+    
+    uniqueImages.forEach(src => {
+      const img = new Image();
+      img.onload = updateProgress;
+      img.onerror = updateProgress; // continue even if 404
+      img.src = src;
+    });
+  }
+}
 
 const trailContainer = document.querySelector('.image-trail-container');
 
