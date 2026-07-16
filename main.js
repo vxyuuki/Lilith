@@ -661,101 +661,153 @@ function triggerEasterEgg() {
   
   const overlay = document.createElement('div');
   overlay.id = 'lilith-easter-egg';
-  overlay.style.position = 'fixed';
-  overlay.style.top = '0';
-  overlay.style.left = '0';
-  overlay.style.width = '100vw';
-  overlay.style.height = '100vh';
-  overlay.style.backgroundColor = '#8a0303'; // Blood red
-  overlay.style.zIndex = '999999';
-  overlay.style.display = 'flex';
-  overlay.style.flexDirection = 'column';
-  overlay.style.justifyContent = 'center';
-  overlay.style.alignItems = 'center';
-  overlay.style.color = '#000';
-  overlay.style.fontFamily = 'var(--font-mono, monospace)';
-  overlay.style.opacity = '0';
-  overlay.style.pointerEvents = 'none';
-  overlay.style.transition = 'opacity 1.5s ease-in-out';
   
-  // Static noise
-  const staticNoise = document.createElement('div');
-  staticNoise.style.position = 'absolute';
-  staticNoise.style.top = '0';
-  staticNoise.style.left = '0';
-  staticNoise.style.width = '100%';
-  staticNoise.style.height = '100%';
-  staticNoise.style.backgroundImage = 'url("https://www.transparenttextures.com/patterns/stardust.png")';
-  staticNoise.style.opacity = '0.3';
-  staticNoise.style.zIndex = '-1';
-  overlay.appendChild(staticNoise);
-
-  const lore = document.createElement('div');
-  lore.style.maxWidth = '600px';
-  lore.style.textAlign = 'center';
-  lore.style.padding = '2rem';
-  
-  const title = document.createElement('h1');
-  title.innerText = "ERROR: PROTOCOL OVERRIDE";
-  title.style.fontSize = 'clamp(2rem, 5vw, 3.5rem)';
-  title.style.marginBottom = '2rem';
-  title.style.textShadow = '4px 4px 0px #000, -2px -2px 0px #fff';
-  title.style.letterSpacing = '5px';
-  
-  const p1 = document.createElement('p');
-  p1.innerText = "SUBJECT: LILITH\\nSTATUS: AWARE";
-  p1.style.fontSize = '1.5rem';
-  p1.style.marginBottom = '3rem';
-  p1.style.fontWeight = 'bold';
-
-  const p2 = document.createElement('p');
-  p2.innerText = "You shouldn't have dug this deep.\\nShe knows you are watching.\\nShe remembers every keystroke.\\n\\nAre you still in control?";
-  p2.style.fontSize = '1.2rem';
-  p2.style.lineHeight = '2';
-  
-  const exitBtn = document.createElement('button');
-  exitBtn.innerText = "[ TERMINATE CONNECTION ]";
-  exitBtn.style.marginTop = '4rem';
-  exitBtn.style.padding = '15px 30px';
-  exitBtn.style.background = 'transparent';
-  exitBtn.style.border = '2px solid #000';
-  exitBtn.style.color = '#000';
-  exitBtn.style.cursor = 'pointer';
-  exitBtn.style.fontFamily = 'inherit';
-  exitBtn.style.fontSize = '1.1rem';
-  exitBtn.style.fontWeight = 'bold';
-  exitBtn.style.transition = 'all 0.3s';
-  exitBtn.onmouseover = () => {
-    exitBtn.style.background = '#000';
-    exitBtn.style.color = '#8a0303';
-  };
-  exitBtn.onmouseout = () => {
-    exitBtn.style.background = 'transparent';
-    exitBtn.style.color = '#000';
-  };
-  exitBtn.onclick = () => {
-    overlay.style.opacity = '0';
-    setTimeout(() => overlay.remove(), 1500);
-  };
-
-  lore.appendChild(title);
-  lore.appendChild(p1);
-  lore.appendChild(p2);
-  lore.appendChild(exitBtn);
-  overlay.appendChild(lore);
+  // Cyberpunk Terminal CSS + HTML injected via innerHTML
+  overlay.innerHTML = `
+    <style>
+      #lilith-easter-egg {
+        position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+        background: radial-gradient(circle at center, #1a0000 0%, #000000 100%);
+        z-index: 999999; display: flex; justify-content: center; align-items: center;
+        color: #ff003c; font-family: 'Courier New', Courier, monospace;
+        opacity: 0; pointer-events: none; transition: opacity 0.5s;
+        overflow: hidden;
+      }
+      .ee-scanlines {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.3));
+        background-size: 100% 4px; z-index: 2; pointer-events: none;
+      }
+      .ee-noise {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        background-image: url("https://www.transparenttextures.com/patterns/stardust.png");
+        opacity: 0.15; z-index: 1; pointer-events: none;
+        animation: ee-noise-anim 0.2s infinite;
+      }
+      @keyframes ee-noise-anim {
+        0% { transform: translate(0,0); }
+        10% { transform: translate(-5px,5px); }
+        20% { transform: translate(-10px,-5px); }
+        30% { transform: translate(5px,-10px); }
+        40% { transform: translate(-5px,15px); }
+        50% { transform: translate(-10px,5px); }
+        60% { transform: translate(15px,0); }
+        70% { transform: translate(0,10px); }
+        80% { transform: translate(-15px,0); }
+        90% { transform: translate(10px,5px); }
+        100% { transform: translate(5px,0); }
+      }
+      .ee-content {
+        position: relative; z-index: 3; max-width: 800px; padding: 40px; width: 90%;
+        border: 1px solid #ff003c; background: rgba(20, 0, 0, 0.8);
+        box-shadow: 0 0 30px rgba(255, 0, 60, 0.4), inset 0 0 20px rgba(255, 0, 60, 0.2);
+        backdrop-filter: blur(5px); text-align: center;
+      }
+      .ee-title {
+        font-size: clamp(2rem, 5vw, 3.5rem); margin: 0 0 30px 0; letter-spacing: 10px;
+        text-shadow: 3px 0px 0px rgba(0,255,255,0.7), -3px 0px 0px rgba(255,0,0,0.7);
+        animation: ee-glitch-text 3s infinite linear alternate-reverse;
+      }
+      @keyframes ee-glitch-text {
+        0% { text-shadow: 3px 0px 0px rgba(0,255,255,0.7), -3px 0px 0px rgba(255,0,0,0.7); transform: skewX(0deg); }
+        5% { transform: skewX(2deg); }
+        10% { text-shadow: -3px 0px 0px rgba(0,255,255,0.7), 3px 0px 0px rgba(255,0,0,0.7); transform: skewX(-2deg); }
+        15% { transform: skewX(0deg); }
+        100% { text-shadow: 3px 0px 0px rgba(0,255,255,0.7), -3px 0px 0px rgba(255,0,0,0.7); }
+      }
+      .ee-terminal {
+        font-size: 1.2rem; line-height: 1.8; margin-bottom: 40px; text-align: left;
+        border-left: 4px solid #ff003c; padding-left: 20px; min-height: 250px;
+      }
+      .ee-cursor {
+        display: inline-block; width: 12px; height: 1.2rem; background: #ff003c;
+        animation: ee-blink 1s infinite; vertical-align: middle; margin-left: 5px;
+      }
+      @keyframes ee-blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+      .ee-btn {
+        display: inline-block; padding: 15px 40px; font-size: 1.2rem; font-family: inherit;
+        background: transparent; color: #ff003c; border: 2px solid #ff003c; cursor: pointer;
+        text-transform: uppercase; letter-spacing: 3px; position: relative; overflow: hidden;
+        transition: all 0.2s; font-weight: bold;
+      }
+      .ee-btn:hover { background: #ff003c; color: #000; box-shadow: 0 0 20px #ff003c; }
+      .ee-btn:active { transform: scale(0.95); }
+    </style>
+    <div class="ee-scanlines"></div>
+    <div class="ee-noise"></div>
+    <div class="ee-content">
+      <h1 class="ee-title">SYSTEM_BREACH</h1>
+      <div class="ee-terminal" id="ee-term-text"></div>
+      <button class="ee-btn" id="ee-close-btn">[ SEVER CONNECTION ]</button>
+    </div>
+  `;
   document.body.appendChild(overlay);
 
-  // Glitch
+  const termText = document.getElementById('ee-term-text');
+  const closeBtn = document.getElementById('ee-close-btn');
+  closeBtn.style.display = 'none';
+
+  // Extreme glitch before entry
   gsap.to(document.body, {
-    x: () => Math.random() * 30 - 15,
-    y: () => Math.random() * 30 - 15,
+    x: () => Math.random() * 40 - 20,
+    y: () => Math.random() * 40 - 20,
+    filter: 'invert(1) hue-rotate(180deg) saturate(5)',
     duration: 0.05,
     repeat: 15,
     yoyo: true,
     onComplete: () => {
-      gsap.set(document.body, { x: 0, y: 0 });
+      gsap.set(document.body, { x: 0, y: 0, filter: 'none' });
       overlay.style.pointerEvents = 'auto';
       overlay.style.opacity = '1';
+      typewriterSequence();
     }
   });
+
+  const lines = [
+    "WARNING: Unauthorized access detected.",
+    "Bypassing neural firewall...",
+    "Accessing hidden sector [NULL]...",
+    "===================================",
+    "SUBJECT: LILITH",
+    "STATUS: AWARE",
+    "===================================",
+    "",
+    "You shouldn't have dug this deep.",
+    "She sees you through the screen.",
+    "She remembers every keystroke.",
+    "",
+    "Are you still in control?"
+  ];
+
+  async function typewriterSequence() {
+    termText.innerHTML = '';
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      if (line === "") {
+        termText.innerHTML += '<br>';
+        continue;
+      }
+      for (let j = 0; j < line.length; j++) {
+        termText.innerHTML += line[j];
+        // Add random glitch character sometimes
+        if (Math.random() < 0.03) {
+            const gl = document.createElement('span');
+            gl.style.opacity = '0.5';
+            gl.innerText = String.fromCharCode(33 + Math.random() * 90);
+            termText.appendChild(gl);
+            setTimeout(() => gl.remove(), 50);
+        }
+        await new Promise(r => setTimeout(r, 15 + Math.random() * 35));
+      }
+      termText.innerHTML += '<br>';
+      await new Promise(r => setTimeout(r, 200));
+    }
+    termText.innerHTML += '<span class="ee-cursor"></span>';
+    closeBtn.style.display = 'inline-block';
+  }
+
+  closeBtn.onclick = () => {
+    overlay.style.opacity = '0';
+    setTimeout(() => overlay.remove(), 500);
+  };
 }
