@@ -475,7 +475,7 @@ function initPageAnimations(container) {
         const scale = 0.8 + Math.random() * 0.4; // 0.8 to 1.2
         const xOffset = Math.random() * 20 - 10;
         const yOffset = Math.random() * 10 - 5;
-        el.style.transform = \skewX(\deg) scale(\) translate(\px, \px)\;
+        el.style.transform = `skewX(${skew}deg) scale(${scale}) translate(${xOffset}px, ${yOffset}px)`;
       });
     }, 150); // very fast aggressive glitch!
     
