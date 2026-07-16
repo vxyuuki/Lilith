@@ -26,6 +26,21 @@ const lenis = new Lenis({
 
 lenis.on('scroll', ScrollTrigger.update);
 
+// --- Custom Scroll Indicator (Futuristic Red Line) ---
+const scrollIndicator = document.createElement('div');
+scrollIndicator.className = 'custom-scroll-indicator';
+const scrollProgress = document.createElement('div');
+scrollProgress.className = 'custom-scroll-progress';
+scrollIndicator.appendChild(scrollProgress);
+document.body.appendChild(scrollIndicator);
+
+lenis.on('scroll', (e) => {
+  // e.progress is 0 to 1
+  if (scrollProgress) {
+    scrollProgress.style.transform = `scaleY(${e.progress})`;
+  }
+});
+
 function raf(time) {
   lenis.raf(time);
   requestAnimationFrame(raf);
