@@ -97,16 +97,16 @@ export function initWebGLBackground() {
         
         // Calculate dynamic thresholds. If a macro glitch is happening, explode the reds and whites!
         float glitchIntensity = max(blockGlitch, rowShift);
-        float whiteThresh = mix(0.85, 0.70, glitchIntensity); // Normal: 15% white. Glitch: 30% white
-        float redThresh = mix(0.95, 0.85, glitchIntensity);   // Normal: 5% red. Glitch: 15% red
+        float whiteThresh = mix(0.93, 0.85, glitchIntensity); // Normal: 7% white. Glitch: 15% white
+        float redThresh = mix(0.98, 0.90, glitchIntensity);   // Normal: 2% red. Glitch: 10% red
         
         float isWhite = step(whiteThresh, n) * (1.0 - step(redThresh, n));
         float isRed   = step(redThresh, n);
         float isBlack = 1.0 - step(whiteThresh, n);
         
         vec3 colorBlack = vec3(0.04, 0.04, 0.05);
-        vec3 colorWhite = vec3(0.9, 0.9, 0.9);
-        vec3 colorRed   = vec3(1.0, 0.05, 0.1);
+        vec3 colorWhite = vec3(0.45, 0.45, 0.5); // Dimmed to 45% grey so white text on top is readable
+        vec3 colorRed   = vec3(0.7, 0.1, 0.15);  // Dimmed red
         
         vec3 finalColor = isBlack * colorBlack + isWhite * colorWhite + isRed * colorRed;
 
