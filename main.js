@@ -476,6 +476,15 @@ function initPageAnimations(container) {
         const xOffset = Math.random() * 20 - 10;
         const yOffset = Math.random() * 10 - 5;
         el.style.transform = `skewX(${skew}deg) scale(${scale}) translate(${xOffset}px, ${yOffset}px)`;
+        
+        // Randomize the lines inside to make them messy!
+        const lines = el.querySelectorAll('.glitch-line');
+        lines.forEach(line => {
+          line.style.top = Math.random() * 100 + '%'; 
+          line.style.left = (Math.random() * 40 - 20) + '%'; 
+          line.style.width = (Math.random() * 80 + 40) + '%'; 
+          line.style.transform = `scaleY(${Math.random() * 3})`; 
+        });
       });
     }, 150); // very fast aggressive glitch!
     
