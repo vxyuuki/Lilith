@@ -298,20 +298,23 @@ const monoLines = document.querySelectorAll('.mono-line');
 const monoAuthor = document.querySelector('.mono-author');
 
 if (monoLines.length > 0) {
+  const monoTl = gsap.timeline({
+    scrollTrigger: {
+      trigger: '.monologue',
+      start: 'top 50%',
+      end: 'bottom 80%',
+      scrub: 1
+    }
+  });
+
   // Stagger fade up each line
-  gsap.fromTo(monoLines, 
+  monoTl.fromTo(monoLines, 
     { opacity: 0, y: 30, filter: 'blur(5px)' },
     { 
       opacity: 1, 
       y: 0, 
       filter: 'blur(0px)',
-      stagger: 1.5, // 1.5 multiplier on scrub time
-      scrollTrigger: {
-        trigger: '.monologue',
-        start: 'top 50%',
-        end: 'bottom 80%',
-        scrub: 1 // smooth scrubbing
-      }
+      stagger: 0.5 
     }
   );
   
