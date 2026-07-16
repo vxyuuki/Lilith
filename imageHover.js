@@ -1,15 +1,17 @@
-import gsap from \'gsap\';
+import gsap from 'gsap';
 
-const vsSource =   attribute vec2 a_position;
+const vsSource = `
+  attribute vec2 a_position;
   attribute vec2 a_texCoord;
   varying vec2 v_texCoord;
   void main() {
     gl_Position = vec4(a_position, 0.0, 1.0);
     v_texCoord = vec2(a_texCoord.x, 1.0 - a_texCoord.y); // Flip Y for WebGL texture
   }
-\;
+`;
 
-const fsSource =   precision mediump float;
+const fsSource = `
+  precision mediump float;
   uniform sampler2D u_image;
   uniform float u_time;
   uniform float u_hover; // 0.0 to 1.0
@@ -45,7 +47,7 @@ const fsSource =   precision mediump float;
 
     gl_FragColor = vec4(r, g, b, 1.0);
   }
-\;
+`;
 
 function createShader(gl, type, source) {
   const shader = gl.createShader(type);
