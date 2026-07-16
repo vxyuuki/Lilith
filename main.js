@@ -283,6 +283,14 @@ if (secretSection) {
     secretSection.style.setProperty('--mouse-x', `${x}px`);
     secretSection.style.setProperty('--mouse-y', `${y}px`);
   });
+  
+  // Hide global cursor when inside this section to prevent overlap
+  secretSection.addEventListener('mouseenter', () => {
+    if (cursor) cursor.classList.add('hidden');
+  });
+  secretSection.addEventListener('mouseleave', () => {
+    if (cursor) cursor.classList.remove('hidden');
+  });
 }
 
 // --- Monologue Animation ---
