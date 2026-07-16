@@ -1,238 +1,351 @@
 import gsap from 'gsap';
 
-const vsSource = `
-  attribute vec2 a_position;
-  attribute vec2 a_texCoord;
-  varying vec2 v_texCoord;
-  void main() {
-    gl_Position = vec4(a_position, 0.0, 1.0);
-    v_texCoord = vec2(a_texCoord.x, 1.0 - a_texCoord.y);
-  }
-`;
+// ============================================================
+// WebGL Gallery Hover — Liquid Ripple + Pixel Sort + Chromatic
+// ============================================================
+// Strategy: Keep original <img> visible. Overlay a <canvas>
+// on top that only becomes visible on hover. This way the user
+// always sees the real image, and the WebGL effect is purely
+// additive.
 
-const fsSource = `
-  precision mediump float;
-  uniform sampler2D u_image;
-  uniform float u_time;
-  uniform float u_hover;
-  uniform vec2 u_resolution;
-  uniform vec2 u_imageResolution;
-  
-  varying vec2 v_texCoord;
+const VERT = `
+attribute vec2 a_pos;
+attribute vec2 a_uv;
+varying vec2 v_uv;
+void main() {
+  gl_Position = vec4(a_pos, 0.0, 1.0);
+  v_uv = a_uv;
+}`;
 
-  float rand(vec2 co){
-      return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
-  }
+const FRAG = `
+precision mediump float;
+uniform sampler2D u_tex;
+uniform float u_time;
+uniform float u_hover;
+uniform vec2 u_canvasRes;
+uniform vec2 u_imgRes;
+varying vec2 v_uv;
 
-  void main() {
-    // Object-fit: cover logic
-    vec2 ratio = vec2(
-        min((u_resolution.x / u_resolution.y) / (u_imageResolution.x / u_imageResolution.y), 1.0),
-        min((u_resolution.y / u_resolution.x) / (u_imageResolution.y / u_imageResolution.x), 1.0)
-    );
-    
-    vec2 uv = vec2(
-        v_texCoord.x * ratio.x + (1.0 - ratio.x) * 0.5,
-        v_texCoord.y * ratio.y + (1.0 - ratio.y) * 0.5
-    );
-
-    // Liquid + Pixel Sort Glitch
-    float blocks = 40.0 - (u_hover * 20.0);
-    vec2 blockUv = floor(uv * blocks) / blocks;
-    
-    float wave = sin(uv.y * 15.0 + u_time * 4.0) * 0.03 * u_hover;
-    float noise = rand(vec2(blockUv.y, u_time * 0.1)) * u_hover * 0.1;
-
-    vec2 distortedUv = uv;
-    distortedUv.x += wave + noise;
-
-    float r = texture2D(u_image, distortedUv + vec2(u_hover * 0.02, 0.0)).r;
-    float g = texture2D(u_image, distortedUv).g;
-    float b = texture2D(u_image, distortedUv - vec2(u_hover * 0.02, 0.0)).b;
-
-    gl_FragColor = vec4(r, g, b, 1.0);
-  }
-`;
-
-function createShader(gl, type, source) {
-  const shader = gl.createShader(type);
-  gl.shaderSource(shader, source);
-  gl.compileShader(shader);
-  return shader;
+float hash(vec2 p) {
+  return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
 }
 
+void main() {
+  // --- object-fit: cover math ---
+  float canvasAspect = u_canvasRes.x / u_canvasRes.y;
+  float imgAspect    = u_imgRes.x   / u_imgRes.y;
+
+  vec2 uv = v_uv;
+
+  // flip Y so texture isn't upside-down
+  uv.y = 1.0 - uv.y;
+
+  if (canvasAspect > imgAspect) {
+    // canvas wider → crop top/bottom
+    float scale = imgAspect / canvasAspect;
+    uv.y = uv.y * scale + (1.0 - scale) * 0.5;
+  } else {
+    // canvas taller → crop left/right
+    float scale = canvasAspect / imgAspect;
+    uv.x = uv.x * scale + (1.0 - scale) * 0.5;
+  }
+
+  // --- hover distortions (only when u_hover > 0) ---
+  float h = u_hover;
+
+  // 1. Liquid wave
+  float wave = sin(uv.y * 20.0 + u_time * 3.0) * 0.015 * h;
+  // Vertical wave for extra liquid feel
+  float wave2 = sin(uv.x * 12.0 + u_time * 2.5) * 0.008 * h;
+
+  // 2. Block-based pixel sort noise
+  float blockSize = mix(80.0, 20.0, h);
+  vec2 blockUv = floor(uv * blockSize) / blockSize;
+  float sortNoise = hash(vec2(blockUv.y, floor(u_time * 8.0))) * 0.06 * h;
+
+  vec2 distUv = uv;
+  distUv.x += wave + sortNoise;
+  distUv.y += wave2;
+
+  // 3. Chromatic aberration
+  float aberration = h * 0.012;
+  float r = texture2D(u_tex, distUv + vec2(aberration, 0.0)).r;
+  float g = texture2D(u_tex, distUv).g;
+  float b = texture2D(u_tex, distUv - vec2(aberration, 0.0)).b;
+
+  gl_FragColor = vec4(r, g, b, 1.0);
+}`;
+
+function compileShader(gl, type, src) {
+  const s = gl.createShader(type);
+  gl.shaderSource(s, src);
+  gl.compileShader(s);
+  if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+    console.error('Shader error:', gl.getShaderInfoLog(s));
+    return null;
+  }
+  return s;
+}
+
+function buildProgram(gl) {
+  const vs = compileShader(gl, gl.VERTEX_SHADER, VERT);
+  const fs = compileShader(gl, gl.FRAGMENT_SHADER, FRAG);
+  if (!vs || !fs) return null;
+  const p = gl.createProgram();
+  gl.attachShader(p, vs);
+  gl.attachShader(p, fs);
+  gl.linkProgram(p);
+  if (!gl.getProgramParameter(p, gl.LINK_STATUS)) {
+    console.error('Program link error:', gl.getProgramInfoLog(p));
+    return null;
+  }
+  return p;
+}
+
+function setupQuad(gl, program) {
+  // positions: full-screen quad
+  const posBuf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, posBuf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+    -1, -1, 1, -1, -1, 1,
+    -1, 1, 1, -1, 1, 1
+  ]), gl.STATIC_DRAW);
+  const aPos = gl.getAttribLocation(program, 'a_pos');
+  gl.enableVertexAttribArray(aPos);
+  gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+
+  // UVs
+  const uvBuf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, uvBuf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+    0, 0, 1, 0, 0, 1,
+    0, 1, 1, 0, 1, 1
+  ]), gl.STATIC_DRAW);
+  const aUv = gl.getAttribLocation(program, 'a_uv');
+  gl.enableVertexAttribArray(aUv);
+  gl.vertexAttribPointer(aUv, 2, gl.FLOAT, false, 0, 0);
+}
+
+function loadTexture(gl, imgElement) {
+  const tex = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, tex);
+  // Set params first
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  // Upload directly from the <img> element (already loaded by browser)
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, imgElement);
+  return tex;
+}
+
+// ============================================================
+// Public init — called from main.js
+// ============================================================
 export function initGalleryHovers(container) {
-  const items = container.querySelectorAll('.gallery-item .img-wrapper img');
-  
-  items.forEach(img => {
-    if (img.dataset.webglInit) return;
-    img.dataset.webglInit = 'true';
+  const allImgWrappers = container.querySelectorAll('.quote-hover-item .img-wrapper');
 
-    const wrapper = img.parentElement;
-    wrapper.style.position = 'relative';
-    wrapper.style.overflow = 'hidden';
+  allImgWrappers.forEach(wrapper => {
+    const img = wrapper.querySelector('img');
+    if (!img || img.dataset.webglHover) return;
+    img.dataset.webglHover = 'true';
 
-    img.style.opacity = '0';
-    
+    // --- create canvas overlay ---
     const canvas = document.createElement('canvas');
-    canvas.style.position = 'absolute';
-    canvas.style.top = '0';
-    canvas.style.left = '0';
-    canvas.style.width = '100%';
-    canvas.style.height = '100%';
-    canvas.style.pointerEvents = 'none';
+    canvas.className = 'webgl-hover-canvas';
+    canvas.style.cssText = `
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      border-radius: inherit;
+    `;
     wrapper.appendChild(canvas);
 
-    const gl = canvas.getContext('webgl', { alpha: true });
+    const gl = canvas.getContext('webgl', { alpha: false, antialias: false });
     if (!gl) return;
 
-    const vs = createShader(gl, gl.VERTEX_SHADER, vsSource);
-    const fs = createShader(gl, gl.FRAGMENT_SHADER, fsSource);
-    const program = gl.createProgram();
-    gl.attachShader(program, vs);
-    gl.attachShader(program, fs);
-    gl.linkProgram(program);
+    const program = buildProgram(gl);
+    if (!program) return;
+
     gl.useProgram(program);
+    setupQuad(gl, program);
 
-    const positions = new Float32Array([
-      -1.0, -1.0,  1.0, -1.0,  -1.0,  1.0,
-      -1.0,  1.0,  1.0, -1.0,   1.0,  1.0
-    ]);
-    const positionBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
-    const positionLocation = gl.getAttribLocation(program, 'a_position');
-    gl.enableVertexAttribArray(positionLocation);
-    gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+    // uniform locations
+    const uTime = gl.getUniformLocation(program, 'u_time');
+    const uHover = gl.getUniformLocation(program, 'u_hover');
+    const uCanvasRes = gl.getUniformLocation(program, 'u_canvasRes');
+    const uImgRes = gl.getUniformLocation(program, 'u_imgRes');
 
-    const texCoords = new Float32Array([
-      0.0, 0.0,  1.0, 0.0,  0.0, 1.0,
-      0.0, 1.0,  1.0, 0.0,  1.0, 1.0
-    ]);
-    const texCoordBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, texCoords, gl.STATIC_DRAW);
-    const texCoordLocation = gl.getAttribLocation(program, 'a_texCoord');
-    gl.enableVertexAttribArray(texCoordLocation);
-    gl.vertexAttribPointer(texCoordLocation, 2, gl.FLOAT, false, 0, 0);
+    // --- Load texture from the <img> ---
+    // The browser has already loaded the image for us.
+    // But we need to wait if it hasn't finished yet.
+    let textureReady = false;
+    let texture = null;
 
-    const timeLocation = gl.getUniformLocation(program, 'u_time');
-    const hoverLocation = gl.getUniformLocation(program, 'u_hover');
-    const resLocation = gl.getUniformLocation(program, 'u_resolution');
-    const imgResLocation = gl.getUniformLocation(program, 'u_imageResolution');
-    
-    gl.uniform1f(hoverLocation, 0.0);
-
-    const texture = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, texture);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-
-    let imgWidth = 1.0;
-    let imgHeight = 1.0;
-
-    const image = new Image();
-    image.crossOrigin = 'anonymous';
-    image.onload = () => {
-      imgWidth = image.naturalWidth || image.width || 1.0;
-      imgHeight = image.naturalHeight || image.height || 1.0;
-      gl.bindTexture(gl.TEXTURE_2D, texture);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-      
-      // Force a resize calculation now that image is loaded
-      resize();
-    };
-    image.src = img.src;
-
-    const resize = () => {
-      const rect = wrapper.getBoundingClientRect();
-      // Ensure minimum 1px size to avoid WebGL crash/stretch
-      canvas.width = Math.max(1, rect.width);
-      canvas.height = Math.max(1, rect.height);
-      gl.viewport(0, 0, canvas.width, canvas.height);
-      
-      gl.useProgram(program);
-      gl.uniform2f(resLocation, canvas.width, canvas.height);
-      gl.uniform2f(imgResLocation, imgWidth, imgHeight);
-    };
-    window.addEventListener('resize', resize);
-    
-    // Fallback resize check in case CSS loads late
-    setTimeout(resize, 100);
-    setTimeout(resize, 500);
-
-    let hoverValue = 0;
-    const galleryItem = wrapper.closest('.gallery-item');
-    let quoteP = null;
-    
-    if (galleryItem) {
-      const quoteWrapper = galleryItem.querySelector('.quote-wrapper');
-      if (quoteWrapper) {
-        quoteP = quoteWrapper.querySelector('p');
-        if (quoteP) {
-           quoteP.style.opacity = '0';
-           const text = quoteP.innerText;
-           quoteP.innerHTML = '';
-           text.split('').forEach(char => {
-              const span = document.createElement('span');
-              span.innerText = char;
-              span.style.opacity = '0';
-              quoteP.appendChild(span);
-           });
-        }
+    const uploadTexture = () => {
+      try {
+        texture = loadTexture(gl, img);
+        textureReady = true;
+      } catch (e) {
+        console.warn('Texture upload failed, will retry', e);
       }
+    };
 
-      galleryItem.addEventListener('mouseenter', () => {
-        gsap.to(galleryItem, { hoverValue: 1.0, duration: 0.8, ease: 'power2.out', onUpdate: () => {
-          hoverValue = galleryItem.hoverValue;
-        }});
-        gsap.to(canvas, { scale: 1.05, duration: 0.8, ease: 'power2.out' });
-        
-        if (quoteP) {
-           quoteP.style.opacity = '1';
-           gsap.to(quoteP.querySelectorAll('span'), {
-              opacity: 1, stagger: 0.02, duration: 0.1, ease: 'none', overwrite: true
-           });
-        }
-      });
-
-      galleryItem.addEventListener('mouseleave', () => {
-        gsap.to(galleryItem, { hoverValue: 0.0, duration: 1.2, ease: 'power3.out', onUpdate: () => {
-          hoverValue = galleryItem.hoverValue;
-        }});
-        gsap.to(canvas, { scale: 1.0, duration: 1.2, ease: 'power3.out' });
-        
-        if (quoteP) {
-           gsap.to(quoteP.querySelectorAll('span'), {
-              opacity: 0, stagger: 0.005, duration: 0.1, ease: 'none', overwrite: true
-           });
-        }
-      });
+    if (img.complete && img.naturalWidth > 0) {
+      uploadTexture();
+    } else {
+      img.addEventListener('load', uploadTexture, { once: true });
     }
 
-    let startTime = performance.now();
-    let animationFrameId;
-
-    const render = () => {
-      const time = (performance.now() - startTime) * 0.001;
-      
+    // --- Sizing ---
+    const syncSize = () => {
+      const w = wrapper.offsetWidth;
+      const h = wrapper.offsetHeight;
+      if (w < 1 || h < 1) return;
+      canvas.width = w;
+      canvas.height = h;
+      gl.viewport(0, 0, w, h);
       gl.useProgram(program);
-      gl.uniform1f(timeLocation, time);
-      gl.uniform1f(hoverLocation, hoverValue);
+      gl.uniform2f(uCanvasRes, w, h);
+      const iw = img.naturalWidth || 1;
+      const ih = img.naturalHeight || 1;
+      gl.uniform2f(uImgRes, iw, ih);
+    };
+    // Resize on window change
+    window.addEventListener('resize', syncSize);
+    // Initial + delayed fallback
+    syncSize();
+    setTimeout(syncSize, 200);
+    setTimeout(syncSize, 1000);
 
-      gl.clearColor(0, 0, 0, 0);
-      gl.clear(gl.COLOR_BUFFER_BIT);
+    // --- Hover state ---
+    let hoverVal = { v: 0 };
+    let isHovering = false;
+    let animFrameId = null;
+    const startT = performance.now();
+
+    const galleryItem = wrapper.closest('.gallery-item');
+
+    // --- Typewriter setup ---
+    let quoteSpans = null;
+    if (galleryItem) {
+      const qw = galleryItem.querySelector('.quote-wrapper');
+      if (qw) {
+        const p = qw.querySelector('p');
+        if (p) {
+          const text = p.textContent;
+          p.innerHTML = '';
+          p.style.opacity = '0';
+          [...text].forEach(ch => {
+            const span = document.createElement('span');
+            span.textContent = ch;
+            span.style.opacity = '0';
+            p.appendChild(span);
+          });
+          quoteSpans = { p, spans: p.querySelectorAll('span') };
+        }
+      }
+    }
+
+    // --- Render loop ---
+    const render = () => {
+      if (!textureReady) {
+        animFrameId = requestAnimationFrame(render);
+        return;
+      }
+
+      const t = (performance.now() - startT) * 0.001;
+
+      gl.useProgram(program);
+      gl.uniform1f(uTime, t);
+      gl.uniform1f(uHover, hoverVal.v);
+
+      gl.bindTexture(gl.TEXTURE_2D, texture);
       gl.drawArrays(gl.TRIANGLES, 0, 6);
 
-      animationFrameId = requestAnimationFrame(render);
+      animFrameId = requestAnimationFrame(render);
     };
-    render();
 
+    // --- Mouse events on the gallery-item ---
+    const onEnter = () => {
+      isHovering = true;
+      syncSize(); // ensure fresh dimensions
+      // Re-upload texture in case it failed before
+      if (!textureReady && img.complete) uploadTexture();
+
+      canvas.style.opacity = '1';
+
+      // Start render loop if not running
+      if (!animFrameId) render();
+
+      gsap.to(hoverVal, {
+        v: 1.0,
+        duration: 0.8,
+        ease: 'power2.out'
+      });
+
+      // Typewriter in
+      if (quoteSpans) {
+        quoteSpans.p.style.opacity = '1';
+        gsap.to(quoteSpans.spans, {
+          opacity: 1,
+          stagger: 0.02,
+          duration: 0.05,
+          ease: 'none',
+          overwrite: true
+        });
+      }
+    };
+
+    const onLeave = () => {
+      isHovering = false;
+
+      gsap.to(hoverVal, {
+        v: 0.0,
+        duration: 1.0,
+        ease: 'power3.out',
+        onComplete: () => {
+          if (!isHovering) {
+            canvas.style.opacity = '0';
+            // Stop render loop when not hovering to save GPU
+            if (animFrameId) {
+              cancelAnimationFrame(animFrameId);
+              animFrameId = null;
+            }
+          }
+        }
+      });
+
+      // Typewriter out
+      if (quoteSpans) {
+        gsap.to(quoteSpans.spans, {
+          opacity: 0,
+          stagger: 0.005,
+          duration: 0.05,
+          ease: 'none',
+          overwrite: true,
+          onComplete: () => {
+            if (!isHovering) quoteSpans.p.style.opacity = '0';
+          }
+        });
+      }
+    };
+
+    if (galleryItem) {
+      galleryItem.addEventListener('mouseenter', onEnter);
+      galleryItem.addEventListener('mouseleave', onLeave);
+    }
+
+    // --- Cleanup for Barba.js transitions ---
     img.cleanupWebGL = () => {
-       cancelAnimationFrame(animationFrameId);
-       window.removeEventListener('resize', resize);
+      if (animFrameId) cancelAnimationFrame(animFrameId);
+      window.removeEventListener('resize', syncSize);
+      if (galleryItem) {
+        galleryItem.removeEventListener('mouseenter', onEnter);
+        galleryItem.removeEventListener('mouseleave', onLeave);
+      }
     };
   });
 }
