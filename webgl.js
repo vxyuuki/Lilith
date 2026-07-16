@@ -45,46 +45,71 @@ export function initWebGLBackground() {
       float random(vec2 st) {
           return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123);
       }
+      
+      float random1D(float n) {
+          return fract(sin(n) * 43758.5453123);
+      }
 
       void main() {
         vec2 uv = vUv;
         
-        // Base dark background (Cyber-minimalist black)
-        vec3 baseColor = vec3(0.04, 0.04, 0.05);
+        // --- 1. Glitch offset (Horizontal tearing) ---
+        // Create blocky rows for glitches
+        float glitchRow = floor(uv.y * uResolution.y / 20.0);
+        // Randomly trigger a glitch on this row (only occasionally)
+        float isGlitch = step(0.97, random1D(glitchRow + floor(uTime * 15.0))); 
+        // Random horizontal shift amount for the glitch
+        float glitchOffset = (random1D(glitchRow + 100.0) - 0.5) * 0.15 * isGlitch;
         
-        // --- 1. Dynamic CRT Film Grain ---
-        // Fast-moving, high-frequency noise
-        vec2 grainUv = uv * uResolution * 0.8; 
-        grainUv += vec2(uTime * 15.0, uTime * 25.0); 
-        float noise = random(grainUv);
+        uv.x += glitchOffset;
+
+        // --- 2. TV Static Noise ---
+        // Scale UV for slightly chunky pixels (classic TV static feel)
+        vec2 fineUv = floor(uv * uResolution * 0.4); 
+        // Fast changing random noise
+        float n = random(fineUv + vec2(floor(uTime * 25.0), floor(uTime * 35.0)));
         
-        // "Tipis" (subtle) grain: map noise (0 to 1) to a very small range (-0.03 to +0.03)
-        float grainIntensity = 0.08;
-        float grain = (noise - 0.5) * grainIntensity;
+        // --- 3. Color Mapping (Black, White, Red) ---
+        // Using step functions to map random noise to distinct colors
+        // Keep it mostly dark (85%) so the website text remains readable!
+        float isWhite = step(0.85, n) * (1.0 - step(0.95, n)); // 10% White
+        float isRed   = step(0.95, n);                         // 5% Red
+        float isBlack = 1.0 - step(0.85, n);                   // 85% Black
         
-        // --- 2. Subtle Scanlines ---
-        // Moving horizontal lines simulating old CRT monitors
-        float scanline = sin(uv.y * uResolution.y * 0.4 - uTime * 3.0);
-        float scanlineIntensity = 0.02;
-        float scan = (scanline * 0.5 + 0.5) * scanlineIntensity;
+        vec3 colorBlack = vec3(0.04, 0.04, 0.05);
+        vec3 colorWhite = vec3(0.85, 0.85, 0.9);
+        vec3 colorRed   = vec3(0.9, 0.1, 0.2);
         
-        // --- 3. Interaction & Subtle Scroll Banding ---
-        // Adding a very faint, slow-moving red band affected by scroll
-        float band = sin(uv.y * 5.0 + uScroll * 10.0 + uTime * 0.5) * 0.015;
-        baseColor.r += band;
+        vec3 finalColor = isBlack * colorBlack + isWhite * colorWhite + isRed * colorRed;
         
-        // Mouse glow for interactivity
-        float distToMouse = distance(uv, uMouse);
-        float glow = smoothstep(0.6, 0.0, distToMouse) * 0.04;
-        baseColor += vec3(glow * 0.9, glow * 0.1, glow * 0.1); // Faint red glow
+        // --- 4. Chromatic Glitch Aberration ---
+        // If this row is glitching, intensify and shift the red channel
+        if (isGlitch > 0.0) {
+            float nRed = random(fineUv + vec2(floor(uTime * 30.0) + 10.0, 0.0));
+            if (nRed > 0.3) finalColor = mix(finalColor, colorRed, 0.8);
+        }
+
+        // --- 5. Scanlines ---
+        // High frequency horizontal lines
+        float scanline = sin(vUv.y * uResolution.y * 1.5);
+        finalColor *= (scanline * 0.15 + 0.85); // Darken gaps by 15%
         
-        // Combine layers
-        vec3 finalColor = baseColor + vec3(grain) - vec3(scan);
+        // --- 6. Scroll Banding & Mouse Glow ---
+        // Gentle dark bands moving during scroll
+        float band = sin(vUv.y * 10.0 + uScroll * 15.0 - uTime * 2.0);
+        finalColor -= (band * 0.05);
+
+        float distToMouse = distance(vUv, uMouse); 
+        float glow = smoothstep(0.5, 0.0, distToMouse) * 0.6;
         
-        // --- 4. Soft Vignette ---
-        // Darkens the corners to focus the center
-        float vignette = uv.x * uv.y * (1.0 - uv.x) * (1.0 - uv.y);
-        vignette = clamp(pow(abs(vignette) * 15.0, 0.3), 0.0, 1.0);
+        // Mouse reveals intense red static
+        if (n > 0.2 && n < 0.2 + glow) {
+             finalColor = mix(finalColor, colorRed, glow);
+        }
+
+        // --- 7. Vignette ---
+        float vignette = vUv.x * vUv.y * (1.0 - vUv.x) * (1.0 - vUv.y);
+        vignette = clamp(pow(abs(vignette) * 15.0, 0.4), 0.0, 1.0);
         
         gl_FragColor = vec4(finalColor * vignette, 1.0);
       }
