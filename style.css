@@ -1224,6 +1224,9 @@ body {
 .mono-line {
   display: block;
   margin-bottom: 2rem;
+  opacity: 0;
+  transform: translateY(30px);
+  filter: blur(5px);
 }
 
 .mono-author {
@@ -1234,4 +1237,7 @@ body {
   letter-spacing: 3px;
   font-weight: 700;
   text-shadow: 0 0 20px var(--accent);
+  opacity: 0;
+  transform: translateX(-20px);
+  filter: blur(5px);
 }

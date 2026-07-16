@@ -308,29 +308,25 @@ if (monoLines.length > 0) {
   });
 
   // Stagger fade up each line
-  monoTl.fromTo(monoLines, 
-    { opacity: 0, y: 30, filter: 'blur(5px)' },
-    { 
-      opacity: 1, 
-      y: 0, 
-      filter: 'blur(0px)',
-      stagger: 0.5 
-    }
-  );
+  monoTl.to(monoLines, { 
+    opacity: 1, 
+    y: 0, 
+    filter: 'blur(0px)',
+    stagger: 0.5 
+  });
   
   if (monoAuthor) {
-    gsap.fromTo(monoAuthor,
-      { opacity: 0, x: -20, filter: 'blur(5px)' },
-      {
-        opacity: 1, x: 0, filter: 'blur(0px)',
-        scrollTrigger: {
-          trigger: '.monologue',
-          start: 'bottom 90%',
-          end: 'bottom 70%',
-          scrub: 1
-        }
+    gsap.to(monoAuthor, {
+      opacity: 1, 
+      x: 0, 
+      filter: 'blur(0px)',
+      scrollTrigger: {
+        trigger: '.monologue',
+        start: 'bottom 90%',
+        end: 'bottom 70%',
+        scrub: 1
       }
-    );
+    });
   }
 }
 
