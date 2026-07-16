@@ -211,6 +211,12 @@ function cleanupPageAnimations() {
     lenis.off('scroll', currentScrollHandler);
     currentScrollHandler = null;
   }
+  
+  if (window.extremeIntervals) {
+    window.extremeIntervals.forEach(id => clearInterval(id));
+    window.extremeIntervals = [];
+  }
+
   if (scatterIntervalId) {
     clearInterval(scatterIntervalId);
     scatterIntervalId = null;
@@ -440,6 +446,42 @@ function initPageAnimations(container) {
         }
       });
     }, 1000);
+  }
+
+  
+  // --- EXTREME GLITCH LOGIC (Generic) ---
+  const extremeGlitches = document.querySelectorAll('.extreme-glitch');
+  extremeGlitches.forEach(el => {
+    if (el.dataset.glitched) return; // Prevent duplicate lines on Barba transition
+    el.dataset.glitched = 'true';
+    
+    // Attach lines
+    for (let i = 0; i < 8; i++) {
+      const line = document.createElement('div');
+      const type = Math.random();
+      if (type > 0.6) line.className = 'glitch-line red flicker-text';
+      else if (type > 0.3) line.className = 'glitch-line dark flicker-text';
+      else line.className = 'glitch-line flicker-text';
+      line.style.animationDelay = (Math.random() * 3) + 's';
+      line.style.top = Math.random() * 100 + '%';
+      el.appendChild(line);
+    }
+  });
+
+  if (extremeGlitches.length > 0) {
+    const extremeIntervalId = setInterval(() => {
+      extremeGlitches.forEach(el => {
+        const skew = Math.random() * 40 - 20; // -20 to 20
+        const scale = 0.8 + Math.random() * 0.4; // 0.8 to 1.2
+        const xOffset = Math.random() * 20 - 10;
+        const yOffset = Math.random() * 10 - 5;
+        el.style.transform = \skewX(\deg) scale(\) translate(\px, \px)\;
+      });
+    }, 150); // very fast aggressive glitch!
+    
+    // Store it so we can clear it on transition
+    if (!window.extremeIntervals) window.extremeIntervals = [];
+    window.extremeIntervals.push(extremeIntervalId);
   }
 
   // 7. Monologue Animation
