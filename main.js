@@ -776,14 +776,12 @@ function triggerEasterEgg() {
 
   // Extreme glitch before entry
   gsap.to(document.body, {
-    x: () => Math.random() * 40 - 20,
-    y: () => Math.random() * 40 - 20,
     filter: 'invert(1) hue-rotate(180deg) saturate(5)',
     duration: 0.05,
     repeat: 15,
     yoyo: true,
     onComplete: () => {
-      gsap.set(document.body, { x: 0, y: 0, filter: 'none' });
+      gsap.set(document.body, { filter: 'none' });
       overlay.style.pointerEvents = 'auto';
       overlay.style.opacity = '1';
       typewriterSequence();
@@ -811,25 +809,31 @@ function triggerEasterEgg() {
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
       if (line === "") {
-        termText.innerHTML += '<br>';
+        termText.appendChild(document.createElement('br'));
         continue;
       }
+      
+      const lineSpan = document.createElement('span');
+      termText.appendChild(lineSpan);
+      
       for (let j = 0; j < line.length; j++) {
-        termText.innerHTML += line[j];
+        lineSpan.textContent += line[j];
         // Add random glitch character sometimes
         if (Math.random() < 0.03) {
             const gl = document.createElement('span');
             gl.style.opacity = '0.5';
-            gl.innerText = String.fromCharCode(33 + Math.random() * 90);
+            gl.textContent = String.fromCharCode(33 + Math.random() * 90);
             termText.appendChild(gl);
             setTimeout(() => gl.remove(), 50);
         }
         await new Promise(r => setTimeout(r, 15 + Math.random() * 35));
       }
-      termText.innerHTML += '<br>';
+      termText.appendChild(document.createElement('br'));
       await new Promise(r => setTimeout(r, 200));
     }
-    termText.innerHTML += '<span class="ee-cursor"></span>';
+    const cursor = document.createElement('span');
+    cursor.className = 'ee-cursor';
+    termText.appendChild(cursor);
     closeBtn.style.display = 'inline-block';
   }
 
