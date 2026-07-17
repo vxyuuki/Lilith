@@ -682,6 +682,8 @@ window.addEventListener('keydown', (e) => {
 function triggerEasterEgg() {
   if (document.getElementById('lilith-easter-egg')) return;
   
+  playGlitchNoise(); // Play the custom glitch audio (glitch2.mp3)
+  
   const overlay = document.createElement('div');
   overlay.id = 'lilith-easter-egg';
   

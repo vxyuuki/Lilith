@@ -19,7 +19,7 @@ export function setSoundEnabled(state) {
     if (state) {
         initAudio();
         if (!glitchAudioObj) {
-            glitchAudioObj = new Audio('/glitch.mp3');
+            glitchAudioObj = new Audio('/glitch2.mp3');
             glitchAudioObj.preload = 'auto';
             glitchAudioObj.volume = 0.8;
         }
@@ -54,7 +54,7 @@ export function playGlitchNoise() {
   if (!soundEnabled) return;
   
   if (!glitchAudioObj) {
-    glitchAudioObj = new Audio('/glitch.mp3');
+    glitchAudioObj = new Audio('/glitch2.mp3');
     glitchAudioObj.volume = 0.8;
   }
   
