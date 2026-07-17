@@ -23,34 +23,30 @@ export function setSoundEnabled(state) {
 export function playHoverClick() {
   if (!soundEnabled) return;
   if (!audioCtx) initAudio();
-  if (audioCtx.state === 'suspended') return;
 
   const osc = audioCtx.createOscillator();
   const gainNode = audioCtx.createGain();
 
-  const now = audioCtx.currentTime + 0.01;
+  const now = audioCtx.currentTime;
 
-  // High pitch tick (1200Hz to 600Hz snap)
-  osc.type = 'sine';
-  osc.frequency.setValueAtTime(1200, now);
-  osc.frequency.exponentialRampToValueAtTime(600, now + 0.05);
+  // Sharp, digital 'tick' using square wave and immediate attack
+  osc.type = 'square';
+  osc.frequency.setValueAtTime(1000, now);
+  osc.frequency.exponentialRampToValueAtTime(100, now + 0.05);
 
-  // Very short, snappy envelope
-  gainNode.gain.setValueAtTime(0, now);
-  gainNode.gain.linearRampToValueAtTime(0.15, now + 0.01);
+  gainNode.gain.setValueAtTime(0.05, now); // Start directly at 5% volume (creates a tiny pop, perfect for a click)
   gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
 
   osc.connect(gainNode);
   gainNode.connect(audioCtx.destination);
 
   osc.start(now);
-  osc.stop(now + 0.06);
+  osc.stop(now + 0.05);
 }
 
 export function playGlitchNoise() {
   if (!soundEnabled) return;
   if (!audioCtx) initAudio();
-  if (audioCtx.state === 'suspended') return;
 
   const duration = 0.5; // 0.5 seconds of noise
   const bufferSize = audioCtx.sampleRate * duration;
