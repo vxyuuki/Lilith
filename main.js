@@ -683,6 +683,7 @@ function triggerEasterEgg() {
   if (document.getElementById('lilith-easter-egg')) return;
   
   if (typeof lenis !== 'undefined') lenis.stop();
+  document.body.style.overflow = 'hidden'; // Force native scroll lock
   playGlitchNoise(); // Play the custom glitch audio (glitch2.mp3)
   
   const overlay = document.createElement('div');
@@ -835,6 +836,7 @@ function triggerEasterEgg() {
   closeBtn.onclick = () => {
     overlay.style.opacity = '0';
     if (typeof lenis !== 'undefined') lenis.start();
+    document.body.style.overflow = ''; // Release native scroll lock
     setTimeout(() => overlay.remove(), 500);
   };
 }
