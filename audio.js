@@ -23,26 +23,28 @@ export function setSoundEnabled(state) {
 export function playHoverClick() {
   if (!soundEnabled) return;
   if (!audioCtx) initAudio();
-  if (audioCtx.state === 'suspended') return; // User hasn't interacted yet
+  if (audioCtx.state === 'suspended') return;
 
   const osc = audioCtx.createOscillator();
   const gainNode = audioCtx.createGain();
 
+  const now = audioCtx.currentTime + 0.01;
+
   // High pitch tick (1200Hz to 600Hz snap)
   osc.type = 'sine';
-  osc.frequency.setValueAtTime(1200, audioCtx.currentTime);
-  osc.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 0.05);
+  osc.frequency.setValueAtTime(1200, now);
+  osc.frequency.exponentialRampToValueAtTime(600, now + 0.05);
 
   // Very short, snappy envelope
-  gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
-  gainNode.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 0.01);
-  gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+  gainNode.gain.setValueAtTime(0, now);
+  gainNode.gain.linearRampToValueAtTime(0.15, now + 0.01);
+  gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
 
   osc.connect(gainNode);
   gainNode.connect(audioCtx.destination);
 
-  osc.start();
-  osc.stop(audioCtx.currentTime + 0.06);
+  osc.start(now);
+  osc.stop(now + 0.06);
 }
 
 export function playGlitchNoise() {
@@ -71,16 +73,18 @@ export function playGlitchNoise() {
 
   const gainNode = audioCtx.createGain();
   
+  const now = audioCtx.currentTime + 0.01;
+
   // Chaotic volume envelope
-  gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
-  gainNode.gain.linearRampToValueAtTime(0.4, audioCtx.currentTime + 0.05);
-  gainNode.gain.linearRampToValueAtTime(0.1, audioCtx.currentTime + 0.1);
-  gainNode.gain.linearRampToValueAtTime(0.6, audioCtx.currentTime + 0.2);
-  gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + duration);
+  gainNode.gain.setValueAtTime(0, now);
+  gainNode.gain.linearRampToValueAtTime(0.4, now + 0.05);
+  gainNode.gain.linearRampToValueAtTime(0.1, now + 0.1);
+  gainNode.gain.linearRampToValueAtTime(0.6, now + 0.2);
+  gainNode.gain.linearRampToValueAtTime(0, now + duration);
 
   noise.connect(filter);
   filter.connect(gainNode);
   gainNode.connect(audioCtx.destination);
 
-  noise.start();
+  noise.start(now);
 }
