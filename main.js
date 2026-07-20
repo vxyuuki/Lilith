@@ -310,6 +310,53 @@ function initPageAnimations(container) {
 
   bindMagneticEffect(container.querySelectorAll('.magnetic'));
 
+  // 1.6 Text Reveal Animation (Line-by-line / Word Stagger)
+  function initTextReveal() {
+    const revealElements = container.querySelectorAll('.reveal-text');
+    revealElements.forEach(el => {
+      // Split text into words
+      const text = el.innerText;
+      el.innerHTML = '';
+      const words = text.split(' ');
+      
+      const wordElements = [];
+      words.forEach(word => {
+        // Outer wrapper for overflow hidden
+        const wordWrapper = document.createElement('span');
+        wordWrapper.style.display = 'inline-block';
+        wordWrapper.style.overflow = 'hidden';
+        wordWrapper.style.verticalAlign = 'bottom';
+        wordWrapper.style.marginRight = '0.25em';
+        wordWrapper.style.paddingBottom = '0.1em'; // Prevent clipping of descenders
+        
+        // Inner element to animate
+        const innerWord = document.createElement('span');
+        innerWord.style.display = 'inline-block';
+        innerWord.style.transform = 'translateY(110%) rotate(5deg)';
+        innerWord.innerText = word;
+        
+        wordWrapper.appendChild(innerWord);
+        el.appendChild(wordWrapper);
+        wordElements.push(innerWord);
+      });
+
+      // Animate with ScrollTrigger
+      gsap.to(wordElements, {
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 85%',
+          toggleActions: 'play none none reverse'
+        },
+        y: '0%',
+        rotate: 0,
+        duration: 0.8,
+        stagger: 0.02,
+        ease: 'power3.out'
+      });
+    });
+  }
+  initTextReveal();
+
   // 2. Image Trail Effect
   const trailContainer = container.querySelector('.image-trail-container');
   if (trailContainer) {
