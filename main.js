@@ -943,7 +943,7 @@ document.addEventListener('mouseover', (e) => {
 });
 
   // Initial run
-  initPageAnimations(document.body);
+  initPageAnimations(document.querySelector('[data-barba="container"]'));
   const initialNamespace = document.querySelector('[data-barba-namespace]')?.dataset.barbaNamespace;
   updateCanvasVisibility(initialNamespace);
   manageScrollForNamespace(initialNamespace);
@@ -1130,6 +1130,7 @@ function triggerEasterEgg() {
     setTimeout(() => overlay.remove(), 500);
   };
 }
+
 
 
 
