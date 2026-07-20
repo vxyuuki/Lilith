@@ -735,6 +735,16 @@ function initPageAnimations(container) {
 
 }
 
+  function manageScrollForNamespace(namespace) {
+    if (namespace === 'home' || namespace === 'wip') {
+      if (typeof lenis !== 'undefined') lenis.stop();
+      document.body.style.overflow = 'hidden';
+    } else {
+      if (typeof lenis !== 'undefined') lenis.start();
+      document.body.style.overflow = '';
+    }
+  }
+
   function updateCanvasVisibility(namespace) {
     const canvas = document.getElementById('webgl-bg');
     if (canvas) {
@@ -770,6 +780,7 @@ function initPageAnimations(container) {
           initPageAnimations(data.next.container);
           updateWebGLTheme();
           updateCanvasVisibility(data.next.namespace);
+          manageScrollForNamespace(data.next.namespace);
           
           gsap.to('.page-transition-layer', { 
              y: '-100%', 
@@ -793,6 +804,7 @@ function initPageAnimations(container) {
           lenis.scrollTo(0, { immediate: true });
           initPageAnimations(data.next.container);
           updateCanvasVisibility(data.next.namespace);
+          manageScrollForNamespace(data.next.namespace);
           gsap.from(data.next.container, { opacity: 0, duration: 0.5 });
         }
       }
@@ -815,6 +827,7 @@ document.addEventListener('mouseover', (e) => {
   initPageAnimations(document.body);
   const initialNamespace = document.querySelector('[data-barba-namespace]')?.dataset.barbaNamespace;
   updateCanvasVisibility(initialNamespace);
+  manageScrollForNamespace(initialNamespace);
 
 // ==========================================
 // EASTER EGG (L-I-L-I-T-H)
@@ -998,3 +1011,4 @@ function triggerEasterEgg() {
     setTimeout(() => overlay.remove(), 500);
   };
 }
+
