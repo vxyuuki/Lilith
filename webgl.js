@@ -59,14 +59,14 @@ export function initWebGLBackground() {
       uScroll: { value: 0.0 },
       uAccentColor: { value: getThemeColor() }
     },
-    vertexShader: \
+    vertexShader: `
       varying vec2 vUv;
       void main() {
         vUv = uv;
         gl_Position = vec4(position, 1.0);
       }
-    \,
-    fragmentShader: \
+    `,
+    fragmentShader: `
       uniform float uTime;
       uniform vec2 uResolution;
       uniform vec2 uMouse;
@@ -138,7 +138,7 @@ export function initWebGLBackground() {
         
         gl_FragColor = vec4(finalColor * vignette, 1.0);
       }
-    \
+    `
   });
 
   const mesh = new THREE.Mesh(geometry, material);
