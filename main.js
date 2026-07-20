@@ -781,74 +781,75 @@ function initPageAnimations(container) {
 
   // 13. Firefly Custom Animations
   if (container.dataset.barbaNamespace === 'firefly') {
-    
-    // Initial Reveal
-    gsap.fromTo('.ff-reveal-title', 
-      { opacity: 0, y: 50, letterSpacing: '0em' }, 
-      { opacity: 1, y: 0, letterSpacing: '0.2em', duration: 1.5, ease: 'power3.out', delay: 0.5 }
-    );
-    gsap.fromTo('.ff-reveal-quote', 
-      { opacity: 0, y: 20 }, 
-      { opacity: 1, y: 0, duration: 1.5, ease: 'power3.out', delay: 1.0 }
-    );
 
-    // Parallax Hero BG
-    gsap.to('.ff-parallax-bg', {
-      y: '20%',
-      ease: 'none',
-      scrollTrigger: {
-        trigger: '.firefly-hero',
-        start: 'top top',
-        end: 'bottom top',
-        scrub: true
-      }
+    // Hero Reveal Timeline
+    const ffHeroTl = gsap.timeline({ delay: 0.3 });
+    ffHeroTl
+      .to('.ff-hero-sub', { opacity: 1, y: 0, duration: 1, ease: 'power3.out' })
+      .to('.ff-hero-title', { opacity: 1, y: 0, duration: 1.2, ease: 'power3.out' }, '-=0.6')
+      .to('.ff-hero-quote', { opacity: 1, y: 0, duration: 1, ease: 'power3.out' }, '-=0.5')
+      .to('.ff-scroll-hint', { opacity: 1, duration: 0.8 }, '-=0.3');
+
+    // Hero Parallax
+    gsap.to('.ff-hero-bg', { y: '20%', ease: 'none',
+      scrollTrigger: { trigger: '.ff-hero', start: 'top top', end: 'bottom top', scrub: true }
     });
 
-    // Fade up elements on scroll
-    container.querySelectorAll('.ff-fade-up').forEach(el => {
-      const delay = el.dataset.delay ? parseFloat(el.dataset.delay) : 0;
-      gsap.fromTo(el,
-        { opacity: 0, y: 60 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 1,
-          ease: 'power3.out',
-          delay: delay,
-          scrollTrigger: {
-            trigger: el,
-            start: 'top 85%',
-            toggleActions: 'play none none reverse'
-          }
-        }
-      );
-    });
-
-    // Generate Firefly Orbs
-    const orbContainer = container.querySelector('.orb-container');
-    if (orbContainer) {
-      for (let i = 0; i < 40; i++) {
+    // Firefly Orbs
+    const orbField = container.querySelector('.ff-orb-field');
+    if (orbField) {
+      for (let i = 0; i < 35; i++) {
         const orb = document.createElement('div');
-        orb.className = 'orb';
-        orbContainer.appendChild(orb);
-
-        const startX = Math.random() * window.innerWidth;
-        const startY = Math.random() * window.innerHeight;
-        
-        gsap.set(orb, { x: startX, y: startY, scale: Math.random() * 0.5 + 0.5 });
-        
-        gsap.to(orb, {
-          x: '+=' + (Math.random() * 200 - 100),
-          y: '-=' + (Math.random() * 300 + 100),
-          opacity: Math.random() * 0.6 + 0.2,
-          duration: Math.random() * 10 + 5,
-          repeat: -1,
-          yoyo: true,
-          ease: 'sine.inOut',
-          delay: Math.random() * -10
-        });
+        orb.className = 'ff-orb';
+        orbField.appendChild(orb);
+        gsap.set(orb, { x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight, scale: Math.random() * 0.6 + 0.4 });
+        gsap.to(orb, { x: '+=' + (Math.random() * 150 - 75), y: '-=' + (Math.random() * 250 + 50), opacity: Math.random() * 0.5 + 0.15, duration: Math.random() * 8 + 4, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: Math.random() * -8 });
       }
     }
+
+    // Scroll-triggered reveals
+    container.querySelectorAll('.ff-reveal').forEach(el => {
+      gsap.fromTo(el, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
+        scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none' }
+      });
+    });
+
+    // Voice bars animate on scroll
+    container.querySelectorAll('.ff-voice-item').forEach(item => {
+      const bar = item.querySelector('.ff-bar-fill');
+      if (bar) {
+        gsap.to(bar, { width: '100%', duration: 2, ease: 'power2.out',
+          scrollTrigger: { trigger: item, start: 'top 80%' }
+        });
+      }
+    });
+
+    // IGNITION color sweep
+    gsap.to('.ff-ignition-sweep', { scaleX: 1, ease: 'power4.inOut',
+      scrollTrigger: { trigger: '.ff-ignition', start: 'top 60%', end: 'top 20%', scrub: true }
+    });
+
+    // Accordion
+    container.querySelectorAll('.ff-acc-header').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = btn.parentElement;
+        const body = item.querySelector('.ff-acc-body');
+        const isActive = item.classList.contains('active');
+        // Close all
+        container.querySelectorAll('.ff-acc-item').forEach(i => {
+          i.classList.remove('active');
+          i.querySelector('.ff-acc-body').style.maxHeight = '0';
+        });
+        if (!isActive) {
+          item.classList.add('active');
+          body.style.maxHeight = body.scrollHeight + 'px';
+          // Animate stat bar
+          const prog = body.querySelector('.ff-bar-progress');
+          if (prog) gsap.to(prog, { width: prog.dataset.width + '%', duration: 1, ease: 'power2.out' });
+        }
+      });
+    });
+
   }
 
 }

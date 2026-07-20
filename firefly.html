@@ -6,161 +6,206 @@
   <title>Firefly | The Entropy of Light</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Public+Sans:wght@300;400;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Public+Sans:wght@300;400;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./firefly.css">
 </head>
 <body data-barba="wrapper">
-  
   <canvas id="webgl-bg"></canvas>
-
-  <div class="cursor">
-    <span class="cursor-text"></span>
-  </div>
-
+  <div class="cursor"><span class="cursor-text"></span></div>
   <div class="sound-toggle magnetic">
     <span class="sound-text">SOUND OFF</span>
-    <div class="sound-bars">
-      <div class="bar"></div>
-      <div class="bar"></div>
-      <div class="bar"></div>
-    </div>
+    <div class="sound-bars"><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
   </div>
 
   <main class="smooth-scroll" data-barba="container" data-barba-namespace="firefly">
     <nav class="cyber-nav">
       <a href="/index.html" class="nav-link">ROSTER</a>
-      <a href="/firefly.html" class="nav-link" style="color: var(--accent);">FIREFLY</a>
+      <a href="/firefly.html" class="nav-link" style="color: var(--ff-accent);">FIREFLY</a>
       <a href="/about.html" class="nav-link">ABOUT</a>
     </nav>
-    <style>
-      :root { 
-        --accent: #00ffa6; 
-        --bg-color: #050a08;
-      }
-      /* Custom Firefly Layout */
-      .firefly-hero {
-        height: 100vh;
-        width: 100vw;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-        overflow: hidden;
-      }
-      .firefly-hero-bg {
-        position: absolute;
-        top: 0; left: 0; width: 100%; height: 100%;
-        object-fit: cover;
-        opacity: 0.4;
-        filter: blur(5px);
-        transform: scale(1.1);
-      }
-      .firefly-title-wrapper {
-        position: relative;
-        z-index: 2;
-        text-align: center;
-      }
-      .firefly-title {
-        font-size: 8vw;
-        font-family: var(--font-sans);
-        font-weight: 800;
-        text-transform: uppercase;
-        color: #fff;
-        letter-spacing: 0.2em;
-        mix-blend-mode: overlay;
-      }
-      .firefly-quote {
-        font-family: var(--font-serif);
-        font-size: 2rem;
-        font-style: italic;
-        color: var(--accent);
-        margin-top: -1rem;
-      }
-      
-      /* Floating Gallery */
-      .firefly-gallery {
-        padding: 15vh 5vw;
-        display: grid;
-        grid-template-columns: repeat(12, 1fr);
-        gap: 20px;
-        position: relative;
-      }
-      .ff-img-wrap {
-        position: relative;
-        overflow: hidden;
-        border-radius: 12px;
-      }
-      .ff-img-wrap img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 1s ease;
-      }
-      .ff-img-wrap:hover img {
-        transform: scale(1.05);
-      }
-      .ff-grid-1 { grid-column: 2 / 6; grid-row: 1; aspect-ratio: 4/5; margin-top: 50px; }
-      .ff-grid-2 { grid-column: 7 / 12; grid-row: 1; aspect-ratio: 16/9; }
-      .ff-grid-3 { grid-column: 1 / 8; grid-row: 2; aspect-ratio: 16/9; margin-top: -50px; z-index: 2; }
-      .ff-grid-4 { grid-column: 9 / 12; grid-row: 2; aspect-ratio: 3/4; margin-top: 100px; }
-      .ff-grid-5 { grid-column: 4 / 10; grid-row: 3; aspect-ratio: 16/9; margin-top: 50px; }
 
-      /* Firefly Orbs */
-      .orb-container {
-        position: fixed;
-        top: 0; left: 0; width: 100vw; height: 100vh;
-        pointer-events: none;
-        z-index: 999;
-      }
-      .orb {
-        position: absolute;
-        width: 6px; height: 6px;
-        background-color: var(--accent);
-        border-radius: 50%;
-        box-shadow: 0 0 15px 5px var(--accent);
-        opacity: 0;
-      }
-      
-      .firefly-story {
-        min-height: 80vh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        padding: 0 20vw;
-      }
-      .ff-story-text {
-        font-size: 2.5rem;
-        line-height: 1.5;
-        font-family: var(--font-serif);
-        margin-bottom: 2rem;
-      }
-    </style>
-  
-      <section class="firefly-hero">
-        <img src="/Waifu_List/Firefly/119768376_p0.png" alt="Firefly BG" class="firefly-hero-bg ff-parallax-bg" />
-        <div class="firefly-title-wrapper">
-          <h1 class="firefly-title ff-reveal-title">FIREFLY</h1>
-          <p class="firefly-quote ff-reveal-quote">"I will set the seas ablaze."</p>
+    <!-- S1: HERO -->
+    <section class="ff-hero" id="ff-hero">
+      <img src="/Waifu_List/Firefly/119768376_p0.png" alt="Firefly" class="ff-hero-bg">
+      <div class="ff-hero-overlay"></div>
+      <div class="ff-hero-content">
+        <p class="ff-hero-sub ff-reveal">04 // STELLARON HUNTER</p>
+        <h1 class="ff-hero-title ff-reveal">FIREFLY</h1>
+        <p class="ff-hero-quote ff-reveal">"Like a firefly to a flame... life is fleeting, fragile, and beautiful."</p>
+        <div class="ff-scroll-hint ff-reveal"><span>SCROLL</span><div class="ff-scroll-line"></div></div>
+      </div>
+      <div class="ff-orb-field"></div>
+    </section>
+
+    <!-- S2: HUD PROFILE CARD -->
+    <section class="ff-profile" id="ff-profile">
+      <div class="ff-profile-header ff-reveal">
+        <span class="ff-tag">CLASSIFIED // LEVEL 5</span>
+        <h2>DATA IDENTIFIKASI</h2>
+      </div>
+      <div class="ff-profile-grid">
+        <div class="ff-profile-img ff-reveal">
+          <img src="/Waifu_List/Firefly/5448ef480c8a762b71904f9ab1012dd0.jpg" alt="Firefly Portrait">
         </div>
-      </section>
+        <div class="ff-profile-data">
+          <div class="ff-data-row ff-reveal"><span class="ff-label">KODE REGISTRASI</span><span class="ff-value ff-counter" data-target="26710">AR-<em>00000</em></span></div>
+          <div class="ff-data-row ff-reveal"><span class="ff-label">NAMA ASLI</span><span class="ff-value">SAM (Strategic Assault Mech)</span></div>
+          <div class="ff-data-row ff-reveal"><span class="ff-label">FAKSI</span><span class="ff-value">Stellaron Hunters</span></div>
+          <div class="ff-data-row ff-reveal"><span class="ff-label">AFILIASI LAMA</span><span class="ff-value">Iron Cavalry, Republic of Glamoth</span></div>
+          <div class="ff-data-row ff-reveal"><span class="ff-label">ELEMEN / PATH</span><span class="ff-value"><span class="ff-fire-icon">&#9632;</span> Fire / Destruction</span></div>
+          <div class="ff-data-row ff-reveal"><span class="ff-label">SENJATA</span><span class="ff-value">Greatsword</span></div>
+          <div class="ff-data-row ff-reveal"><span class="ff-label">VA (JP)</span><span class="ff-value">Tomori Kusunoki</span></div>
+          <div class="ff-data-row ff-reveal"><span class="ff-label">VA (EN)</span><span class="ff-value">Analesa Fisher</span></div>
+          <div class="ff-data-row ff-reveal ff-warn"><span class="ff-label">KONDISI MEDIS</span><span class="ff-value">&#9888; Entropy Loss Syndrome</span></div>
+        </div>
+      </div>
+    </section>
 
-      <section class="firefly-story">
-        <p class="ff-story-text ff-fade-up">"Entropy Loss Syndrome... My existence is a fleeting ember."</p>
-        <p class="ff-story-text ff-fade-up" style="color: var(--accent);">"But even so, I choose to fly."</p>
-      </section>
+    <!-- S3: GALERI KENANGAN -->
+    <section class="ff-gallery" id="ff-gallery">
+      <h2 class="ff-section-title ff-reveal">Fragments of Light</h2>
+      <div class="ff-gallery-grid">
+        <div class="ff-gal-item ff-reveal"><img src="/Waifu_List/Firefly/120034297_p0.png" alt="Memory 1"></div>
+        <div class="ff-gal-item ff-reveal"><img src="/Waifu_List/Firefly/22123abcbf91f2b4d220fb4d612f08e4.jpg" alt="Memory 2"></div>
+        <div class="ff-gal-item ff-reveal"><img src="/Waifu_List/Firefly/33f95b8c8308888022664e91b327896b.jpg" alt="Memory 3"></div>
+        <div class="ff-gal-item ff-reveal"><img src="/Waifu_List/Firefly/594b2923697b236648dc07d9f5addb6c.jpg" alt="Memory 4"></div>
+      </div>
+    </section>
 
-      <section class="firefly-gallery">
-        <div class="ff-img-wrap ff-grid-1 ff-fade-up"><img src="/Waifu_List/Firefly/120034297_p0.png" alt="Mem 1"></div>
-        <div class="ff-img-wrap ff-grid-2 ff-fade-up" data-delay="0.2"><img src="/Waifu_List/Firefly/140222217_p0.jpg" alt="Mem 2"></div>
-        <div class="ff-img-wrap ff-grid-3 ff-fade-up"><img src="/Waifu_List/Firefly/22123abcbf91f2b4d220fb4d612f08e4.jpg" alt="Mem 3"></div>
-        <div class="ff-img-wrap ff-grid-4 ff-fade-up" data-delay="0.2"><img src="/Waifu_List/Firefly/33f95b8c8308888022664e91b327896b.jpg" alt="Mem 4"></div>
-        <div class="ff-img-wrap ff-grid-5 ff-fade-up"><img src="/Waifu_List/Firefly/501b67d31caa29863ab494e69bf1a9db.jpg" alt="Mem 5"></div>
-      </section>
+    <!-- S4: VOICE ARCHIVE -->
+    <section class="ff-voices" id="ff-voices">
+      <h2 class="ff-section-title ff-reveal">Voice Archive</h2>
+      <div class="ff-voice-list">
+        <div class="ff-voice-item ff-reveal">
+          <div class="ff-voice-bar"><div class="ff-bar-fill"></div></div>
+          <p>"Fireflies are such magical creatures... They burn so brightly, yet their lives are so short."</p>
+        </div>
+        <div class="ff-voice-item ff-reveal">
+          <div class="ff-voice-bar"><div class="ff-bar-fill"></div></div>
+          <p>"I want to see the real stars, even just once... not through a screen or a simulation."</p>
+        </div>
+        <div class="ff-voice-item ff-reveal">
+          <div class="ff-voice-bar"><div class="ff-bar-fill"></div></div>
+          <p>"Let's go on a date next time, okay? A real one. With ice cream and everything."</p>
+        </div>
+        <div class="ff-voice-item ff-reveal">
+          <div class="ff-voice-bar"><div class="ff-bar-fill"></div></div>
+          <p>"Even if my body fades away... the memories we made together will never disappear."</p>
+        </div>
+      </div>
+    </section>
 
-      <!-- Orb Container for JS injection -->
-      <div class="orb-container"></div>
+    <!-- S5: IGNITION TRANSITION -->
+    <section class="ff-ignition" id="ff-ignition">
+      <div class="ff-ignition-content">
+        <p class="ff-ignition-sub">SYSTEM OVERRIDE</p>
+        <h2 class="ff-ignition-text" data-text="EXECUTION MODE">EXECUTION MODE</h2>
+        <h2 class="ff-ignition-text ff-ignition-big" data-text="INITIATED">INITIATED</h2>
+      </div>
+      <div class="ff-ignition-sweep"></div>
+    </section>
+
+    <!-- S6: SAM PROFILE -->
+    <section class="ff-sam" id="ff-sam">
+      <div class="ff-sam-img ff-reveal">
+        <img src="/Waifu_List/Firefly/140222217_p0.jpg" alt="SAM Mode">
+      </div>
+      <div class="ff-sam-info ff-reveal">
+        <h2>SAM</h2>
+        <p class="ff-sam-subtitle">Strategic Assault Mech</p>
+        <p>Beneath the gentle smile lies a weapon of absolute destruction. SAM is Firefly's true form, a biomechanical war machine forged in the fires of Glamoth's dying empire. When she activates Complete Combustion, her body is consumed by flames hotter than a star's core, trading her remaining lifespan for unimaginable power.</p>
+      </div>
+    </section>
+
+    <!-- S7: COMBAT PROTOCOLS -->
+    <section class="ff-combat" id="ff-combat">
+      <h2 class="ff-section-title ff-section-title--sam ff-reveal">Combat Protocols</h2>
+      <div class="ff-accordion">
+        <div class="ff-acc-item ff-reveal">
+          <button class="ff-acc-header"><span class="ff-acc-icon">01</span><span>Basic ATK - Order: Flaming Bombardment</span><span class="ff-acc-arrow">+</span></button>
+          <div class="ff-acc-body"><p>A devastating 4-stage melee combo. In SAM mode, each strike ignites Weakness Break, dealing Fire DMG that scales with ATK. The final blow sends a shockwave of superheated plasma across the battlefield.</p><div class="ff-stat-bar"><span>DMG Multiplier</span><div class="ff-bar-track"><div class="ff-bar-progress" data-width="65"></div></div><span>65%</span></div></div>
+        </div>
+        <div class="ff-acc-item ff-reveal">
+          <button class="ff-acc-header"><span class="ff-acc-icon">02</span><span>Skill - Fyrefly Type-IV: Complete Combustion</span><span class="ff-acc-arrow">+</span></button>
+          <div class="ff-acc-body"><p>Activates SAM mode for a limited duration. ATK, Speed, and Break Effect are massively enhanced. Her armor plating reshapes into offensive configuration, and all attacks become AoE. The transformation drains her life force with each passing second.</p><div class="ff-stat-bar"><span>ATK Boost</span><div class="ff-bar-track"><div class="ff-bar-progress" data-width="85"></div></div><span>85%</span></div></div>
+        </div>
+        <div class="ff-acc-item ff-reveal">
+          <button class="ff-acc-header"><span class="ff-acc-icon">03</span><span>Ultimate - Fyrefly Type-IV: Complete Combustion</span><span class="ff-acc-arrow">+</span></button>
+          <div class="ff-acc-body"><p>Enters Complete Combustion, advances action by 100%, and gains Enhanced Basic ATK. Charges forward in a blaze of fire, dealing massive Fire DMG to all enemies in her path. The impact crater burns with residual plasma for several turns.</p><div class="ff-stat-bar"><span>DMG Output</span><div class="ff-bar-track"><div class="ff-bar-progress" data-width="95"></div></div><span>95%</span></div></div>
+        </div>
+        <div class="ff-acc-item ff-reveal">
+          <button class="ff-acc-header"><span class="ff-acc-icon">04</span><span>Talent - Chrysalid Pyronexus</span><span class="ff-acc-arrow">+</span></button>
+          <div class="ff-acc-body"><p>While in Complete Combustion, applying Weakness Break to enemies regenerates Firefly's HP. The stronger the enemy's Toughness, the more HP is restored. This is the paradox of SAM: destruction heals her.</p><div class="ff-stat-bar"><span>HP Recovery</span><div class="ff-bar-track"><div class="ff-bar-progress" data-width="70"></div></div><span>70%</span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- S8: AFFILIASI -->
+    <section class="ff-affiliations" id="ff-affiliations">
+      <h2 class="ff-section-title ff-section-title--sam ff-reveal">Affiliations Network</h2>
+      <div class="ff-aff-grid">
+        <div class="ff-aff-card ff-reveal">
+          <div class="ff-aff-avatar">TB</div>
+          <h3>Trailblazer</h3>
+          <p>"The one I trust with my fleeting time."</p>
+        </div>
+        <div class="ff-aff-card ff-reveal">
+          <div class="ff-aff-avatar">KF</div>
+          <h3>Kafka</h3>
+          <p>"She reads the script. I follow it."</p>
+        </div>
+        <div class="ff-aff-card ff-reveal">
+          <div class="ff-aff-avatar">SW</div>
+          <h3>Silver Wolf</h3>
+          <p>"Annoying, but reliable."</p>
+        </div>
+        <div class="ff-aff-card ff-reveal">
+          <div class="ff-aff-avatar">BL</div>
+          <h3>Blade</h3>
+          <p>"We share the same curse."</p>
+        </div>
+        <div class="ff-aff-card ff-reveal">
+          <div class="ff-aff-avatar">EL</div>
+          <h3>Elio</h3>
+          <p>"Destiny's Slave. He writes the future."</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- S9: DEEP LORE -->
+    <section class="ff-lore" id="ff-lore">
+      <h2 class="ff-section-title ff-section-title--sam ff-reveal">Classified Report</h2>
+      <div class="ff-terminal ff-reveal">
+        <div class="ff-terminal-header">
+          <span class="ff-dot ff-dot--r"></span><span class="ff-dot ff-dot--y"></span><span class="ff-dot ff-dot--g"></span>
+          <span class="ff-terminal-title">stellaron_hunters_db // firefly.log</span>
+        </div>
+        <div class="ff-terminal-body">
+          <p class="ff-log">> ACCESSING CLASSIFIED ARCHIVE...</p>
+          <p class="ff-log">> DECRYPTION KEY ACCEPTED</p>
+          <p class="ff-log">> LOADING FILE: ORIGIN_REPORT_SAM.dat</p>
+          <br>
+          <p class="ff-log ff-log--text">The Republic of Glamoth was once a thriving interstellar civilization, protected by its legendary Iron Cavalry. At the heart of their military might was Project SAM, a series of biomechanical soldiers designed to interface directly with Stellaron energy. Subject AR-26710, later known as Firefly, was among the final batch of SAM units produced before the catastrophe.</p>
+          <br>
+          <p class="ff-log ff-log--text">The Swarm Disaster struck without warning. Insectoid entities of unknown origin descended upon Glamoth, consuming everything in their path. Queen Titania, the hive mind commanding the Swarm, proved immune to conventional weaponry. The Iron Cavalry was annihilated in 72 hours. In a desperate final gambit, the remaining SAM units were deployed in a suicide charge against the Queen. AR-26710 was the sole survivor.</p>
+          <br>
+          <p class="ff-log ff-log--text">The victory came at a terrible cost. Prolonged exposure to Stellaron energy during the battle triggered Entropy Loss Syndrome, a degenerative condition that slowly erases the host's physical form. Her body is literally fading from existence, cell by cell. Current estimates suggest her remaining operational lifespan is measured in months, not years.</p>
+          <br>
+          <p class="ff-log ff-log--text">Rescued from the ruins of Glamoth by Elio, she was given a new identity and purpose within the Stellaron Hunters. The name Firefly was chosen by the subject herself, a reference to the creatures she had read about in old Earth literature. Like their namesake, she burns brightly knowing her light will soon be extinguished.</p>
+          <br>
+          <p class="ff-log">> END OF FILE</p>
+          <p class="ff-log">> "I will set the seas ablaze."</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="ff-footer">
+      <p class="ff-footer-quote">"If my destiny is to burn away until nothing remains... then let my final spark guide you home."</p>
+      <a href="/index.html" class="ff-footer-back magnetic">RETURN TO ROSTER</a>
+    </footer>
+
   </main>
 
   <div class="page-transition-layer">
