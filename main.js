@@ -814,6 +814,27 @@ function initPageAnimations(container) {
       });
     });
 
+    
+    // Bento Gallery Parallax
+    container.querySelectorAll('.ff-bento-card').forEach(card => {
+      const img = card.querySelector('.ff-parallax-img');
+      if(img) {
+        gsap.fromTo(img, 
+          { y: '-10%' },
+          { 
+            y: '10%', 
+            ease: 'none',
+            scrollTrigger: {
+              trigger: card,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: true
+            }
+          }
+        );
+      }
+    });
+
     // Voice bars animate on scroll
     container.querySelectorAll('.ff-voice-item').forEach(item => {
       const bar = item.querySelector('.ff-bar-fill');
@@ -1130,6 +1151,7 @@ function triggerEasterEgg() {
     setTimeout(() => overlay.remove(), 500);
   };
 }
+
 
 
 
