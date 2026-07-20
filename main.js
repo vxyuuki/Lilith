@@ -2,7 +2,7 @@ import Lenis from 'lenis';
 import { animate, createTimeline, stagger, splitText, utils } from 'animejs';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { initWebGLBackground } from './webgl.js';
+import { initWebGLBackground, updateWebGLTheme } from './webgl.js';
 import { initGalleryHovers } from './imageHover.js';
 import { playHoverClick, playGlitchNoise, setSoundEnabled } from './audio.js';
 import barba from '@barba/core';
@@ -751,6 +751,7 @@ barba.init({
     enter(data) {
       lenis.scrollTo(0, { immediate: true });
       initPageAnimations(data.next.container);
+      updateWebGLTheme();
       
       gsap.to('.page-transition-layer', { 
          y: '-100%', 
