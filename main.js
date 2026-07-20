@@ -779,6 +779,78 @@ function initPageAnimations(container) {
     }, "-=1.0");
   }
 
+  // 13. Firefly Custom Animations
+  if (container.dataset.barbaNamespace === 'firefly') {
+    
+    // Initial Reveal
+    gsap.fromTo('.ff-reveal-title', 
+      { opacity: 0, y: 50, letterSpacing: '0em' }, 
+      { opacity: 1, y: 0, letterSpacing: '0.2em', duration: 1.5, ease: 'power3.out', delay: 0.5 }
+    );
+    gsap.fromTo('.ff-reveal-quote', 
+      { opacity: 0, y: 20 }, 
+      { opacity: 1, y: 0, duration: 1.5, ease: 'power3.out', delay: 1.0 }
+    );
+
+    // Parallax Hero BG
+    gsap.to('.ff-parallax-bg', {
+      y: '20%',
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '.firefly-hero',
+        start: 'top top',
+        end: 'bottom top',
+        scrub: true
+      }
+    });
+
+    // Fade up elements on scroll
+    container.querySelectorAll('.ff-fade-up').forEach(el => {
+      const delay = el.dataset.delay ? parseFloat(el.dataset.delay) : 0;
+      gsap.fromTo(el,
+        { opacity: 0, y: 60 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          ease: 'power3.out',
+          delay: delay,
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 85%',
+            toggleActions: 'play none none reverse'
+          }
+        }
+      );
+    });
+
+    // Generate Firefly Orbs
+    const orbContainer = container.querySelector('.orb-container');
+    if (orbContainer) {
+      for (let i = 0; i < 40; i++) {
+        const orb = document.createElement('div');
+        orb.className = 'orb';
+        orbContainer.appendChild(orb);
+
+        const startX = Math.random() * window.innerWidth;
+        const startY = Math.random() * window.innerHeight;
+        
+        gsap.set(orb, { x: startX, y: startY, scale: Math.random() * 0.5 + 0.5 });
+        
+        gsap.to(orb, {
+          x: '+=' + (Math.random() * 200 - 100),
+          y: '-=' + (Math.random() * 300 + 100),
+          opacity: Math.random() * 0.6 + 0.2,
+          duration: Math.random() * 10 + 5,
+          repeat: -1,
+          yoyo: true,
+          ease: 'sine.inOut',
+          delay: Math.random() * -10
+        });
+      }
+    }
+  }
+
 }
 
   function manageScrollForNamespace(namespace) {
@@ -1057,5 +1129,6 @@ function triggerEasterEgg() {
     setTimeout(() => overlay.remove(), 500);
   };
 }
+
 
 

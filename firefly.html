@@ -1,29 +1,18 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Firefly | The Entropy of Light</title>
-
-  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Public+Sans:wght@300;400;700;800&display=swap"
-    rel="stylesheet">
-
-  <!-- CSS -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Public+Sans:wght@300;400;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./style.css">
 </head>
-
 <body data-barba="wrapper">
   
-  
-  <!-- WebGL Background -->
   <canvas id="webgl-bg"></canvas>
 
-  <!-- Advanced Cursor -->
   <div class="cursor">
     <span class="cursor-text"></span>
   </div>
@@ -38,7 +27,6 @@
   </div>
 
   <main class="smooth-scroll" data-barba="container" data-barba-namespace="firefly">
-    <!-- Minimalist Navigation -->
     <nav class="cyber-nav">
       <a href="/index.html" class="nav-link">ROSTER</a>
       <a href="/firefly.html" class="nav-link" style="color: var(--accent);">FIREFLY</a>
@@ -47,133 +35,132 @@
     <style>
       :root { 
         --accent: #00ffa6; 
-        --accent-glow: rgba(0, 255, 166, 0.5); 
         --bg-color: #050a08;
       }
-      .firefly-sparks {
+      /* Custom Firefly Layout */
+      .firefly-hero {
+        height: 100vh;
+        width: 100vw;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+      }
+      .firefly-hero-bg {
         position: absolute;
         top: 0; left: 0; width: 100%; height: 100%;
+        object-fit: cover;
+        opacity: 0.4;
+        filter: blur(5px);
+        transform: scale(1.1);
+      }
+      .firefly-title-wrapper {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+      }
+      .firefly-title {
+        font-size: 8vw;
+        font-family: var(--font-sans);
+        font-weight: 800;
+        text-transform: uppercase;
+        color: #fff;
+        letter-spacing: 0.2em;
+        mix-blend-mode: overlay;
+      }
+      .firefly-quote {
+        font-family: var(--font-serif);
+        font-size: 2rem;
+        font-style: italic;
+        color: var(--accent);
+        margin-top: -1rem;
+      }
+      
+      /* Floating Gallery */
+      .firefly-gallery {
+        padding: 15vh 5vw;
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 20px;
+        position: relative;
+      }
+      .ff-img-wrap {
+        position: relative;
+        overflow: hidden;
+        border-radius: 12px;
+      }
+      .ff-img-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 1s ease;
+      }
+      .ff-img-wrap:hover img {
+        transform: scale(1.05);
+      }
+      .ff-grid-1 { grid-column: 2 / 6; grid-row: 1; aspect-ratio: 4/5; margin-top: 50px; }
+      .ff-grid-2 { grid-column: 7 / 12; grid-row: 1; aspect-ratio: 16/9; }
+      .ff-grid-3 { grid-column: 1 / 8; grid-row: 2; aspect-ratio: 16/9; margin-top: -50px; z-index: 2; }
+      .ff-grid-4 { grid-column: 9 / 12; grid-row: 2; aspect-ratio: 3/4; margin-top: 100px; }
+      .ff-grid-5 { grid-column: 4 / 10; grid-row: 3; aspect-ratio: 16/9; margin-top: 50px; }
+
+      /* Firefly Orbs */
+      .orb-container {
+        position: fixed;
+        top: 0; left: 0; width: 100vw; height: 100vh;
         pointer-events: none;
-        z-index: 10;
-        background-image: radial-gradient(circle at center, rgba(0,255,166,0.15) 0%, transparent 60%);
-        mix-blend-mode: screen;
+        z-index: 999;
+      }
+      .orb {
+        position: absolute;
+        width: 6px; height: 6px;
+        background-color: var(--accent);
+        border-radius: 50%;
+        box-shadow: 0 0 15px 5px var(--accent);
+        opacity: 0;
+      }
+      
+      .firefly-story {
+        min-height: 80vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 0 20vw;
+      }
+      .ff-story-text {
+        font-size: 2.5rem;
+        line-height: 1.5;
+        font-family: var(--font-serif);
+        margin-bottom: 2rem;
       }
     </style>
   
-      <!-- Hero Section -->
-      <section class="hero sticky-wrapper" id="hero">
-        <div class="hero-image-container parallax-target">
-          <img src="/Waifu_List/Firefly/119768376_p0.png" alt="Firefly Background" class="hero-img" />
-          <div class="firefly-sparks"></div>
-          <div class="hero-overlay"></div>
-        </div>
-        
-        <div class="hero-content">
-          <p class="gsap-subtitle tracking-in-expand">04 // STELLARON HUNTER</p>
-          <h1 class="gsap-title split-target" data-text="FIREFLY">FIREFLY</h1>
-          <h2 class="gsap-title-sub split-target" style="font-family: var(--font-serif); font-style: italic; opacity: 0.8; font-size: 3rem; margin-top: -20px; color: var(--accent);">"I will set the seas ablaze."</h2>
-          
-          <div class="scroll-indicator">
-            <div class="mouse">
-              <div class="wheel"></div>
-            </div>
-            <p>SCROLL TO INITIATE</p>
-          </div>
+      <section class="firefly-hero">
+        <img src="/Waifu_List/Firefly/119768376_p0.png" alt="Firefly BG" class="firefly-hero-bg ff-parallax-bg" />
+        <div class="firefly-title-wrapper">
+          <h1 class="firefly-title ff-reveal-title">FIREFLY</h1>
+          <p class="firefly-quote ff-reveal-quote">"I will set the seas ablaze."</p>
         </div>
       </section>
 
-      <!-- Lore / Monologue Section -->
-      <section class="monologue section-padding">
-        <div class="mono-container">
-          <p class="mono-line">"Like a firefly to a flame...</p>
-          <p class="mono-line">Life is fleeting, fragile, and beautiful.</p>
-          <p class="mono-line">Yet in that brief moment of light,</p>
-          <p class="mono-line">we find the meaning to burn even brighter."</p>
-          <p class="mono-author fade-target">— SAM // Entropy Loss Syndrome</p>
-        </div>
+      <section class="firefly-story">
+        <p class="ff-story-text ff-fade-up">"Entropy Loss Syndrome... My existence is a fleeting ember."</p>
+        <p class="ff-story-text ff-fade-up" style="color: var(--accent);">"But even so, I choose to fly."</p>
       </section>
 
-      <!-- Horizontal Gallery Section -->
-      <section class="gallery horizontal-scroll-section" id="gallery">
-        <div class="gallery-header fade-target">
-          <h2 class="gsap-title" data-text="Memories">Memories</h2>
-          <p class="gsap-desc reveal-text">Fragments of a life forged in the fires of Glamoth.</p>
-        </div>
-        <div class="char-images cross-layout">
-          <!-- Horizontal Track -->
-          <div class="track-horizontal">
-            <div class="track-inner track-h-inner">
-              <img src="/Waifu_List/Firefly/120034297_p0.png" alt="Firefly Mem 1" class="cross-card" />
-              <img src="/Waifu_List/Firefly/140222217_p0.jpg" alt="Firefly Mem 2" class="cross-card" />
-              <img src="/Waifu_List/Firefly/22123abcbf91f2b4d220fb4d612f08e4.jpg" alt="Firefly Mem 3" class="cross-card" />
-              <img src="/Waifu_List/Firefly/33f95b8c8308888022664e91b327896b.jpg" alt="Firefly Mem 4" class="cross-card" />
-              <img src="/Waifu_List/Firefly/501b67d31caa29863ab494e69bf1a9db.jpg" alt="Firefly Mem 5" class="cross-card" />
-              <img src="/Waifu_List/Firefly/5448ef480c8a762b71904f9ab1012dd0.jpg" alt="Firefly Mem 6" class="cross-card" />
-              <!-- Duplicate for loop -->
-              <img src="/Waifu_List/Firefly/120034297_p0.png" alt="Firefly Mem 1" class="cross-card" />
-              <img src="/Waifu_List/Firefly/140222217_p0.jpg" alt="Firefly Mem 2" class="cross-card" />
-              <img src="/Waifu_List/Firefly/22123abcbf91f2b4d220fb4d612f08e4.jpg" alt="Firefly Mem 3" class="cross-card" />
-              <img src="/Waifu_List/Firefly/33f95b8c8308888022664e91b327896b.jpg" alt="Firefly Mem 4" class="cross-card" />
-              <img src="/Waifu_List/Firefly/501b67d31caa29863ab494e69bf1a9db.jpg" alt="Firefly Mem 5" class="cross-card" />
-              <img src="/Waifu_List/Firefly/5448ef480c8a762b71904f9ab1012dd0.jpg" alt="Firefly Mem 6" class="cross-card" />
-            </div>
-          </div>
-          <!-- Vertical Track -->
-          <div class="track-vertical">
-            <div class="track-inner track-v-inner">
-              <img src="/Waifu_List/Firefly/594b2923697b236648dc07d9f5addb6c.jpg" alt="Firefly Mem V1" class="cross-card" />
-              <img src="/Waifu_List/Firefly/120034297_p0.png" alt="Firefly Mem V2" class="cross-card" />
-              <img src="/Waifu_List/Firefly/140222217_p0.jpg" alt="Firefly Mem V3" class="cross-card" />
-              <!-- Duplicate -->
-              <img src="/Waifu_List/Firefly/594b2923697b236648dc07d9f5addb6c.jpg" alt="Firefly Mem V1" class="cross-card" />
-              <img src="/Waifu_List/Firefly/120034297_p0.png" alt="Firefly Mem V2" class="cross-card" />
-              <img src="/Waifu_List/Firefly/140222217_p0.jpg" alt="Firefly Mem V3" class="cross-card" />
-            </div>
-          </div>
-        </div>
+      <section class="firefly-gallery">
+        <div class="ff-img-wrap ff-grid-1 ff-fade-up"><img src="/Waifu_List/Firefly/120034297_p0.png" alt="Mem 1"></div>
+        <div class="ff-img-wrap ff-grid-2 ff-fade-up" data-delay="0.2"><img src="/Waifu_List/Firefly/140222217_p0.jpg" alt="Mem 2"></div>
+        <div class="ff-img-wrap ff-grid-3 ff-fade-up"><img src="/Waifu_List/Firefly/22123abcbf91f2b4d220fb4d612f08e4.jpg" alt="Mem 3"></div>
+        <div class="ff-img-wrap ff-grid-4 ff-fade-up" data-delay="0.2"><img src="/Waifu_List/Firefly/33f95b8c8308888022664e91b327896b.jpg" alt="Mem 4"></div>
+        <div class="ff-img-wrap ff-grid-5 ff-fade-up"><img src="/Waifu_List/Firefly/501b67d31caa29863ab494e69bf1a9db.jpg" alt="Mem 5"></div>
       </section>
 
-      <!-- Scattered Quote UI Section -->
-      <section class="scattered-quotes section-padding" style="margin-top: 100px;">
-        <div class="quote-container">
-          <div class="gallery-item quote-hover-item">
-            <div class="img-wrapper"><img src="/Waifu_List/Firefly/594b2923697b236648dc07d9f5addb6c.jpg" alt="Fragment 1"></div>
-            <div class="quote-wrapper">
-              <p>"I dreamt of a scorched earth... of an endless sea of stars... and a lone firefly trying to illuminate it all."</p>
-            </div>
-          </div>
-          <div class="gallery-item quote-hover-item">
-            <div class="img-wrapper"><img src="/Waifu_List/Firefly/120034297_p0.png" alt="Fragment 2"></div>
-            <div class="quote-wrapper">
-              <p>"Execution Mode: Initiated. Target locked. I will carve a path of light through this darkness."</p>
-            </div>
-          </div>
-          <div class="gallery-item quote-hover-item">
-            <div class="img-wrapper"><img src="/Waifu_List/Firefly/501b67d31caa29863ab494e69bf1a9db.jpg" alt="Fragment 3"></div>
-            <div class="quote-wrapper">
-              <p>"If my destiny is to burn away until nothing remains... then let my final spark guide you home."</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Secret Interactive Section -->
-      <section class="secret section-padding">
-        <h2 class="game-title" style="margin-bottom: 2rem;">
-          <span class="border-frame"></span>
-          <span class="word-the">PROJECT</span>
-          <span class="red-slash" style="color: var(--accent);">//</span>
-          <span class="glitch-text" data-text="SAM">SAM</span>
-          <br>
-          <span class="word-of">GLAMOTH</span>
-          <span class="red-and" style="color: var(--accent);">&</span>
-          <span class="word-of">FIRE</span>
-        </h2>
-        <div class="secret-content">
-          <p class="fade-target">"Entropy Loss Syndrome slowly erodes the self, replacing existence with void. Yet, within the iron shell, the heart still yearns to beat."</p>
-          <button class="hover-explore magnetic" onclick="alert('System Override: Authorized.')" style="margin-top: 30px; background: transparent; color: var(--accent); border: 1px solid var(--accent); padding: 15px 40px; border-radius: 5px; cursor: pointer;">ACCESS ARCHIVE</button>
-        </div>
-      </section>
+      <!-- Orb Container for JS injection -->
+      <div class="orb-container"></div>
   </main>
 
   <div class="page-transition-layer">
