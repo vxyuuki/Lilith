@@ -398,6 +398,24 @@ function initPageAnimations(container) {
   }
   initCyberMarquee();
 
+  // 1.8 Entities Hover Effect
+  function initEntitiesHover() {
+    const entityItems = container.querySelectorAll('.entity-item');
+    const entityBgs = container.querySelectorAll('.entity-bg');
+    if (entityItems.length > 0 && entityBgs.length > 0) {
+      entityItems.forEach((item) => {
+        item.addEventListener('mouseenter', () => {
+          const index = item.getAttribute('data-index');
+          entityBgs.forEach(bg => bg.classList.remove('active'));
+          if(entityBgs[index]) {
+             entityBgs[index].classList.add('active');
+          }
+        });
+      });
+    }
+  }
+  initEntitiesHover();
+
   // 2. Image Trail Effect
   const trailContainer = container.querySelector('.image-trail-container');
   if (trailContainer) {

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Entities | The Nonexistence of You and Me</title>
+  <link rel="stylesheet" href="./style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Public+Sans:wght@300;400;700;800&display=swap" rel="stylesheet">
+</head>
+<body data-barba="wrapper">
+  
+  <nav class="cyber-nav">
+    <a href="/index.html" class="nav-link magnetic">HOME</a>
+    <a href="/entities.html" class="nav-link magnetic" style="color: var(--accent);">ENTITIES</a>
+    <a href="/about.html" class="nav-link magnetic">ABOUT LILITH</a>
+  </nav>
+
+  <canvas id="webgl-bg"></canvas>
+
+  <div class="cursor"><span class="cursor-text"></span></div>
+
+  <div class="sound-toggle magnetic">
+    <span class="sound-text">SOUND OFF</span>
+    <div class="sound-bars">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+    </div>
+  </div>
+
+  <main class="smooth-scroll" data-barba="container" data-barba-namespace="entities">
+    <!-- Hover Background Images Container -->
+    <div class="entities-bg-container">
+      <div class="entity-bg active" style="background-image: url('/Image/125966425_p0.png');"></div>
+      <div class="entity-bg" style="background-image: url('/Image/125966425_p1.png');"></div>
+      <div class="entity-bg" style="background-image: url('/Image/135330897_p0.jpg');"></div>
+      <div class="entity-bg" style="background-image: url('/Image/137053802_p2.png');"></div>
+      <div class="entity-bg" style="background-image: url('/Image/140460103_p0.jpg');"></div>
+      <div class="entity-bg" style="background-image: url('/Image/146911000_p0.png');"></div>
+      <div class="entity-bg" style="background-image: url('/Image/Lilith(2).png');"></div>
+      <div class="entity-bg" style="background-image: url('/Image/Lilith(5).png');"></div>
+    </div>
+    
+    <div class="entities-overlay"></div>
+
+    <section class="entities-hero">
+      <div class="entities-list">
+        <a href="/index.html" class="entity-item" data-index="0">
+          <span class="entity-num">01</span>
+          <span class="entity-name glitch-hover" data-text="LILITH">LILITH</span>
+          <span class="entity-role">The Anomaly</span>
+        </a>
+        <a href="#" class="entity-item" data-index="1">
+          <span class="entity-num">02</span>
+          <span class="entity-name glitch-hover" data-text="EVE">EVE</span>
+          <span class="entity-role">The Architect</span>
+        </a>
+        <a href="#" class="entity-item" data-index="2">
+          <span class="entity-num">03</span>
+          <span class="entity-name glitch-hover" data-text="ADAM">ADAM</span>
+          <span class="entity-role">The Prototype</span>
+        </a>
+        <a href="#" class="entity-item" data-index="3">
+          <span class="entity-num">04</span>
+          <span class="entity-name glitch-hover" data-text="NULL">NULL</span>
+          <span class="entity-role">The Void</span>
+        </a>
+        <a href="#" class="entity-item" data-index="4">
+          <span class="entity-num">05</span>
+          <span class="entity-name glitch-hover" data-text="NEXUS">NEXUS</span>
+          <span class="entity-role">The Network</span>
+        </a>
+        <a href="#" class="entity-item" data-index="5">
+          <span class="entity-num">06</span>
+          <span class="entity-name glitch-hover" data-text="ECHO">ECHO</span>
+          <span class="entity-role">The Memory</span>
+        </a>
+        <a href="#" class="entity-item" data-index="6">
+          <span class="entity-num">07</span>
+          <span class="entity-name glitch-hover" data-text="CIPHER">CIPHER</span>
+          <span class="entity-role">The Protocol</span>
+        </a>
+        <a href="#" class="entity-item" data-index="7">
+          <span class="entity-num">08</span>
+          <span class="entity-name glitch-hover" data-text="UNKNOWN">UNKNOWN</span>
+          <span class="entity-role">Classified</span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <div class="page-transition-layer">
+    <div class="transition-glitch-text glitch-core flicker-text extreme-glitch" style="position: relative;" data-text="SYSTEM ERROR">SYSTEM ERROR</div>
+  </div>
+
+  <script type="module" src="/main.js"></script>
+</body>
+</html>

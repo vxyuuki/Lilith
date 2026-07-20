@@ -1,0 +1,665 @@
+KATALOG ANIMASI WEBSITE
+Referensi Gaya Awwwards untuk Next.js + GSAP
+Disusun untuk proyek personal & profil agency / studio
+
+Pendahuluan
+Dokumen ini adalah katalog referensi jenis-jenis animasi website yang umum dipakai pada situs-situs pemenang dan nominasi Awwwards — mulai dari animasi teks, gambar, hingga transisi antar halaman/section. Tujuannya adalah menjadi daftar acuan cepat saat merancang dan membangun website personal maupun profil agency/studio yang terasa premium dan interaktif.
+Situs-situs terbaik saat ini umumnya menggabungkan beberapa ciri khas: tipografi besar yang bergerak dinamis, elemen 3D yang bereaksi terhadap scroll atau kursor, transisi sinematik antar section, serta micro-interaction halus pada tombol dan elemen interaktif lain. Kombinasi inilah yang membuat sebuah website terasa hidup, bukan sekadar halaman statis.
+Setiap jenis animasi pada dokumen ini ditulis dengan nama umum yang biasa dipakai di industri (dalam Bahasa Inggris, sesuai konvensi), diikuti penjelasan singkat cara kerjanya, serta rekomendasi plugin/teknik GSAP yang relevan — mengingat proyek ini menggunakan Next.js dan GSAP sebagai tumpuan animasi utama.
+1. Animasi Teks (Text Animations)
+Animasi pada teks/judul — sering menjadi elemen pertama yang dilihat pengunjung dan penentu kesan pertama sebuah situs.
+Text Split (Split by Char / Word / Line)
+Teks dipecah menjadi karakter, kata, atau baris individual sehingga tiap bagian bisa dianimasikan secara terpisah. Teknik dasar di balik hampir semua animasi teks modern.
+GSAP: SplitText + stagger
+Text Reveal (Mask / Clip-Path Reveal)
+Teks "disingkap" dari balik mask per baris atau per kata, seperti tirai yang terbuka.
+GSAP: SplitText (type: "lines") + overflow hidden + gsap.to()
+Stagger Text Animation
+Tiap huruf atau kata muncul berurutan dengan jeda kecil antar elemen, menciptakan efek gelombang yang halus.
+GSAP: stagger pada gsap.from()/gsap.to()
+Fade Up Text
+Teks muncul dengan kombinasi fade-in dan translate dari bawah ke posisi normal — animasi entrance paling umum dan tetap elegan.
+GSAP: gsap.from() dengan y & autoAlpha
+Typewriter Effect
+Teks muncul huruf demi huruf meniru mesin ketik, biasanya disertai kursor berkedip di akhir baris.
+GSAP: TextPlugin
+Text Scramble / Glitch Reveal
+Karakter acak berganti-ganti dengan cepat sebelum akhirnya "menetap" menjadi teks final — sering dipakai untuk gaya tech/cyber.
+GSAP: ScrambleTextPlugin
+Text Blur to Focus
+Teks tampil dalam kondisi blur lalu perlahan menjadi tajam, memberi kesan kedalaman saat elemen muncul.
+GSAP: gsap.from() pada properti filter blur
+Kinetic Typography
+Teks bergerak dinamis (skala, rotasi, posisi) mengikuti timeline atau scroll, umum dipakai untuk storytelling naratif.
+GSAP: Timeline kompleks + ScrollTrigger
+Text Outline to Fill
+Teks tampil sebagai garis luar (outline) lebih dulu, lalu perlahan terisi warna solid.
+GSAP: gsap.to() pada -webkit-text-stroke / warna fill
+Gradient Text Animation
+Gradasi warna bergerak melintasi teks secara looping, memberi kesan hidup pada judul atau logo teks.
+GSAP: animasi background-position pada teks dengan background-clip
+Word Swap / 3D Flip Rotator
+Sekumpulan kata bergantian tampil dengan efek flip 3D atau slide vertikal, umum pada kalimat seperti "Kami membantu [startup / brand / agency] tumbuh".
+GSAP: Timeline berulang dengan rotationX / yPercent
+Marquee / Infinite Scrolling Text
+Teks berjalan horizontal tanpa henti, umum dipakai untuk tagline berulang atau daftar klien/partner.
+GSAP: gsap.to() xPercent + modifiers plugin, repeat: -1
+Text Highlight / Underline Draw-On
+Garis bawah atau blok highlight "digambar" secara animasi tepat saat teks tersebut muncul di layar.
+GSAP: DrawSVGPlugin atau animasi clip-path
+Number / Counter Counting Animation
+Angka menghitung naik dari 0 menuju nilai akhir — cocok untuk menampilkan statistik, tahun berdiri, atau jumlah klien.
+GSAP: gsap.to() dengan snap: 1
+Text Distortion on Hover
+Huruf sedikit terdistorsi (skew, wave, atau displacement) mengikuti posisi kursor saat melintas di atas teks.
+GSAP: SplitText per karakter + event mousemove
+Split-Flap Text (Departure Board Effect)
+Efek papan lipat seperti jadwal bandara atau stasiun kereta — tiap karakter "berputar" untuk menampilkan huruf baru.
+GSAP: Timeline per karakter dengan rotationX bertahap
+Liquid / Wavy Text
+Teks tampak bergelombang seperti cairan, biasanya memakai filter SVG turbulence yang dianimasikan.
+GSAP: Animasi seed pada SVG filter, dikontrol oleh gsap.to()
+Line-by-Line Reveal untuk Paragraf Panjang
+Setiap baris paragraf panjang muncul satu per satu saat discroll, menjaga keterbacaan sekaligus tetap dramatis.
+GSAP: SplitText (type: "lines") + ScrollTrigger
+Character Wave on Load
+Karakter pada judul melompat naik-turun berurutan seperti gelombang begitu halaman selesai dimuat.
+GSAP: SplitText (type: "chars") + stagger dengan ease elastic
+Scroll-Linked Text Color Sweep
+Warna teks "disapu" dari kiri ke kanan mengikuti posisi scroll — sering dipakai untuk highlight progres membaca paragraf panjang.
+GSAP: ScrollTrigger scrub + clip-path / gradient mask
+Odometer / Slot-Machine Number Roll
+Setiap digit angka berputar sendiri-sendiri seperti mesin slot sebelum berhenti di nilai akhir, bukan sekadar menghitung naik linear.
+GSAP: Timeline custom per digit dengan yPercent bertingkat
+Chromatic Aberration Text Glitch
+Teks pecah sesaat menjadi lapisan merah-hijau-biru yang sedikit bergeser posisi, meniru distorsi VHS atau kamera analog.
+GSAP: Timeline pada text-shadow RGB offset / filter SVG
+Text-Behind-Image Parallax Peek
+Sebagian teks besar sengaja diletakkan di belakang tepi gambar sehingga "mengintip", bergerak dengan kecepatan parallax berbeda dari gambar di depannya.
+GSAP: ScrollTrigger scrub dengan z-index & speed berbeda
+Inline Word Cycle (Synonym Swap)
+Satu kata di tengah kalimat (bukan rotator utuh) berganti-ganti dengan sinonim lewat crossfade halus, misalnya "cepat / kuat / rapi".
+GSAP: Timeline opacity crossfade per kata, repeat: -1
+2. Animasi Gambar (Image Animations)
+Animasi pada foto, ilustrasi, dan galeri visual — memberi kedalaman dan interaktivitas pada konten visual.
+Image Reveal Mask
+Gambar "disingkap" dari balik clip-path (kotak, lingkaran, atau garis diagonal) saat pertama kali muncul di layar.
+GSAP: clip-path animation atau ScrollTrigger + gsap.from()
+Parallax Scrolling
+Gambar bergerak dengan kecepatan berbeda dari konten di sekitarnya saat halaman discroll, menciptakan ilusi kedalaman.
+GSAP: ScrollTrigger scrub dengan yPercent berbeda tiap layer
+Image Hover Zoom
+Gambar membesar secara halus saat kursor hover, biasanya dengan container overflow hidden agar tidak keluar batas.
+GSAP: gsap.to() scale pada mouseenter/mouseleave
+Grayscale to Color on Hover
+Gambar hitam-putih berubah menjadi berwarna penuh saat di-hover — kontras yang menarik perhatian tanpa gerakan berlebihan.
+GSAP: Animasi CSS filter grayscale()
+3D Tilt on Hover
+Gambar atau kartu miring mengikuti posisi kursor, menciptakan efek kedalaman tiga dimensi yang halus.
+GSAP: gsap.to() rotationX/rotationY berbasis posisi mouse + perspective
+Magnetic Hover Effect
+Gambar sedikit "tertarik" mengikuti kursor sebelum kembali ke posisi semula saat kursor menjauh.
+GSAP: gsap.quickTo() pada x/y berbasis jarak kursor
+Image Trail Mengikuti Kursor
+Serangkaian gambar bermunculan mengikuti jejak gerakan kursor — populer di galeri portofolio kreatif.
+GSAP: gsap.to() opacity/scale dipicu mousemove, bergilir antar gambar
+Ken Burns Effect
+Gambar diam di-zoom dan di-pan perlahan dalam durasi panjang, sering dipakai untuk hero background atau slideshow.
+GSAP: gsap.to() scale & x/y, ease: "none", durasi panjang
+Image Grid Stagger Reveal
+Galeri gambar dalam grid muncul satu per satu dengan jeda antar item begitu memasuki viewport.
+GSAP: ScrollTrigger + stagger pada gsap.from()
+Image Split / Grid Wipe Reveal
+Satu gambar dipecah menjadi grid kecil; tiap potongan muncul bergantian hingga membentuk gambar utuh.
+GSAP: clip-path per sel + stagger timeline
+Before/After Comparison Slider
+Dua gambar ditumpuk dengan slider yang bisa digeser untuk membandingkan — umum dipakai studio desain atau renovasi.
+GSAP: Draggable + clip-path dinamis
+WebGL Ripple / Distortion Hover
+Efek riak air atau distorsi shader saat kursor melintas di atas gambar — ciri khas situs kreatif kelas atas.
+GSAP: Dipadukan dengan Three.js/OGL untuk shader; GSAP mengatur timeline intensitas
+Morph Antar Gambar (Shape Morph Transition)
+Transisi antar dua gambar memakai masking bentuk yang berubah (morph), bukan sekadar cross-fade biasa.
+GSAP: MorphSVGPlugin untuk mask berbasis SVG, dikombinasi crossfade
+Scroll-Based Image Sequence (Frame Scrubbing)
+Ratusan frame gambar diputar maju-mundur sesuai posisi scroll — efek seperti video interaktif ala halaman produk Apple.
+GSAP: ScrollTrigger scrub + index frame pada canvas
+Marquee Image Gallery
+Galeri gambar berjalan horizontal tanpa henti, umum dipakai untuk menampilkan daftar proyek atau klien.
+GSAP: gsap.to() xPercent + modifiers, repeat: -1
+Image Skew saat Scroll Cepat
+Gambar sedikit miring (skew) saat kecepatan scroll tinggi lalu kembali normal saat scroll melambat, memberi kesan dinamis.
+GSAP: ScrollTrigger onUpdate + perhitungan velocity
+Sticky Image Pin & Scale
+Gambar "menempel" di viewport sambil membesar atau mengecil ketika teks di sampingnya discroll.
+GSAP: ScrollTrigger pin: true + scale scrub
+Duotone Overlay Transition on Scroll
+Lapisan warna duotone di atas gambar berubah intensitas atau hue mengikuti scroll untuk menyatukan mood halaman.
+GSAP: ScrollTrigger scrub pada opacity overlay
+Cursor-Following Magnifier Lens
+Area kecil berbentuk lingkaran mengikuti kursor dan menampilkan versi zoom dari bagian gambar di baliknya, seperti kaca pembesar digital.
+GSAP: gsap.quickTo() posisi lens, background-position disinkronkan manual
+Draggable 360° Product Spin
+Rangkaian puluhan foto produk berganti mengikuti arah drag horizontal, mensimulasikan produk yang diputar 360 derajat.
+GSAP: Draggable dengan onDrag menghitung indeks frame aktif
+Image Caption Slide-Up on Hover
+Keterangan singkat (judul proyek, kategori) meluncur naik dari tepi bawah gambar tepat saat di-hover.
+GSAP: gsap.to() yPercent pada layer caption
+Full-Bleed Crossfade Hero Slideshow
+Beberapa gambar hero penuh layar bergantian dengan crossfade dan sedikit zoom, bukan satu gambar statis diam.
+GSAP: Timeline opacity + scale looping antar gambar, repeat: -1
+3. Animasi Transisi (Transition Animations)
+Animasi perpindahan antar halaman atau antar section besar — menjaga alur pengalaman tetap mulus dan tidak terasa terputus-putus.
+Fade Page Transition
+Halaman lama fade-out dan halaman baru fade-in — transisi paling sederhana namun tetap terasa premium bila timing-nya tepat.
+GSAP: Timeline exit/enter, dipadukan library routing (mis. next-transition-router)
+Slide Page Transition
+Halaman baru masuk dari satu sisi mendorong halaman lama keluar, seperti pergantian slide presentasi.
+GSAP: gsap.to() xPercent pada container halaman
+Curtain / Wipe Reveal Transition
+Panel warna menutup layar penuh lalu terbuka menyingkap halaman baru — klasik untuk situs studio/agency.
+GSAP: Timeline scaleY / clip-path pada elemen overlay
+Circular Clip-Path Reveal Transition
+Lingkaran (atau bentuk custom) membesar dari titik klik untuk mengungkap halaman berikutnya.
+GSAP: Animasi clip-path: circle()
+Preloader-to-Content Transition
+Preloader (logo/counter) menghilang dengan animasi yang tersambung langsung ke elemen hero pertama, bukan sekadar disappear.
+GSAP: Satu master timeline yang menyambungkan preloader dan hero
+Shared-Element / Layout Transition (FLIP)
+Elemen (misal thumbnail proyek) "berpindah" mulus dari posisi grid ke posisi halaman detail, memberi kesan objek yang sama berpindah tempat.
+GSAP: Flip plugin
+Horizontal Scroll Section Transition
+Scroll vertikal dikonversi menjadi pergerakan horizontal pada satu section penuh — umum untuk showcase karya/proyek.
+GSAP: ScrollTrigger pin + scrub pada properti x
+Section Pinning dengan Scrubbed Reveal
+Satu section "menempel" di layar selagi sub-konten di dalamnya berganti sesuai posisi scroll.
+GSAP: ScrollTrigger pin: true, scrub: true
+3D Cube / Flip Transition
+Halaman atau section berputar seperti kubus 3D untuk berpindah ke konten berikutnya.
+GSAP: rotationY dengan perspective + backface-visibility
+Zoom-Through Transition
+Kamera seolah "menembus" sebuah elemen (zoom in ekstrem) sebelum konten baru muncul.
+GSAP: Timeline scale + opacity pada elemen fokus
+Grid-to-Fullscreen Transition
+Thumbnail dalam grid proyek membesar mengisi layar penuh menjadi halaman detail — transisi andalan situs portofolio.
+GSAP: Flip plugin dikombinasikan dengan perubahan route
+Noise / Grain Overlay Transition
+Lapisan tekstur noise/grain menutupi layar sesaat sebagai jeda tekstural antar section atau halaman.
+GSAP: Animasi opacity + background-position pada tekstur noise
+Color-Block Sweep Transition
+Blok warna solid "menyapu" dari satu sisi layar ke sisi lain menandai pergantian section atau halaman.
+GSAP: Timeline scaleX / clip-path sweep
+Split-Screen Reveal Transition
+Layar terbagi dua atau lebih panel yang bergerak berlawanan arah untuk mengungkap konten baru di tengah.
+GSAP: Dua panel dianimasikan xPercent berlawanan arah
+Smooth Anchor-Scroll Transition
+Perpindahan antar section dalam satu halaman terasa mulus, bukan lompatan instan, saat pengguna klik menu navigasi.
+GSAP: ScrollToPlugin, atau scrollTo() bawaan Lenis
+Footer Peel Reveal
+Footer seolah "terkelupas" dari balik konten utama saat halaman mencapai bagian bawah, seperti kertas terangkat — signature khas banyak situs studio.
+GSAP: ScrollTrigger pin pada konten utama sementara footer naik di baliknya
+Marquee Direction-Reverse on Scroll
+Teks atau gambar marquee membalik arah geraknya mengikuti arah scroll pengguna — naik saat discroll ke bawah, sebaliknya saat ke atas.
+GSAP: ScrollTrigger onUpdate membalik direction timeline marquee
+Draggable Momentum Carousel
+Carousel proyek yang bisa diseret bebas dengan efek momentum natural dan snap otomatis ke item terdekat saat dilepas.
+GSAP: Draggable + InertiaPlugin dengan array snap
+4. Animasi Scroll (Scroll-Driven Animations)
+Animasi yang dipicu atau dikendalikan langsung oleh posisi/kecepatan scroll pengguna — inti dari storytelling ala Awwwards.
+Scroll-Triggered Fade / Slide In
+Elemen fade-in atau slide-in begitu memasuki viewport saat discroll — animasi scroll paling dasar dan paling sering dipakai.
+GSAP: ScrollTrigger start/end default (play once)
+Scroll Scrubbing
+Progres animasi terikat langsung ke posisi scroll, sehingga bisa maju-mundur mengikuti arah scroll, bukan hanya terpicu sekali.
+GSAP: ScrollTrigger scrub: true (atau angka untuk delay halus)
+Parallax Multi-Layer Depth
+Beberapa layer (background, midground, foreground) bergerak dengan kecepatan berbeda untuk membentuk kedalaman visual.
+GSAP: ScrollTrigger scrub per layer dengan speed berbeda
+Sticky / Pinned Storytelling Section
+Section tetap di layar sementara beberapa "babak" konten berganti di dalamnya sebelum scroll dilanjutkan ke section berikutnya.
+GSAP: ScrollTrigger pin + timeline berlapis
+Scroll Progress Indicator
+Bar atau lingkaran indikator yang menunjukkan seberapa jauh pembaca sudah scroll pada halaman atau artikel.
+GSAP: ScrollTrigger onUpdate memperbarui progress bar
+Horizontal Scroll-Jacking Section
+Scroll vertikal "dibajak" sementara untuk menggerakkan konten secara horizontal, cocok untuk timeline proyek atau linimasa.
+GSAP: ScrollTrigger pin + Observer untuk kontrol arah
+Scroll-Linked Video Scrubbing
+Video diputar maju-mundur mengikuti posisi scroll, bukan diputar otomatis dari awal ke akhir.
+GSAP: ScrollTrigger scrub mengatur currentTime video
+SVG Line-Draw on Scroll
+Garis atau ikon SVG "digambar" bertahap mengikuti progres scroll — populer untuk peta perjalanan atau diagram proses.
+GSAP: DrawSVGPlugin + ScrollTrigger scrub
+Batch Reveal untuk List Panjang
+Item-item dalam daftar panjang (kartu, artikel, produk) muncul berkelompok secara efisien tanpa membuat ratusan trigger individual.
+GSAP: ScrollTrigger.batch()
+Reading Progress Sidebar Nav
+Daftar bagian artikel di sidebar yang otomatis menyorot section mana yang sedang aktif mengikuti posisi scroll, umum di halaman editorial panjang.
+GSAP: ScrollTrigger onToggle mengubah class item aktif di sidebar
+Scroll-Triggered Background Video Swap
+Video latar berganti otomatis (play/pause) saat pengunjung berpindah dari satu section ke section berikutnya.
+GSAP: ScrollTrigger onEnter/onLeave memicu play/pause video
+5. Animasi Cursor & Micro-Interaction
+Detail-detail kecil pada kursor dan interaksi tombol — sering menjadi pembeda antara situs yang terasa 'biasa' dan yang terasa 'dirancang dengan detail'.
+Custom Cursor Follower
+Kursor bawaan browser diganti elemen custom (lingkaran, teks, ikon) yang mengikuti gerakan mouse dengan sedikit delay halus.
+GSAP: gsap.quickTo() pada posisi x/y
+Magnetic Button
+Tombol "tertarik" mengikuti posisi kursor saat didekati, memberi kesan interaktif dan playful.
+GSAP: quickTo() berbasis jarak kursor ke pusat tombol
+Cursor Blend-Mode Effect
+Kursor custom memakai mix-blend-mode (difference/exclusion) sehingga warnanya otomatis kontras terhadap elemen di baliknya.
+GSAP: Cukup CSS mix-blend-mode; GSAP hanya mengatur posisi kursor
+Cursor-to-Label Reveal
+Kursor berubah menjadi label teks ("Lihat", "View", "Drag") saat hover di atas elemen tertentu seperti gambar proyek.
+GSAP: gsap.to() scale/opacity pada label kursor saat mouseenter target
+Button Fill / Sweep Hover
+Latar tombol "terisi" warna dari satu sisi saat di-hover, bukan sekadar transisi warna instan.
+GSAP: scaleX animation pada layer di dalam tombol
+Ripple Click Effect
+Efek riak melingkar menyebar dari titik klik, memberi umpan balik visual instan kepada pengguna.
+GSAP: gsap.fromTo() scale & opacity pada elemen ripple dinamis
+Draggable Card / Slider Interaction
+Kartu atau slider bisa digeser langsung dengan mouse maupun sentuhan, lengkap dengan efek inertia natural saat dilepas.
+GSAP: Draggable + InertiaPlugin
+Hover-Triggered Preview Pop
+Video atau gambar preview membesar dan muncul saat kursor hover di atas item daftar — umum di daftar proyek studio.
+GSAP: gsap.to() scale/opacity dipicu mouseenter dengan easing cepat
+Spotlight Cursor Mask Reveal
+Area di sekitar kursor menjadi "senter" yang menyingkap konten, sementara area lain tetap gelap/tersembunyi — efek dramatis untuk reveal section tertentu.
+GSAP: gsap.quickTo() posisi radial-gradient mask mengikuti kursor
+Long-Press Confirm Ring
+Menahan tombol (bukan sekadar klik) memicu cincin progres yang terisi penuh sebelum aksi benar-benar dikonfirmasi.
+GSAP: gsap.to() stroke-dashoffset pada ring selama durasi tahan
+Custom Context Menu Animation
+Klik kanan memunculkan menu konteks bergaya custom sesuai brand (bukan menu bawaan browser) dengan animasi masuk yang halus.
+GSAP: Timeline scale + stagger pada item menu
+6. Animasi Loading & Preloader
+Animasi pada layar pemuatan awal — kesempatan pertama untuk membangun antisipasi sebelum konten utama tampil.
+Progress Counter Loader (0–100%)
+Angka menghitung dari 0 ke 100% sebelum konten utama tampil, memberi kesan proses pemuatan yang jelas kepada pengguna.
+GSAP: gsap.to() dengan snap: 1 + timeline exit
+Logo Draw / Reveal Loader
+Logo brand "digambar" (stroke) atau di-reveal bertahap sebagai animasi pembuka sebelum masuk ke homepage.
+GSAP: DrawSVGPlugin pada path logo
+Curtain-Open Loader
+Layar preloader terbuka seperti tirai atau panel untuk menyingkap hero section untuk pertama kalinya.
+GSAP: Timeline scaleY / clip-path
+Split-Text Loading Headline
+Judul pertama muncul karakter demi karakter tepat setelah preloader selesai, menyatukan transisi loading ke hero secara mulus.
+GSAP: SplitText + stagger, dipicu onComplete preloader
+Skeleton Placeholder Shimmer
+Blok placeholder abu-abu dengan efek shimmer bergerak selagi konten asli (gambar/data) masih dimuat.
+GSAP: gsap.to() background-position berulang, repeat: -1
+Staggered Grid Intro Loader
+Grid kecil berisi pecahan warna atau logo muncul dan menghilang berurutan sebagai animasi loading yang playful.
+GSAP: stagger pada opacity/scale banyak elemen kecil
+Lazy-Load Batch Fade-in
+Gambar yang baru selesai lazy-load memudar masuk secara berkelompok saat pengguna scroll, bukan muncul tiba-tiba/patah-patah.
+GSAP: ScrollTrigger.batch() + gsap.from() opacity
+Skeleton-to-Content Morph
+Blok skeleton placeholder benar-benar bertransformasi bentuk menjadi elemen konten asli begitu data siap, bukan sekadar diganti instan.
+GSAP: Flip plugin dari state skeleton ke state konten
+7. Animasi 3D & WebGL
+Animasi 3D dan WebGL memberi kedalaman visual yang tidak bisa dicapai CSS/SVG biasa. Perlu diingat, ranah ini umumnya di luar cakupan GSAP itu sendiri — GSAP mengatur timing dan trigger, sementara rendering 3D memerlukan pustaka pendamping seperti Three.js atau React Three Fiber.
+3D Product / Object Viewer
+Model 3D produk yang bisa diputar dengan drag oleh pengunjung, memberi pengalaman melihat dari segala sisi.
+GSAP: Three.js / React Three Fiber untuk render, GSAP untuk transisi kamera
+WebGL Particle Background
+Ribuan partikel kecil melayang di background yang bereaksi halus terhadap gerakan kursor atau scroll.
+GSAP: Three.js/OGL untuk partikel, GSAP untuk mengatur intensitas & timeline
+Scroll-Driven 3D Camera Movement
+Kamera seolah "berjalan" menembus sebuah scene 3D mengikuti posisi scroll — gaya tur produk sinematik ala halaman peluncuran Apple.
+GSAP: ScrollTrigger scrub mengontrol posisi kamera Three.js
+WebGL Shader Background
+Latar abstrak yang terus bergerak (gradient cair, noise organik) dirender lewat fragment shader, bukan gambar statis.
+GSAP: GLSL shader custom (Three.js/OGL), GSAP untuk transisi antar state shader
+3D Typography
+Judul dirender sebagai objek tiga dimensi yang bisa diputar, diberi kedalaman, atau didistorsi dengan shader.
+GSAP: Three.js Text geometry + GSAP untuk rotasi/animasi
+WebGL Neighbor-Ripple Grid Distortion
+Hover pada satu gambar dalam grid membuat gambar-gambar di sekitarnya ikut terdistorsi seperti riak air yang menyebar.
+GSAP: Shader displacement custom, GSAP mengatur nilai uniform intensitas
+Interactive 3D Hero Centerpiece
+Bentuk abstrak 3D (blob, kristal, pita) di hero section yang merespons kursor sebagai pusat perhatian visual utama.
+GSAP: Three.js/React Three Fiber + GSAP untuk idle animation
+Panoramic 360° Environment Viewer
+Ruang atau lokasi yang bisa "dilihat sekeliling" dengan drag, umum dipakai situs arsitektur, real estate, atau travel.
+GSAP: Three.js equirectangular sphere + GSAP untuk transisi kamera
+8. Animasi Navigasi & Menu
+Detail animasi pada navigasi sering luput diperhatikan, padahal menjadi elemen yang paling sering berinteraksi dengan pengunjung di setiap halaman.
+Fullscreen Menu Overlay
+Menu membuka penuh layar dengan daftar tautan yang muncul bertahap (stagger), bukan dropdown kecil biasa.
+GSAP: Timeline scaleY/clip-path + stagger pada tiap link
+Hamburger-to-X Icon Morph
+Ikon tiga garis berubah bentuk menjadi tanda silang secara mulus saat menu dibuka/ditutup.
+GSAP: gsap.to() rotation & y pada tiap garis ikon
+Sticky Nav Shrink on Scroll
+Navbar mengecil ukurannya atau berubah gaya (mis. tambah background blur) begitu halaman mulai discroll.
+GSAP: ScrollTrigger toggleClass berdasarkan posisi scroll
+Active Link Indicator Slide
+Garis atau pil penanda "meluncur" mengikuti tautan yang sedang di-hover atau aktif.
+GSAP: gsap.to() x & width menuju posisi tautan target
+Mega Menu Expand
+Submenu besar berisi banyak kolom terbuka dengan animasi tinggi & fade saat kategori induk di-hover.
+GSAP: gsap.to() height (berbasis scrollHeight) + opacity
+Mobile Nav Drawer Slide-in
+Panel navigasi mobile masuk dari samping layar dengan item-item menu yang muncul bertahap (stagger).
+GSAP: gsap.to() xPercent + stagger pada item menu
+Command Palette (⌘K) Animation
+Menekan shortcut tertentu membuka panel pencarian cepat ala command palette, populer di situs developer/portofolio teknis.
+GSAP: Timeline scale + fade pada modal, autoFocus input
+Back-to-Top Button Reveal
+Tombol kembali ke atas muncul dengan animasi fade/scale hanya setelah pengguna scroll melewati jarak tertentu.
+GSAP: ScrollTrigger toggleActions menampilkan/menyembunyikan tombol
+9. Animasi Background & Ambient
+Latar belakang yang hidup (bukan warna solid diam) menambah dimensi tanpa mengalihkan perhatian dari konten utama, asalkan intensitasnya dijaga tetap halus.
+Animated Gradient Mesh
+Gradasi warna organik yang bergerak sangat pelan dan looping tanpa henti di background.
+GSAP: gsap.to() background-position / custom property, repeat: -1, yoyo: true
+Floating Orbs Parallax
+Bentuk-bentuk dekoratif melayang dengan kecepatan berbeda-beda mengikuti scroll maupun waktu.
+GSAP: gsap.to() y berulang + ScrollTrigger scrub untuk efek parallax
+Canvas Starfield / Constellation
+Titik-titik kecil seperti bintang bergerak halus di background, umum untuk tema tech, AI, atau space.
+GSAP: Canvas API untuk render titik, GSAP untuk animasi opacity/posisi
+Aurora / Blob Morph Background
+Blob warna besar yang terus-menerus berubah bentuk secara halus dan berulang, seperti cahaya aurora.
+GSAP: MorphSVGPlugin antar beberapa bentuk blob, repeat: -1, yoyo: true
+Ambient Grain / Noise Texture
+Tekstur noise tipis yang menempel permanen di seluruh halaman (bukan sesaat), memberi kesan sinematik dan tidak "plastic".
+GSAP: gsap.to() background-position pada tekstur noise, repeat: -1
+Section-to-Section Hue Shift
+Warna latar berubah hue secara halus mengikuti section mana yang sedang aktif di layar saat discroll.
+GSAP: ScrollTrigger mengubah CSS custom property warna saat berpindah section
+Weather / Time-of-Day Reactive Background
+Warna atau elemen latar berubah halus menyesuaikan waktu lokal pengunjung (pagi/sore/malam) — detail kecil yang jarang tapi berkesan.
+GSAP: gsap.to() color/opacity berdasar kondisi Date() saat halaman dimuat
+10. Animasi Kartu & Komponen Interaktif
+Detail kecil pada kartu dan komponen yang berulang (layanan, produk, artikel) adalah tempat paling efektif untuk menanamkan kesan "dirancang dengan detail".
+Spotlight Cursor Glow on Card
+Cahaya lembut mengikuti posisi kursor persis di dalam border kartu, populer di kartu fitur produk/SaaS.
+GSAP: gsap.quickTo() menggerakkan posisi radial-gradient/mask
+Card Stack Shuffle
+Kartu-kartu bertumpuk yang bisa digeser (swipe) satu per satu seperti dek kartu.
+GSAP: Draggable + timeline pengaturan ulang z-index
+3D Card Flip Reveal
+Kartu berputar 180 derajat menampilkan konten berbeda di sisi belakangnya.
+GSAP: gsap.to() rotationY dengan perspective & backface-visibility
+Accordion Height Expand
+Konten accordion terbuka/tertutup dengan animasi tinggi yang mulus, bukan langsung muncul/hilang begitu saja.
+GSAP: gsap.to() height berdasarkan scrollHeight elemen
+Split-Panel Hover Expand
+Beberapa panel/kolom sejajar, salah satunya melebar mendorong panel lain saat di-hover — umum di section "layanan kami".
+GSAP: gsap.to() flex-grow / width antar panel
+Tilt Card with Depth Layers
+Kartu miring secara 3D saat hover, dengan ikon/teks di dalamnya bergerak pada kedalaman (depth) yang berbeda-beda.
+GSAP: gsap.to() rotationX/Y + translateZ per layer konten
+Blob Morph Button Background
+Latar tombol berbentuk blob organik yang berubah bentuk secara halus saat di-hover, bukan sekadar kotak dengan sudut membulat.
+GSAP: MorphSVGPlugin antar beberapa bentuk blob
+11. Animasi SVG, Ikon & Ilustrasi
+Ikon dan ilustrasi kecil yang hidup memberi kepribadian pada brand. Sebagian teknik di sini memakai GSAP, namun ilustrasi karakter yang kompleks umumnya lebih efisien dibuat lewat Rive atau Lottie ketimbang murni SVG + GSAP.
+Icon Morph (Play ↔ Pause, Menu ↔ Close)
+Ikon berubah bentuk secara mulus antara dua state, alih-alih diganti langsung (swap) begitu saja.
+GSAP: MorphSVGPlugin antar dua path ikon
+Animated Line Illustration
+Ilustrasi karakter atau scene kecil yang memiliki idle animation berulang, gaya Rive atau Lottie.
+GSAP: Rive / Lottie (lottie-react) untuk render, GSAP untuk memicu trigger
+Logo Idle Loop Animation
+Logo brand memiliki gerakan halus yang berulang meski sedang tidak di-hover, memberi kesan "hidup".
+GSAP: Timeline repeat: -1, yoyo: true pada bagian kecil logo
+SVG Path-Follow Icon
+Ikon kecil (pesawat, titik, kursor) berjalan mengikuti garis path tertentu, umum untuk peta rute atau timeline proses.
+GSAP: MotionPathPlugin
+Icon Hover Bounce / Wiggle
+Ikon kecil melakukan gerakan playful singkat (bounce atau wiggle) tepat saat di-hover.
+GSAP: CustomBounce atau CustomWiggle ease
+12. Animasi Video & Media
+Video sering menjadi elemen hero yang paling berat secara visual — animasi di sekitarnya membantu video terasa terintegrasi dengan desain, bukan sekadar ditempel begitu saja.
+Video Mask Reveal
+Video diputar di dalam sebuah bentuk atau teks yang berfungsi sebagai mask/jendela penampil.
+GSAP: clip-path / mask-image + gsap.to() untuk ukuran mask
+Autoplay Background Video + Text Overlay
+Video looping tanpa suara menjadi latar hero, dengan teks yang dianimasikan tampil di atasnya.
+GSAP: SplitText/timeline untuk teks overlay; video berjalan native sebagai latar
+Video Modal Zoom-In from Thumbnail
+Thumbnail video membesar secara animasi menjadi modal player penuh layar saat diklik.
+GSAP: Flip plugin dari posisi thumbnail menuju posisi modal
+Custom Animated Video Progress Bar
+Indikator progres video didesain custom dengan animasi halus, menggantikan kontrol bawaan browser.
+GSAP: gsap.to() width/scaleX mengikuti event timeupdate video
+13. Animasi Form & Input
+Form adalah titik kontak langsung dengan pengunjung (kontak, newsletter, booking). Micro-animation di sini meningkatkan rasa percaya dan mengurangi friksi saat mengisi.
+Floating Label Input
+Label input naik ke atas field dengan animasi halus saat pengguna mulai mengisi atau memfokus input.
+GSAP: gsap.to() y & scale pada label saat event focus/blur
+Inline Validation Feedback
+Border atau ikon melakukan animasi shake (saat input keliru) atau checkmark pop (saat berhasil divalidasi).
+GSAP: gsap.to() x berulang untuk shake, scale untuk pop checkmark
+Multi-Step Form Progress Transition
+Perpindahan antar langkah form disertai animasi slide, dilengkapi indikator progres yang ikut bergerak.
+GSAP: Timeline xPercent antar step + progress bar di-scrub
+Custom Animated Toggle / Checkbox
+Komponen toggle switch atau checkbox didesain dan dianimasikan custom, bukan tampilan bawaan browser.
+GSAP: gsap.to() x pada knob toggle, scale pada tanda centang
+Submit Button Loading Morph
+Tombol submit berubah bentuk menjadi spinner lalu tanda centang animasi setelah diklik pengguna.
+GSAP: Timeline morph lebar→lingkaran (MorphSVGPlugin) + rotasi spinner
+14. Animasi Data & Visualisasi
+Untuk situs studio/agency yang menampilkan statistik atau proses kerja, data yang "hidup" terasa jauh lebih meyakinkan dibanding angka yang statis diam.
+Animated Chart Draw-In
+Grafik batang atau garis "digambar" dari nol saat pertama kali masuk ke dalam viewport.
+GSAP: gsap.from() height/scaleY per batang, atau DrawSVGPlugin untuk line chart
+Animated Progress Ring
+Lingkaran progres (donut chart) mengisi secara animasi menuju nilai persentase akhir.
+GSAP: gsap.to() stroke-dashoffset pada elemen SVG circle
+Map Route / Pin Drop Animation
+Peta dengan pin lokasi yang jatuh dengan animasi bounce, atau garis rute yang tergambar bertahap.
+GSAP: gsap.from() y + bounce ease untuk pin, DrawSVGPlugin untuk garis rute
+15. Animasi Struktural & Layout Halaman
+Sebagian situs pemenang Awwwards bahkan mendekonstruksi struktur scroll linear itu sendiri, mengubah keseluruhan halaman menjadi ruang eksplorasi.
+Infinite Zoomable Canvas
+Seluruh halaman berupa kanvas luas yang bisa di-pan dan di-zoom bebas, menggantikan scroll linear biasa.
+GSAP: Draggable + gsap.to() scale/x/y pada container besar
+Bento Grid Reveal
+Grid asimetris gaya "bento box" di mana tiap sel muncul dengan waktu atau arah kemunculan yang berbeda-beda.
+GSAP: stagger dengan from: "random" atau berdasar indeks grid kustom
+Masonry Reflow Animation
+Item-item dalam grid bergeser mulus ke posisi barunya saat konten difilter atau diurutkan ulang.
+GSAP: Flip plugin untuk transisi posisi otomatis
+Draggable Bento Rearrange
+Pengguna bisa menyeret ulang susunan grid secara manual, dengan animasi reflow saat item lain menyesuaikan posisi.
+GSAP: Draggable dikombinasikan dengan Flip plugin
+16. Animasi Testimonial & Tim
+Testimoni dan profil tim adalah bagian paling "manusiawi" dari sebuah situs agency — detail animasi di sini membangun kepercayaan tanpa terasa berlebihan.
+Testimonial Card Stack Transition
+Kartu testimoni bertumpuk yang bertransisi dengan animasi depth (scale + opacity) saat berganti ke testimoni berikutnya.
+GSAP: Timeline scale/opacity per kartu, atau Draggable untuk swipe manual
+Animated Star Rating Fill
+Ikon bintang rating terisi satu per satu secara berurutan saat elemen masuk ke viewport.
+GSAP: stagger scale/opacity per ikon bintang
+Team Member Hover Bio Reveal
+Foto anggota tim menampilkan nama, jabatan, atau bio singkat yang meluncur masuk saat foto di-hover.
+GSAP: gsap.to() yPercent pada layer bio di atas foto
+Team Grid Filter by Department
+Grid foto tim tersaring dan menata ulang posisinya secara mulus saat kategori departemen dipilih.
+GSAP: Flip plugin untuk reposisi otomatis setelah filter
+Social Links Radiate on Hover
+Ikon-ikon media sosial memancar keluar secara radial dari foto profil tepat saat di-hover.
+GSAP: stagger x/y menuju posisi radial di sekitar foto
+17. Animasi Pencarian & Filter
+Pencarian dan filter yang responsif secara visual membuat pengunjung merasa situs "menanggapi" mereka secara langsung, bukan sekadar menampilkan hasil statis.
+Search Icon-to-Fullscreen Overlay
+Ikon kaca pembesar membuka menjadi overlay pencarian penuh layar lengkap dengan input dan hasil.
+GSAP: Timeline clip-path/scale dari posisi ikon ke fullscreen
+Live Search Result Stagger-In
+Hasil pencarian muncul satu per satu dengan jeda kecil saat pengguna mengetik kata kunci.
+GSAP: stagger pada gsap.from() tiap baris hasil baru
+Filter Pill Toggle Slide
+Latar belakang pill/tag filter "meluncur" berpindah ke opsi yang baru dipilih, bukan berpindah instan.
+GSAP: gsap.to() x & width menuju posisi pill aktif
+Portfolio Category Reflow (Filtered)
+Item portofolio yang tidak sesuai filter memudar keluar, sisanya menata ulang posisi mengisi ruang kosong secara mulus.
+GSAP: Flip plugin + opacity untuk item yang difilter keluar
+18. Animasi Tema & Personalisasi
+Personalisasi kecil seperti mode gelap/terang atau bahasa menunjukkan perhatian pada detail — asal transisinya dieksekusi semulus konten utamanya.
+Dark/Light Mode Circular Reveal
+Mode gelap/terang berganti dengan animasi lingkaran yang membesar dari posisi tombol toggle hingga menutupi layar.
+GSAP: clip-path: circle() dari titik toggle diperbesar
+Theme Icon Morph (Sun ↔ Moon)
+Ikon matahari berubah bentuk secara mulus menjadi ikon bulan (dan sebaliknya) saat tema diganti.
+GSAP: MorphSVGPlugin antar dua path ikon
+Language Switcher Cross-fade
+Konten teks memudar keluar lalu masuk kembali dalam bahasa baru, bukan berganti instan yang terasa patah.
+GSAP: Timeline fade out/in terpicu perubahan locale
+19. Animasi Notifikasi & Micro-feedback
+Umpan balik mikro (toast, konfirmasi, perayaan kecil) membuat setiap aksi pengguna terasa direspons, bukan menghilang begitu saja ke dalam sistem.
+Toast / Snackbar Slide-in with Auto-dismiss
+Notifikasi kecil masuk dari tepi layar dengan bar progres yang mengecil sebagai penanda waktu sebelum otomatis hilang.
+GSAP: gsap.to() x/y masuk, scaleX progress bar berkurang perlahan
+Copy-to-Clipboard Confirm Pop
+Ikon salin berubah sesaat menjadi tanda centang setelah teks berhasil disalin, lalu kembali ke ikon semula.
+GSAP: Timeline scale pop + revert otomatis setelah delay
+Cookie Consent Banner Slide-up
+Banner persetujuan cookie masuk dari bawah layar dengan animasi halus, bukan muncul mendadak tanpa transisi.
+GSAP: gsap.from() y + autoAlpha
+Success Celebration Particle Burst
+Partikel-partikel kecil "meledak" secara playful sesaat setelah sebuah aksi penting berhasil (submit, checkout, subscribe).
+GSAP: stagger radial pada banyak partikel kecil dari satu titik
+Interactive Quiz/Poll Result Reveal
+Memilih sebuah opsi pada polling/kuis singkat memicu animasi reveal hasil atau persentase secara langsung.
+GSAP: gsap.to() width/scaleX pada bar hasil + Number Counter
+20. Animasi Playful & Easter Egg
+Sentuhan playful dan easter egg adalah cara situs pemenang Awwwards menunjukkan kepribadian brand — dipakai secukupnya, bukan di setiap sudut halaman.
+Idle-State Mascot Animation
+Karakter atau maskot kecil di halaman melakukan gerakan iseng (menguap, melirik) setelah pengunjung diam beberapa saat.
+GSAP: Timeline dipicu delayedCall setelah periode idle
+Secret Interaction Easter Egg
+Pola interaksi tersembunyi (mis. mengklik logo lima kali) memicu animasi kejutan kecil sebagai detail playful.
+GSAP: Timeline custom dipicu event counter/pola input
+Drag-to-Fling Decorative Object
+Elemen dekoratif kecil di halaman bisa diseret dan "dilempar" dengan simulasi fisika, murni sebagai sentuhan playful.
+GSAP: Draggable + InertiaPlugin
+Animated 404 Illustration
+Halaman 404 menampilkan ilustrasi kecil yang bergerak playful (mis. karakter tersesat) alih-alih pesan error yang datar.
+GSAP: Timeline loop pada elemen-elemen ilustrasi SVG
+Signature / Doodle Canvas Interaction
+Pengunjung bisa "mencoret" atau menggambar bebas di sebuah area kecil sebagai fitur guestbook interaktif yang ringan.
+GSAP: Canvas API untuk menggambar, GSAP untuk animasi transisi masuk/keluar kanvas
+21. Animasi Audio-Reaktif
+Elemen audio-reaktif jarang dipakai tapi sangat berkesan ketika pas konteksnya, misalnya situs musik, film, atau event.
+Audio Waveform Visualizer
+Batang atau garis visual bergerak naik-turun mengikuti irama musik atau narasi audio latar secara real-time.
+GSAP: Web Audio API untuk analisis frekuensi, GSAP untuk merender batang
+Mute/Unmute Ripple Toggle
+Ikon suara berubah dengan efek riak melingkar saat pengunjung menyalakan atau mematikan audio latar.
+GSAP: Timeline scale + opacity ripple dari ikon
+22. Animasi Timeline & Proses Kerja
+Bagian "proses kerja kami" atau linimasa perusahaan adalah tempat yang tepat untuk animasi yang menuntun mata pembaca selangkah demi selangkah.
+Horizontal History Timeline Scrub
+Linimasa sejarah perusahaan atau proyek yang bergerak horizontal mengikuti scroll vertikal pengguna.
+GSAP: ScrollTrigger pin + scrub pada posisi x timeline
+Step-by-Step Process Line Draw
+Garis penghubung antar tahapan proses kerja "digambar" secara bertahap tepat saat tiap tahap terlihat di layar.
+GSAP: DrawSVGPlugin + ScrollTrigger per segmen garis
+Animated Roadmap Milestone Pop
+Penanda milestone pada roadmap/linimasa muncul dengan animasi pop mengejutkan saat linimasa mencapai titik tersebut.
+GSAP: stagger scale dengan ease back atau elastic
+23. Animasi E-commerce & Produk
+Untuk situs studio/agency yang juga menjual produk (merchandise, produk digital, brand fashion), detail animasi di titik transaksi kecil ini sangat memengaruhi rasa percaya.
+Add-to-Cart Fly Animation
+Gambar kecil produk "terbang" dari tombol menuju ikon keranjang belanja saat ditambahkan, memberi konfirmasi visual yang jelas.
+GSAP: gsap.to() motionPath dari posisi produk ke ikon cart
+Variant / Color Swatch Cross-fade
+Gambar produk berganti dengan crossfade halus saat pengunjung memilih varian warna atau ukuran berbeda.
+GSAP: Timeline opacity crossfade antar gambar varian
+Quick-View Modal Expand
+Kartu produk pada grid membesar menjadi modal quick-view lengkap tanpa harus berpindah halaman.
+GSAP: Flip plugin dari posisi kartu ke posisi modal
+Wishlist Heart Pop-Fill
+Ikon hati pada tombol wishlist "meletup" membesar sesaat dan berubah warna solid saat diklik.
+GSAP: Timeline scale overshoot (ease back) + perubahan warna fill
+Stock Availability Pulse
+Indikator stok terbatas berdenyut halus untuk menarik perhatian tanpa terasa mengganggu atau memaksa.
+GSAP: gsap.to() opacity/scale berulang, repeat: -1, yoyo: true
+24. Animasi CTA & Konversi
+Ajakan bertindak yang muncul di waktu yang tepat, dengan animasi yang tidak agresif, jauh lebih efektif dibanding yang muncul instan dan mengagetkan.
+Sticky CTA Bar Slide-in on Scroll Depth
+Bar ajakan bertindak (CTA) muncul dari bawah layar hanya setelah pengunjung scroll melewati kedalaman tertentu.
+GSAP: ScrollTrigger start tertentu memicu gsap.from() y
+Exit-Intent Modal Reveal
+Modal penawaran muncul dengan animasi scale/fade tepat saat sistem mendeteksi kursor akan meninggalkan halaman.
+GSAP: Timeline scale + opacity dipicu event mouseleave pada area atas viewport
+Newsletter Success Checkmark Morph
+Tombol submit newsletter bertransformasi menjadi tanda centang animasi setelah pendaftaran berhasil.
+GSAP: MorphSVGPlugin dari bentuk tombol ke ikon centang
+25. Animasi Editorial & Konten Panjang
+Untuk situs dengan konten artikel/jurnal panjang, detail animasi tipografi kecil ini membuat pengalaman membaca terasa dirancang, bukan sekadar blok teks polos.
+Drop Cap Animated Reveal
+Huruf pertama sebuah artikel tampil besar dengan animasi reveal tersendiri, menandai awal konten secara elegan.
+GSAP: gsap.from() scale/opacity pada elemen drop cap
+Pull-Quote Scroll Highlight
+Kutipan besar di tengah artikel menyala/di-highlight tepat saat pembaca scroll melewatinya, menarik perhatian sesaat.
+GSAP: ScrollTrigger toggleClass pada elemen pull-quote
+26. Animasi Spesifik Industri & Niche
+Beberapa jenis animasi berikut lebih spesifik ke industri tertentu (arsitektur, musik, nonprofit) — pilih yang relevan dengan brand kliennya.
+Interactive Hotspot Reveal (Floor Plan / Map)
+Titik-titik hotspot pada denah atau peta bisa diklik untuk menampilkan detail informasi di lokasi tersebut, umum di situs arsitektur/real estate.
+GSAP: Timeline scale + fade pada popup info per hotspot
+Album Art 3D Vinyl Spin on Hover
+Sampul album berputar seperti piringan vinyl saat di-hover, detail khas situs musik/label rekaman.
+GSAP: gsap.to() rotation berulang, repeat: -1, ease: "none"
+Donation / Impact Slider Calculator
+Menggeser slider jumlah donasi memicu angka dampak (mis. jumlah pohon ditanam) berubah secara animasi real-time.
+GSAP: gsap.to() dengan snap:1 pada angka, disinkronkan dengan input range
+27. Tabel Referensi Plugin GSAP
+Sejak 30 April 2025, seluruh plugin GSAP — termasuk yang dulunya berbayar lewat keanggotaan Club GreenSock seperti SplitText, MorphSVG, dan DrawSVG — resmi menjadi 100% gratis, termasuk untuk proyek komersial, menyusul akuisisi GreenSock oleh Webflow. Berikut plugin-plugin yang relevan dengan jenis animasi pada dokumen ini:
+
+28. Tips Implementasi untuk Next.js + GSAP
+Gunakan hook resmi @gsap/react — useGSAP()
+Ganti useEffect manual dengan hook useGSAP() dari paket @gsap/react. Hook ini menangani cleanup otomatis (lewat gsap.context()) dan aman dipakai bersama React 18 Strict Mode, sehingga animasi tidak diputar dua kali saat development.
+Tandai komponen dengan "use client"
+GSAP membutuhkan akses DOM/browser sehingga tidak bisa berjalan di Server Component. Setiap komponen yang memanggil gsap atau useGSAP() wajib diberi direktif "use client" di baris paling atas file.
+Registrasikan plugin sekali secara terpusat
+Daftarkan seluruh plugin yang dipakai (misalnya ScrollTrigger, SplitText, Flip) dalam satu file utilitas lewat gsap.registerPlugin(), bukan berulang di tiap komponen, agar bundel lebih rapi dan tidak ada duplikasi registrasi.
+Batasi selector dengan scope
+Gunakan opsi scope pada useGSAP() (arahkan ke ref container komponen) agar selector class GSAP tidak bentrok dengan elemen bernama sama di komponen lain — penting di aplikasi Next.js berskala besar.
+Padukan dengan Lenis untuk smooth scroll
+Pasangkan GSAP dengan pustaka Lenis (paket npm "lenis", import dari "lenis/react") untuk scroll yang terasa mulus. Sinkronkan lewat gsap.ticker.add() dan panggil ScrollTrigger.refresh() setelah Lenis siap agar posisi trigger tetap akurat.
+Hormati preferensi prefers-reduced-motion
+Bungkus animasi yang berat atau berdurasi panjang dengan pengecekan preferensi aksesibilitas pengguna lewat gsap.matchMedia(), agar situs tetap nyaman digunakan oleh semua pengunjung.
+Rencanakan transisi antar halaman sejak awal
+Next.js App Router meng-unmount halaman lama segera saat route berubah, sehingga exit-animation sulit dilakukan secara native. Pertimbangkan pustaka pihak ketiga (misalnya next-transition-router) jika ingin transisi keluar-masuk halaman yang mulus.
+Sederhanakan efek berat di perangkat mobile
+Gunakan gsap.matchMedia() untuk menonaktifkan atau menyederhanakan efek berat (parallax dalam, distorsi WebGL) pada layar kecil, menjaga performa tetap lancar di perangkat dengan daya proses terbatas.
+29. Tips & Trik: Menambahkan Suara pada Website
+Bagian ini melengkapi kategori Animasi Audio-Reaktif (bagian 21) — kalau di sana fokusnya animasi visual yang bereaksi terhadap suara, di sini fokusnya implementasi suara itu sendiri: musik latar dan efek klik/hover. Beberapa hal berikut sering terlewat padahal berdampak besar ke pengalaman pengguna.
+Autoplay dengan suara hampir selalu diblokir browser
+Chrome, Safari, dan Firefox modern memblokir audio (termasuk musik latar) yang otomatis berbunyi sebelum ada interaksi pengguna sama sekali — Safari di iOS bahkan paling ketat dan selalu memblokirnya tanpa pengecualian. Jangan mendesain dengan asumsi musik akan langsung terdengar begitu halaman dibuka.
+Mulai dalam kondisi mute, minta izin lewat interaksi pertama
+Pola paling aman: siapkan audio context tapi belum diputar, lalu aktifkan begitu pengguna klik tombol suara atau interaksi pertama apa pun di halaman (misalnya tombol "Enter" pada preloader).
+Selalu sediakan tombol mute/unmute yang jelas
+Bukan cuma soal selera desain — ini juga syarat aksesibilitas dasar (WCAG 1.4.2): jika ada audio yang otomatis berbunyi lebih dari 3 detik, wajib ada cara untuk menghentikannya atau mengatur volumenya secara independen dari volume sistem.
+Pakai Web Audio API (lewat Howler.js) untuk efek klik/hover
+Elemen <audio> HTML biasa punya latency yang terasa untuk suara yang harus terdengar instan. Howler.js (paket npm "howler") default ke Web Audio API dan otomatis fallback ke HTML5 Audio, sekaligus menangani berbagai bug lintas-browser secara otomatis.
+Gunakan audio sprite untuk kumpulan efek suara pendek
+Daripada memuat file terpisah untuk tiap efek (klik, hover, sukses, error), gabungkan semua ke satu file dengan titik waktu berbeda (sprite). Howler.js punya dukungan sprite bawaan — mengurangi jumlah request HTTP dan mempercepat waktu siap-pakai.
+Debounce suara hover, jangan sampai "menembak" beruntun
+Saat kursor bergerak cepat melewati banyak elemen hoverable, suara hover bisa terpicu puluhan kali per detik dan terdengar berisik/pecah. Beri jeda minimum antar pemutaran (misalnya 80-120ms) atau batasi satu suara aktif dalam satu waktu.
+Musik latar: lazy-load, jangan dibundel di initial load
+File musik latar biasanya jauh lebih besar dari efek suara pendek. Muat file ini secara dinamis hanya setelah pengguna benar-benar mengaktifkan suara, supaya tidak membebani performa awal (LCP) bagi pengunjung yang memang tidak akan menyalakan suara.
+Loop musik latar tanpa terasa "sambungannya"
+Loop yang jelek (ada jeda atau klik terdengar di titik sambung) sangat mengganggu. Siapkan file yang memang didesain untuk loop mulus, atau lakukan crossfade singkat mendekati akhir file lewat fade() bawaan Howler.js.
+Simpan preferensi mute, pertahankan lewat navigasi antar halaman
+Simpan status mute di localStorage supaya konsisten di kunjungan berikutnya. Karena Next.js App Router bisa me-remount komponen per halaman, taruh instance audio & state mute di layout tingkat atas (root layout/provider), bukan di komponen per halaman, supaya musik tidak terputus saat berpindah halaman.
+Sinkronkan cue suara dengan timeline GSAP
+Panggil pemutaran suara di callback onStart/onComplete timeline GSAP (misalnya bunyi "whoosh" saat transisi halaman, atau klik lembut saat tiap kartu stagger muncul) supaya suara dan visual terasa satu kesatuan, bukan dua sistem yang kebetulan bertabrakan.
+Jaga semuanya tetap halus, singkat, dan konsisten
+Efek suara UI idealnya berdurasi 50-200 milidetik dengan volume rendah; musik latar sebaiknya instrumental tanpa vokal yang mengalihkan fokus, dengan volume jauh di bawah level "musik utama". Makin sedikit jenis suara yang konsisten (satu sound palette), makin terasa dirancang — bukan berisik.
+Pastikan komponennya "use client" dan aman untuk SSR
+Audio API hanya tersedia di browser, jadi komponen yang memutar suara wajib punya direktif "use client", dan inisialisasi objek Audio/Howl sebaiknya terjadi di dalam useEffect (bukan langsung saat render) supaya tidak error saat proses render di server.
+30. Penutup & Rekomendasi Prioritas
+Tidak semua jenis animasi di atas perlu (atau sebaiknya) dipakai sekaligus dalam satu situs. Situs-situs pemenang Awwwards biasanya memilih beberapa signature moment saja — misalnya satu animasi hero yang kuat, satu pola transisi yang konsisten, dan beberapa micro-interaction halus — lalu mengeksekusinya dengan sangat rapi, dibanding menumpuk banyak efek sekaligus.
+Sebagai urutan prioritas saat membangun: mulai dari fondasi scroll yang mulus (Lenis + GSAP ScrollTrigger), lanjutkan dengan animasi teks/gambar pada hero section, tambahkan beberapa hover/cursor interaction sebagai detail, baru kemudian animasi transisi antar halaman dan loading screen di tahap akhir — karena keduanya memengaruhi seluruh halaman sekaligus dan lebih mudah disesuaikan setelah struktur utama selesai.
+Terakhir, selalu uji performa animasi di perangkat dengan spesifikasi rendah dan hormati preferensi pengguna yang menonaktifkan gerakan (prefers-reduced-motion), agar situs tetap terasa premium tanpa mengorbankan kenyamanan dan aksesibilitas.
