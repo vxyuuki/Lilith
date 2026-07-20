@@ -781,7 +781,7 @@ function triggerEasterEgg() {
     repeat: 15,
     yoyo: true,
     onComplete: () => {
-      gsap.set(document.body, { filter: 'none' });
+      gsap.set(document.body, { clearProps: 'filter' });
       overlay.style.pointerEvents = 'auto';
       overlay.style.opacity = '1';
       typewriterSequence();
