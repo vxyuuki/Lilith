@@ -357,6 +357,46 @@ function initPageAnimations(container) {
   }
   initTextReveal();
 
+  // 1.7 Cyberpunk Marquee Animation
+  function initCyberMarquee() {
+    const marqueeTracks = container.querySelectorAll('.cyber-marquee-track');
+    marqueeTracks.forEach(track => {
+      // Duplicate children to ensure seamless loop
+      const content = track.innerHTML;
+      track.innerHTML = content + content; // Double it
+
+      const isReverse = track.classList.contains('reverse-track');
+      let baseDirection = isReverse ? -1 : 1; 
+      
+      const tl = gsap.timeline({ repeat: -1 });
+      tl.to(track, {
+        xPercent: -50,
+        ease: "none",
+        duration: 20
+      });
+      tl.timeScale(baseDirection);
+
+      ScrollTrigger.create({
+        trigger: document.body,
+        start: 0,
+        end: "max",
+        onUpdate: (self) => {
+          // Change direction based on scroll velocity (self.direction = 1 down, -1 up)
+          let currentDirection = baseDirection * self.direction;
+          
+          // Apply velocity skew to timeScale for dynamic feel
+          let velocity = Math.abs(self.getVelocity() / 200);
+          let targetTimeScale = currentDirection * (1 + velocity);
+          
+          gsap.to(tl, { timeScale: targetTimeScale, duration: 0.2, overwrite: true, onComplete: () => {
+             gsap.to(tl, { timeScale: currentDirection, duration: 0.5 });
+          }});
+        }
+      });
+    });
+  }
+  initCyberMarquee();
+
   // 2. Image Trail Effect
   const trailContainer = container.querySelector('.image-trail-container');
   if (trailContainer) {
