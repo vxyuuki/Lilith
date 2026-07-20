@@ -735,37 +735,69 @@ function initPageAnimations(container) {
 
 }
 
-// --- BARBA TRANSITIONS ---
-barba.init({
-  transitions: [{
-    name: 'glitch-transition',
-    leave(data) {
-      cleanupPageAnimations();
-      playGlitchNoise(); // Play static TV glitch SFX
-      return new Promise(resolve => {
-        const tl = gsap.timeline({ onComplete: resolve });
-        tl.to('.page-transition-layer', { y: '0%', duration: 0.5, ease: 'power3.inOut' })
-          .to('.transition-glitch-text', { opacity: 1, duration: 0.1, yoyo: true, repeat: 3 }, '+=0');
-      });
-    },
-    enter(data) {
-      lenis.scrollTo(0, { immediate: true });
-      initPageAnimations(data.next.container);
-      updateWebGLTheme();
-      
-      gsap.to('.page-transition-layer', { 
-         y: '-100%', 
-         duration: 0.5, 
-         delay: 0.3, // Brief pause for suspense
-         ease: 'power3.inOut',
-         onComplete: () => {
-            gsap.set('.page-transition-layer', { y: '100%' });
-            gsap.set('.transition-glitch-text', { opacity: 0 });
-         }
-      });
+  function updateCanvasVisibility(namespace) {
+    const canvas = document.getElementById('webgl-bg');
+    if (canvas) {
+      if (namespace === 'lilith' || namespace === 'about') {
+        gsap.to(canvas, { opacity: 1, duration: 1 });
+      } else {
+        gsap.to(canvas, { opacity: 0, duration: 0.5 });
+      }
     }
-  }]
-});
+  }
+
+  // --- BARBA TRANSITIONS ---
+  barba.init({
+    transitions: [
+      {
+        name: 'glitch-transition',
+        to: { namespace: ['lilith', 'about'] },
+        leave(data) {
+          cleanupPageAnimations();
+          playGlitchNoise(); // Play static TV glitch SFX
+          
+          const transitionText = document.querySelector('.transition-glitch-text');
+          if (transitionText) transitionText.innerText = "SYSTEM ERROR";
+          
+          return new Promise(resolve => {
+            const tl = gsap.timeline({ onComplete: resolve });
+            tl.to('.page-transition-layer', { y: '0%', duration: 0.5, ease: 'power3.inOut' })
+              .to('.transition-glitch-text', { opacity: 1, duration: 0.1, yoyo: true, repeat: 3 }, '+=0');
+          });
+        },
+        enter(data) {
+          lenis.scrollTo(0, { immediate: true });
+          initPageAnimations(data.next.container);
+          updateWebGLTheme();
+          updateCanvasVisibility(data.next.namespace);
+          
+          gsap.to('.page-transition-layer', { 
+             y: '-100%', 
+             duration: 0.5, 
+             delay: 0.3, // Brief pause for suspense
+             ease: 'power3.inOut',
+             onComplete: () => {
+                gsap.set('.page-transition-layer', { y: '100%' });
+                gsap.set('.transition-glitch-text', { opacity: 0 });
+             }
+          });
+        }
+      },
+      {
+        name: 'fade-transition',
+        leave(data) {
+          cleanupPageAnimations();
+          return gsap.to(data.current.container, { opacity: 0, duration: 0.5 });
+        },
+        enter(data) {
+          lenis.scrollTo(0, { immediate: true });
+          initPageAnimations(data.next.container);
+          updateCanvasVisibility(data.next.namespace);
+          gsap.from(data.next.container, { opacity: 0, duration: 0.5 });
+        }
+      }
+    ]
+  });
 
 // Global hover listener for digital click SFX
 document.addEventListener('mouseover', (e) => {
@@ -779,8 +811,10 @@ document.addEventListener('mouseover', (e) => {
     }
 });
 
-// Initial run
-initPageAnimations(document.body);
+  // Initial run
+  initPageAnimations(document.body);
+  const initialNamespace = document.querySelector('[data-barba-namespace]')?.dataset.barbaNamespace;
+  updateCanvasVisibility(initialNamespace);
 
 // ==========================================
 // EASTER EGG (L-I-L-I-T-H)
