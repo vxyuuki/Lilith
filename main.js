@@ -189,12 +189,47 @@ function initPreloader() {
 }
 initPreloader();
 
-// --- GLOBALS ---
+// --- GLOBALS & ADVANCED CURSOR ---
 const cursor = document.querySelector('.cursor');
 const cursorText = document.querySelector('.cursor-text');
-window.addEventListener('mousemove', (e) => {
-  if(cursor) cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%, -50%)`;
-});
+
+let xTo, yTo;
+if (cursor) {
+  gsap.set(cursor, { xPercent: -50, yPercent: -50 });
+  xTo = gsap.quickTo(cursor, "x", { duration: 0.15, ease: "power3" });
+  yTo = gsap.quickTo(cursor, "y", { duration: 0.15, ease: "power3" });
+
+  window.addEventListener('mousemove', (e) => {
+    xTo(e.clientX);
+    yTo(e.clientY);
+  });
+}
+
+function bindMagneticEffect(elements) {
+  elements.forEach(btn => {
+    btn.addEventListener('mousemove', (e) => {
+      const rect = btn.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      
+      gsap.to(btn, { x: x * 0.4, y: y * 0.4, duration: 0.4, ease: 'power2.out', overwrite: 'auto' });
+      const inner = btn.querySelector('.magnetic-inner, .nav-link, .sound-text');
+      if (inner) gsap.to(inner, { x: x * 0.2, y: y * 0.2, duration: 0.4, ease: 'power2.out', overwrite: 'auto' });
+      
+      if(cursor) cursor.classList.add('magnetic-active');
+    });
+    btn.addEventListener('mouseleave', () => {
+      gsap.to(btn, { x: 0, y: 0, duration: 0.7, ease: 'elastic.out(1, 0.3)', overwrite: 'auto' });
+      const inner = btn.querySelector('.magnetic-inner, .nav-link, .sound-text');
+      if (inner) gsap.to(inner, { x: 0, y: 0, duration: 0.7, ease: 'elastic.out(1, 0.3)', overwrite: 'auto' });
+      
+      if(cursor) cursor.classList.remove('magnetic-active');
+    });
+  });
+}
+
+// Bind static global elements once
+bindMagneticEffect(document.querySelectorAll('.nav-link, .sound-toggle'));
 
 const bgAudio = document.getElementById('bg-audio');
 const soundToggle = document.querySelector('.sound-toggle');
@@ -273,29 +308,7 @@ function initPageAnimations(container) {
     });
   });
 
-  container.querySelectorAll('.magnetic').forEach(btn => {
-    btn.addEventListener('mousemove', (e) => {
-      const rect = btn.getBoundingClientRect();
-      const x = e.clientX - rect.left - rect.width / 2;
-      const y = e.clientY - rect.top - rect.height / 2;
-      btn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
-      const inner = btn.querySelector('.magnetic-inner');
-      if (inner) inner.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
-      if(cursor) cursor.classList.add('magnetic-active');
-    });
-    btn.addEventListener('mouseleave', () => {
-      btn.style.transform = 'translate(0px, 0px)';
-      const inner = btn.querySelector('.magnetic-inner');
-      if (inner) inner.style.transform = 'translate(0px, 0px)';
-      btn.style.transition = 'transform 0.5s ease-out';
-      if (inner) inner.style.transition = 'transform 0.5s ease-out';
-      if(cursor) cursor.classList.remove('magnetic-active');
-      setTimeout(() => {
-        btn.style.transition = '';
-        if (inner) inner.style.transition = '';
-      }, 500);
-    });
-  });
+  bindMagneticEffect(container.querySelectorAll('.magnetic'));
 
   // 2. Image Trail Effect
   const trailContainer = container.querySelector('.image-trail-container');
