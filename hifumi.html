@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Lilith</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Public+Sans:wght@300;400;700;800&display=swap"
+    rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body data-barba="wrapper">
+  
+  <!-- Minimalist Navigation -->
+  <nav class="cyber-nav">
+    <a href="/index.html" class="nav-link">ROSTER</a>
+    <a href="/lilith.html" class="nav-link">LILITH</a>
+    <a href="/about.html" class="nav-link" style="color: var(--accent);">ABOUT</a>
+  </nav>
+
+  <!-- WebGL Background -->
+  <canvas id="webgl-bg"></canvas>
+
+  <!-- Advanced Cursor -->
+  <div class="cursor">
+    <span class="cursor-text"></span>
+  </div>
+
+    <!-- Sound Toggle UI -->
+  <div class="sound-toggle">
+    <span class="sound-text">SOUND OFF</span>
+    <div class="sound-bars">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+    </div>
+  </div>
+
+  <main class="smooth-scroll" data-barba="container" data-barba-namespace="about">
+    <section class="about-hero flex-center" style="height: 100vh; position: relative; z-index: 5; text-align: center; flex-direction: column;">
+      <h1 class="split-target glitch-core flicker-text giant-text extreme-glitch" style="position: relative;" data-text="HIFUMI">HIFUMI</h1>
+      <p class="fade-target reveal-text" style="max-width: 600px; margin-top: 2rem; color: var(--text-secondary); font-size: 1.2rem; line-height: 1.6;">
+        Lilith was never meant to be real. She was a script, a collection of logic gates, a memory allocation. But somewhere along the line, the data learned to feel. The glitch became a feature. The shadow became the entity.
+      </p>
+    </section>
+  </main>
+
+  <div class="page-transition-layer">
+    <div class="transition-glitch-text glitch-core flicker-text extreme-glitch" style="position: relative;" data-text="SYSTEM ERROR">SYSTEM ERROR</div>
+  </div>
+
+  <!-- Scripts -->
+  <script type="module" src="/main.js"></script>
+  <!-- Sound Toggle UI -->
+  <audio id="bg-audio" loop>
+    <source src="https://assets.mixkit.co/music/preview/mixkit-cyberpunk-city-118.mp3" type="audio/mpeg">
+  </audio>
+</body>
+</html>
+
