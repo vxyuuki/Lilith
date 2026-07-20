@@ -733,53 +733,33 @@ function initPageAnimations(container) {
   // 11. Initialize WebGL Gallery Hovers
   initGalleryHovers(container);
 
-  // 12. Accordion Entrance Animation (Home Page)
-  const accordionSlices = container.querySelectorAll('.accordion-slice');
-  if (accordionSlices.length > 0) {
-    // Disable pointer events temporarily during animation
-    const accordionContainer = container.querySelector('.accordion-container');
-    if(accordionContainer) accordionContainer.style.pointerEvents = 'none';
-
-    // Initial state: Hidden at bottom via clip-path
-    gsap.set(accordionSlices, { clipPath: 'polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)' });
-    gsap.set('.slice-name, .slice-num', { opacity: 0, y: 30 });
-    const sliceImgs = container.querySelectorAll('.accordion-slice img');
-    gsap.set(sliceImgs, { scale: 1.5, filter: 'grayscale(100%) blur(10px)' });
-
-    const tl = gsap.timeline({ 
-      delay: 0.2,
-      onComplete: () => {
-        // Re-enable pointer events and clear inline styles
-        if(accordionContainer) accordionContainer.style.pointerEvents = 'auto';
-        gsap.set(accordionSlices, { clearProps: "clipPath" });
-        gsap.set('.slice-name, .slice-num', { clearProps: "opacity,transform" });
-        gsap.set(sliceImgs, { clearProps: "scale,filter" });
-      }
+    // 12. Roster Hover Reveal (Home Page)
+  if (container.dataset.barbaNamespace === 'home') {
+    const rosterItems = container.querySelectorAll('.roster-item');
+    const rosterList = container.querySelector('.roster-list');
+    
+    rosterItems.forEach(item => {
+      item.addEventListener('mouseenter', () => {
+        const targetId = item.dataset.target;
+        if (targetId) {
+          const targetImg = container.querySelector('#' + targetId);
+          if (targetImg) targetImg.classList.add('active');
+        }
+        if (rosterList) rosterList.classList.add('has-hover');
+      });
+      
+      item.addEventListener('mouseleave', () => {
+        const targetId = item.dataset.target;
+        if (targetId) {
+          const targetImg = container.querySelector('#' + targetId);
+          if (targetImg) targetImg.classList.remove('active');
+        }
+        if (rosterList) rosterList.classList.remove('has-hover');
+      });
     });
-
-    tl.to(accordionSlices, {
-      clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
-      duration: 1.2,
-      stagger: 0.1,
-      ease: 'power4.inOut'
-    })
-    .to(sliceImgs, {
-      scale: 1,
-      filter: 'grayscale(100%) blur(0px)',
-      duration: 1.5,
-      stagger: 0.1,
-      ease: 'power3.out'
-    }, "-=1.0")
-    .to('.slice-name, .slice-num', {
-      opacity: 1,
-      y: 0,
-      duration: 0.8,
-      stagger: 0.05,
-      ease: 'back.out(1.7)'
-    }, "-=1.0");
   }
 
-    // 13. Firefly Custom Animations
+  // 13. Firefly Custom Animations
   if (container.dataset.barbaNamespace === 'firefly') {
     // 1. Kinetic Hero
     gsap.to('.ff-kinetic-text', {
@@ -1137,6 +1117,7 @@ function triggerEasterEgg() {
     setTimeout(() => overlay.remove(), 500);
   };
 }
+
 
 
 

@@ -1851,3 +1851,37 @@ html, body {
   .ff-pinned-right { width: 100%; padding: 4rem 2rem; }
   .ff-horiz-item { width: 85vw; }
 }
+/* ===== HOME ROSTER REDESIGN (AWWWARDS) ===== */
+.roster-hero { height: 60vh; display: flex; align-items: flex-end; padding: 4rem; position: relative; z-index: 10; }
+.roster-hero-content { max-width: 800px; }
+.roster-title { font-family: var(--font-sans); font-size: clamp(3rem, 8vw, 8rem); font-weight: 800; color: #fff; line-height: 0.9; text-transform: uppercase; margin-bottom: 1rem; overflow: hidden; }
+.roster-sub { font-family: var(--ff-mono); font-size: 0.9rem; color: #aaa; letter-spacing: 0.3em; }
+
+.roster-list-section { padding: 4rem 0 10rem 0; position: relative; z-index: 10; }
+.roster-list { list-style: none; padding: 0 4rem; margin: 0; display: flex; flex-direction: column; gap: 0; }
+.roster-item { border-top: 1px solid rgba(255,255,255,0.1); }
+.roster-item:last-child { border-bottom: 1px solid rgba(255,255,255,0.1); }
+
+.roster-link { display: flex; align-items: baseline; padding: 2rem 0; text-decoration: none; color: #555; transition: color 0.4s ease; position: relative; overflow: hidden; }
+.r-num { font-family: var(--ff-mono); font-size: 1rem; margin-right: 4rem; transition: color 0.4s ease; }
+.r-name { font-family: var(--font-sans); font-size: clamp(3rem, 6vw, 6rem); font-weight: 800; text-transform: uppercase; line-height: 1; transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); }
+
+/* Hover Effects */
+.roster-link:hover .r-name { color: #fff; transform: translateX(20px); font-variation-settings: "wght" 900; }
+.roster-link:hover .r-num { color: #fff; }
+
+/* The Background Image Reveal */
+.roster-images { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+.roster-img-wrap { position: absolute; inset: 0; opacity: 0; transform: scale(1.1); transition: opacity 0.8s ease, transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.roster-img-wrap img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.6); }
+.roster-img-wrap.active { opacity: 1; transform: scale(1); }
+.roster-img-overlay { position: fixed; inset: 0; background: linear-gradient(180deg, transparent 0%, #000 100%); opacity: 0.5; z-index: 1; pointer-events: none; }
+
+/* When an image is active, dim the other links */
+.roster-list.has-hover .roster-link:not(:hover) { color: #333; opacity: 0.5; }
+
+@media (max-width: 768px) {
+  .roster-hero { height: 40vh; padding: 2rem; }
+  .roster-list { padding: 0 2rem; }
+  .r-num { margin-right: 1rem; }
+}
