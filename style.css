@@ -1495,3 +1495,114 @@ html, body {
   opacity: 1;
   transform: translateX(0);
 }
+
+/* --- Accordion Landing Page --- */
+.accordion-container {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  z-index: 5;
+}
+
+.accordion-slice {
+  position: relative;
+  flex: 1;
+  height: 100%;
+  overflow: hidden;
+  transition: flex 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+  cursor: pointer;
+  text-decoration: none;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.accordion-slice:last-child {
+  border-right: none;
+}
+
+.accordion-slice img {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 100%;
+  width: 100vw;
+  max-width: none;
+  object-fit: cover;
+  opacity: 0.5;
+  filter: grayscale(100%);
+  transition: opacity 0.6s ease, filter 0.6s ease, transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.accordion-slice:hover {
+  flex: 3;
+}
+
+.accordion-slice:hover img {
+  opacity: 1;
+  filter: grayscale(0%);
+  transform: translateX(-50%) scale(1.05);
+}
+
+.slice-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 40px 20px;
+  background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 50%;
+}
+
+.slice-num {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  color: var(--accent);
+  margin-bottom: 10px;
+  opacity: 0.7;
+}
+
+.slice-name {
+  font-family: var(--font-sans);
+  font-size: 2.5rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #fff;
+  line-height: 1;
+  white-space: nowrap;
+  transform: translateY(20px);
+  opacity: 0;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+.accordion-slice:hover .slice-name {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .accordion-container {
+    flex-direction: column;
+  }
+  .accordion-slice img {
+    width: 100%;
+    height: 100vh;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+  }
+  .accordion-slice:hover img {
+    transform: translateY(-50%) scale(1.05);
+  }
+  .slice-content {
+    padding: 20px;
+    height: 100%;
+  }
+  .slice-name {
+    font-size: 1.8rem;
+  }
+}
