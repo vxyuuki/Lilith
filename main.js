@@ -779,25 +779,28 @@ function initPageAnimations(container) {
     }, "-=1.0");
   }
 
-  // 13. Firefly Custom Animations
+    // 13. Firefly Custom Animations
   if (container.dataset.barbaNamespace === 'firefly') {
-
-    // Hero Reveal Timeline
+    // 1. Kinetic Hero
+    gsap.to('.ff-kinetic-text', {
+      xPercent: -50,
+      ease: 'none',
+      scrollTrigger: { trigger: '.ff-hero-v2', start: 'top top', end: 'bottom top', scrub: true }
+    });
+    gsap.to('.ff-parallax-bg-v2', {
+      y: '20%',
+      ease: 'none',
+      scrollTrigger: { trigger: '.ff-hero-v2', start: 'top top', end: 'bottom top', scrub: true }
+    });
     const ffHeroTl = gsap.timeline({ delay: 0.3 });
     ffHeroTl
-      .to('.ff-hero-sub', { opacity: 1, y: 0, duration: 1, ease: 'power3.out' })
-      .to('.ff-hero-title', { opacity: 1, y: 0, duration: 1.2, ease: 'power3.out' }, '-=0.6')
-      .to('.ff-hero-quote', { opacity: 1, y: 0, duration: 1, ease: 'power3.out' }, '-=0.5')
-      .to('.ff-scroll-hint', { opacity: 1, duration: 0.8 }, '-=0.3');
-
-    // Hero Parallax
-    gsap.to('.ff-hero-bg', { y: '20%', ease: 'none',
-      scrollTrigger: { trigger: '.ff-hero', start: 'top top', end: 'bottom top', scrub: true }
-    });
+      .to('.ff-kinetic-text', { opacity: 1, duration: 1.5, ease: 'power3.out' })
+      .fromTo('.ff-hero-sub-v2', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1, ease: 'power3.out' }, '-=0.5')
+      .fromTo('.ff-hero-quote-v2', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1, ease: 'power3.out' }, '-=0.5');
 
     // Firefly Orbs
-    const orbField = container.querySelector('.ff-orb-field');
-    if (orbField) {
+    const orbField = document.querySelector('.ff-orb-field');
+    if (orbField && !orbField.hasChildNodes()) {
       for (let i = 0; i < 35; i++) {
         const orb = document.createElement('div');
         orb.className = 'ff-orb';
@@ -807,70 +810,53 @@ function initPageAnimations(container) {
       }
     }
 
-    // Scroll-triggered reveals
-    container.querySelectorAll('.ff-reveal').forEach(el => {
-      gsap.fromTo(el, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
-        scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none' }
+    // 2. Pinned Storytelling
+    ScrollTrigger.create({
+      trigger: '.ff-pinned-section',
+      start: 'top top',
+      end: '+=100%',
+      pin: '.ff-pinned-left',
+      anticipatePin: 1
+    });
+
+    container.querySelectorAll('.ff-fade-up').forEach(el => {
+      gsap.fromTo(el, { opacity: 0, y: 50 }, { 
+        opacity: 1, y: 0, duration: 1, ease: 'power3.out',
+        scrollTrigger: { trigger: el, start: 'top 80%' }
       });
     });
 
-    
-    // Bento Gallery Parallax
-    container.querySelectorAll('.ff-bento-card').forEach(card => {
-      const img = card.querySelector('.ff-parallax-img');
-      if(img) {
-        gsap.fromTo(img, 
-          { y: '-10%' },
-          { 
-            y: '10%', 
-            ease: 'none',
-            scrollTrigger: {
-              trigger: card,
-              start: 'top bottom',
-              end: 'bottom top',
-              scrub: true
-            }
-          }
-        );
-      }
-    });
-
-    // Voice bars animate on scroll
-    container.querySelectorAll('.ff-voice-item').forEach(item => {
-      const bar = item.querySelector('.ff-bar-fill');
-      if (bar) {
-        gsap.to(bar, { width: '100%', duration: 2, ease: 'power2.out',
-          scrollTrigger: { trigger: item, start: 'top 80%' }
-        });
-      }
-    });
-
-    // IGNITION color sweep
-    gsap.to('.ff-ignition-sweep', { scaleX: 1, ease: 'power4.inOut',
-      scrollTrigger: { trigger: '.ff-ignition', start: 'top 60%', end: 'top 20%', scrub: true }
-    });
-
-    // Accordion
-    container.querySelectorAll('.ff-acc-header').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const item = btn.parentElement;
-        const body = item.querySelector('.ff-acc-body');
-        const isActive = item.classList.contains('active');
-        // Close all
-        container.querySelectorAll('.ff-acc-item').forEach(i => {
-          i.classList.remove('active');
-          i.querySelector('.ff-acc-body').style.maxHeight = '0';
-        });
-        if (!isActive) {
-          item.classList.add('active');
-          body.style.maxHeight = body.scrollHeight + 'px';
-          // Animate stat bar
-          const prog = body.querySelector('.ff-bar-progress');
-          if (prog) gsap.to(prog, { width: prog.dataset.width + '%', duration: 1, ease: 'power2.out' });
+    // 3. Horizontal Filmstrip
+    const horizContainer = container.querySelector('.ff-horizontal-container');
+    if (horizContainer) {
+      const getScrollAmount = () => -(horizContainer.scrollWidth - window.innerWidth);
+      gsap.to(horizContainer, {
+        x: getScrollAmount,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '.ff-horizontal-wrapper',
+          start: 'top top',
+          end: () => `+=${horizContainer.scrollWidth - window.innerWidth}`,
+          pin: true,
+          scrub: 1,
+          invalidateOnRefresh: true,
+          anticipatePin: 1
         }
       });
+      container.querySelectorAll('.ff-horiz-img').forEach(img => {
+        gsap.to(img, { xPercent: 15, ease: 'none', scrollTrigger: { trigger: '.ff-horizontal-wrapper', start: 'top top', end: () => `+=${horizContainer.scrollWidth - window.innerWidth}`, scrub: 1 } });
+      });
+    }
+
+    // 4. Typography Scrub
+    gsap.to('.ff-scrub-text', {
+      backgroundPosition: '0% 0',
+      ease: 'none',
+      scrollTrigger: { trigger: '.ff-scrub-section', start: 'top 60%', end: 'bottom 80%', scrub: true }
     });
 
+    // Outro
+    gsap.fromTo('.ff-outro-text', { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 1.5, ease: 'power3.out', scrollTrigger: { trigger: '.ff-outro', start: 'top 70%' } });
   }
 
 }
@@ -1151,6 +1137,7 @@ function triggerEasterEgg() {
     setTimeout(() => overlay.remove(), 500);
   };
 }
+
 
 
 

@@ -663,3 +663,57 @@ Audio API hanya tersedia di browser, jadi komponen yang memutar suara wajib puny
 Tidak semua jenis animasi di atas perlu (atau sebaiknya) dipakai sekaligus dalam satu situs. Situs-situs pemenang Awwwards biasanya memilih beberapa signature moment saja — misalnya satu animasi hero yang kuat, satu pola transisi yang konsisten, dan beberapa micro-interaction halus — lalu mengeksekusinya dengan sangat rapi, dibanding menumpuk banyak efek sekaligus.
 Sebagai urutan prioritas saat membangun: mulai dari fondasi scroll yang mulus (Lenis + GSAP ScrollTrigger), lanjutkan dengan animasi teks/gambar pada hero section, tambahkan beberapa hover/cursor interaction sebagai detail, baru kemudian animasi transisi antar halaman dan loading screen di tahap akhir — karena keduanya memengaruhi seluruh halaman sekaligus dan lebih mudah disesuaikan setelah struktur utama selesai.
 Terakhir, selalu uji performa animasi di perangkat dengan spesifikasi rendah dan hormati preferensi pengguna yang menonaktifkan gerakan (prefers-reduced-motion), agar situs tetap terasa premium tanpa mengorbankan kenyamanan dan aksesibilitas.
+31. Jenis Font & Kapan Digunakan
+Tipografi adalah salah satu elemen yang paling menentukan "rasa" sebuah situs — pengunjung sering membentuk kesan pertama dari font sebelum sempat membaca isi kontennya. Bagian ini mengelompokkan jenis-jenis font berdasarkan gaya visualnya, lengkap dengan panduan kapan masing-masing paling cocok dipakai.
+1.	Serif
+Huruf dengan "kaki" kecil (serif) di ujung setiap goresan, memberi kesan klasik, tepercaya, dan berbobot — sering dipakai di media cetak tradisional dan konten editorial.
+Kapan digunakan: Cocok untuk brand yang ingin kesan heritage, mewah, atau formal (firma hukum, publikasi, fashion premium), serta paragraf panjang bergaya editorial. Contoh: Playfair Display, Lora, Georgia, Source Serif 4.
+2.	Serif Kontras Tinggi (Didone)
+Varian serif dengan kontras ekstrem antara goresan tebal dan tipis, serif setipis jarum, memberi kesan dramatis dan sangat elegan.
+Kapan digunakan: Judul besar di brand fashion, kecantikan, atau editorial mewah. Hindari untuk ukuran kecil/body text karena goresan tipisnya bisa hilang di layar resolusi rendah. Contoh: Didot, Bodoni Moda, Fraunces.
+3.	Slab Serif
+Serif tebal dan blok dengan ketebalan hampir seragam di seluruh goresan, terasa kokoh, berani, dan sedikit "vintage-modern".
+Kapan digunakan: Judul yang ingin terasa percaya diri dan berkarakter — studio kreatif, brand kopi/craft, atau portofolio yang ingin terlihat tegas tanpa terlalu formal. Contoh: Roboto Slab, Zilla Slab, Rockford.
+4.	Sans-Serif Grotesque / Neo-Grotesque
+Tanpa serif, bentuk netral dan bersih dengan proporsi konsisten — menjadi standar tipografi digital modern karena keterbacaannya di segala ukuran layar.
+Kapan digunakan: Pilihan paling aman untuk body text, navigasi, dan UI yang harus terbaca jelas di berbagai perangkat; hampir selalu jadi font utama situs bergaya Awwwards yang clean/modern. Contoh: Inter, Helvetica Now, General Sans, Neue Montreal.
+5.	Sans-Serif Geometris
+Dibentuk dari bentuk geometris sederhana (lingkaran, persegi), terasa futuristik dan presisi, meski keterbacaan di ukuran kecil sedikit lebih rendah dibanding grotesque.
+Kapan digunakan: Judul brand tech/startup yang ingin kesan modern-minimalis, atau saat seluruh identitas visual memang mengusung tema geometris. Contoh: Poppins, Sora, Century Gothic, DM Sans.
+6.	Sans-Serif Humanis
+Sans-serif dengan proporsi lebih organik yang mengikuti gerakan tulisan tangan alami, terasa lebih hangat dan ramah dibanding grotesque.
+Kapan digunakan: Brand yang ingin terasa approachable dan personal (portofolio pribadi, brand lifestyle/wellness), atau paragraf panjang yang butuh sedikit kehangatan tanpa kehilangan keterbacaan. Contoh: Work Sans, Museo Sans, Gill Sans, Karla.
+7.	Display / Dekoratif
+Font dengan karakter visual yang sangat kuat dan unik, dirancang untuk menarik perhatian sesaat, bukan untuk dibaca dalam jumlah banyak.
+Kapan digunakan: HANYA untuk judul hero atau logo dalam ukuran besar — jangan pernah dipakai untuk body text atau paragraf karena keterbacaannya rendah di ukuran kecil. Contoh: font custom/indie dari foundry seperti Pangram Pangram atau Fontshare, biasanya satu per brand agar terasa unik.
+8.	Script / Handwriting
+Meniru tulisan tangan atau kaligrafi, memberi kesan personal dan elegan.
+Kapan digunakan: Dipakai sangat terbatas — sebagai aksen kecil, tanda tangan, atau elemen dekoratif saja. Hindari untuk body text maupun judul besar yang perlu terbaca cepat. Contoh: Caveat, atau varian italic dari font display seperti Playfair Display Italic.
+9.	Monospace
+Setiap karakter memiliki lebar yang sama persis, memberi kesan teknis, presisi, seperti tampilan kode atau terminal.
+Kapan digunakan: Menampilkan cuplikan kode, data teknis, atau ketika brand memang ingin identitas "developer-first" yang jujur — umum di portofolio developer atau brand SaaS teknis. Contoh: JetBrains Mono, Fira Code, IBM Plex Mono, Space Mono.
+10.	Variable Font
+Bukan gaya visual tersendiri, melainkan format teknis: satu file font berisi banyak "sumbu" (axis) yang bisa diatur terus-menerus — ketebalan, lebar, kemiringan, bahkan bentuk kustom lain — tanpa perlu memuat file terpisah untuk tiap variasi.
+Kapan digunakan: Kalau kamu berencana menganimasikan berat/lebar huruf sebagai bagian animasi teks (lihat kembali bagian 1), variable font adalah satu-satunya cara melakukannya dengan mulus, sekaligus mengurangi jumlah file yang perlu dimuat. Contoh: Inter (variable), Recursive, Fraunces.
+32. Tips & Trik: Tipografi & Font pada Website
+Memilih font yang tepat baru separuh jalan — bagian ini membahas cara memasang dan mengoptimalkan font tersebut di proyek Next.js, termasuk cara memanfaatkan variable font untuk animasi yang sudah dibahas di kategori Animasi Teks (bagian 1).
+•	Batasi maksimal 2-3 keluarga font per situs
+Satu font untuk judul/display, satu font untuk body text, dan opsional satu font monospace kalau butuh menampilkan kode/data. Lebih dari itu biasanya membuat desain terasa tidak konsisten sekaligus menambah beban loading yang tidak perlu.
+•	Pasangkan font dengan kontras yang jelas, bukan yang mirip
+Padukan font yang berbeda karakter — misalnya serif display untuk judul dengan sans-serif grotesque untuk body, atau geometris dengan humanis — supaya keduanya punya "peran" yang jelas. Dua font yang terlalu mirip justru terasa seperti kesalahan, bukan pilihan desain yang disengaja.
+•	Gunakan next/font, jangan tag <link> manual ke Google Fonts
+next/font/google dan next/font/local otomatis self-host font-nya (tidak ada request ke server eksternal saat runtime), menghasilkan CSS yang optimal, dan mencegah flash teks tak terlihat (FOIT) — jadi jauh lebih baik dipakai di proyek Next.js dibanding cara lama menaruh tag <link> Google Fonts di head.
+•	Subset font ke karakter yang benar-benar dipakai
+Kalau situs hanya memakai teks Bahasa Indonesia/Inggris, tidak perlu memuat subset Cyrillic, Vietnamese, atau lainnya yang disediakan sebagian besar font. Opsi subsets pada next/font membatasi ini dan bisa memperkecil ukuran file font secara signifikan.
+•	Preload font kritis, terutama untuk teks hero
+Font yang dipakai di atas lipatan (judul hero) sebaiknya diprioritaskan agar tidak ada delay atau flash saat elemen pertama yang dilihat pengunjung muncul. next/font menangani ini secara otomatis untuk font yang diimpor di layout utama.
+•	Manfaatkan variable font untuk animasi ketebalan/lebar huruf
+Kalau font pilihanmu tersedia sebagai variable font, kamu bisa menganimasikan properti font-variation-settings secara langsung lewat GSAP — misalnya ketebalan huruf bertambah saat di-hover atau saat scroll — efek yang mustahil dilakukan dengan file font statis biasa.
+•	Uji keterbacaan di ukuran kecil sebelum memutuskan font display
+Font display/dekoratif yang terlihat menarik di mockup desain besar seringkali sulit dibaca begitu diperkecil ke ukuran mobile. Selalu cek pratinjau di lebar layar sekecil 360px sebelum memutuskan final.
+•	Perhatikan lisensi font untuk penggunaan web dan komersial
+Tidak semua font gratis dipakai di web atau proyek komersial klien — ini penting khususnya untuk pekerjaan agency. Google Fonts dan Fontshare umumnya aman untuk penggunaan komersial, tapi font dari foundry premium sering membutuhkan lisensi terpisah untuk proyek web/klien.
+33. Penutup & Rekomendasi Prioritas
+Tidak semua jenis animasi di atas perlu (atau sebaiknya) dipakai sekaligus dalam satu situs. Situs-situs pemenang Awwwards biasanya memilih beberapa signature moment saja — misalnya satu animasi hero yang kuat, satu pola transisi yang konsisten, dan beberapa micro-interaction halus — lalu mengeksekusinya dengan sangat rapi, dibanding menumpuk banyak efek sekaligus.
+Sebagai urutan prioritas saat membangun: mulai dari fondasi scroll yang mulus (Lenis + GSAP ScrollTrigger), lanjutkan dengan animasi teks/gambar pada hero section, tambahkan beberapa hover/cursor interaction sebagai detail, baru kemudian animasi transisi antar halaman dan loading screen di tahap akhir — karena keduanya memengaruhi seluruh halaman sekaligus dan lebih mudah disesuaikan setelah struktur utama selesai.
+Terakhir, selalu uji performa animasi di perangkat dengan spesifikasi rendah dan hormati preferensi pengguna yang menonaktifkan gerakan (prefers-reduced-motion), agar situs tetap terasa premium tanpa mengorbankan kenyamanan dan aksesibilitas.
