@@ -337,6 +337,7 @@ function initPageAnimations(container) {
         
         wordWrapper.appendChild(innerWord);
         el.appendChild(wordWrapper);
+        el.appendChild(document.createTextNode(' '));
         wordElements.push(innerWord);
       });
 
