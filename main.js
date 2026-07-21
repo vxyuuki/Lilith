@@ -293,6 +293,7 @@ function cleanupPageAnimations() {
 }
 
 function initPageAnimations(container) {
+    if (typeof lucide !== 'undefined') lucide.createIcons();
   // 1. Hover effects
   container.querySelectorAll('a, button, h1, h2, h3').forEach(el => {
     el.addEventListener('mouseenter', () => cursor && cursor.classList.add('active'));
@@ -1117,6 +1118,7 @@ function triggerEasterEgg() {
     setTimeout(() => overlay.remove(), 500);
   };
 }
+
 
 
 
