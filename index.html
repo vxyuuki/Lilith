@@ -10,11 +10,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Public+Sans:wght@300;400;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 </head>
 <body data-barba="wrapper">
+  <div class="awwwards-preloader">
+    <div class="preloader-content">
+      <div class="preloader-counter">0%</div>
+      <div class="preloader-text">DECRYPTING ARCHIVES...</div>
+      <div class="preloader-bar"><div class="preloader-progress"></div></div>
+    </div>
+  </div>
   
-  <nav class="cyber-nav">
-    <a href="/index.html" class="nav-link" style="color: var(--ff-accent);">ROSTER</a>
-    <a href="/about.html" class="nav-link">ABOUT</a>
-  </nav>
+  
 
   <canvas id="webgl-bg"></canvas>
 
@@ -32,7 +36,7 @@
     <section class="roster-hero">
       <div class="roster-hero-content">
         <h1 class="roster-title split-target">THE ARCHIVES</h1>
-        <p class="roster-sub fade-target">SELECT SUBJECT TO DECRYPT DATA</p>
+        <p class="roster-sub fade-target"><i data-lucide="terminal" style="width: 14px; height: 14px; margin-right: 6px; display: inline-block; vertical-align: middle;"></i>SELECT SUBJECT TO DECRYPT DATA</p>
       </div>
     </section>
 
@@ -54,28 +58,28 @@
       <!-- The Vertical List -->
       <ul class="roster-list">
         <li class="roster-item" data-target="img-aemeath">
-          <a href="/aemeath.html" class="roster-link magnetic"><span class="r-num">01</span><span class="r-name">AEMEATH</span></a>
+          <a href="/aemeath.html" class="roster-link magnetic"><span class="r-num">01</span><span class="r-name">AEMEATH</span><i data-lucide="arrow-right"></i></a>
         </li>
         <li class="roster-item" data-target="img-amiya">
-          <a href="/amiya.html" class="roster-link magnetic"><span class="r-num">02</span><span class="r-name">AMIYA</span></a>
+          <a href="/amiya.html" class="roster-link magnetic"><span class="r-num">02</span><span class="r-name">AMIYA</span><i data-lucide="arrow-right"></i></a>
         </li>
         <li class="roster-item" data-target="img-denia">
-          <a href="/denia.html" class="roster-link magnetic"><span class="r-num">03</span><span class="r-name">DENIA</span></a>
+          <a href="/denia.html" class="roster-link magnetic"><span class="r-num">03</span><span class="r-name">DENIA</span><i data-lucide="arrow-right"></i></a>
         </li>
         <li class="roster-item" data-target="img-firefly">
-          <a href="/firefly.html" class="roster-link magnetic"><span class="r-num">04</span><span class="r-name">FIREFLY</span></a>
+          <a href="/firefly.html" class="roster-link magnetic"><span class="r-num">04</span><span class="r-name">FIREFLY</span><i data-lucide="arrow-right"></i></a>
         </li>
         <li class="roster-item" data-target="img-hifumi">
-          <a href="/hifumi.html" class="roster-link magnetic"><span class="r-num">05</span><span class="r-name">HIFUMI</span></a>
+          <a href="/hifumi.html" class="roster-link magnetic"><span class="r-num">05</span><span class="r-name">HIFUMI</span><i data-lucide="arrow-right"></i></a>
         </li>
         <li class="roster-item" data-target="img-hutao">
-          <a href="/hutao.html" class="roster-link magnetic"><span class="r-num">06</span><span class="r-name">HU TAO</span></a>
+          <a href="/hutao.html" class="roster-link magnetic"><span class="r-num">06</span><span class="r-name">HU TAO</span><i data-lucide="arrow-right"></i></a>
         </li>
         <li class="roster-item" data-target="img-lilith">
-          <a href="/lilith.html" class="roster-link magnetic"><span class="r-num">07</span><span class="r-name">LILITH</span></a>
+          <a href="/lilith.html" class="roster-link magnetic"><span class="r-num">07</span><span class="r-name">LILITH</span><i data-lucide="arrow-right"></i></a>
         </li>
         <li class="roster-item" data-target="img-maihimi">
-          <a href="/maihimi.html" class="roster-link magnetic"><span class="r-num">08</span><span class="r-name">MAIHIMI</span></a>
+          <a href="/maihimi.html" class="roster-link magnetic"><span class="r-num">08</span><span class="r-name">MAIHIMI</span><i data-lucide="arrow-right"></i></a>
         </li>
       </ul>
     </section>
@@ -86,5 +90,7 @@
   </div>
 
   <script type="module" src="/main.js"></script>
-</body>
+<script src="https://unpkg.com/lucide@latest"></script>`n  <script>lucide.createIcons();</script>`n</body>
 </html>
+
+

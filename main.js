@@ -864,6 +864,39 @@ function initPageAnimations(container) {
   }
 
   // --- BARBA TRANSITIONS ---
+    // Preloader Logic
+  const preloader = document.querySelector('.awwwards-preloader');
+  if (preloader) {
+    document.body.style.overflow = 'hidden';
+    let progress = 0;
+    const counter = preloader.querySelector('.preloader-counter');
+    const bar = preloader.querySelector('.preloader-progress');
+    
+    const interval = setInterval(() => {
+      progress += Math.floor(Math.random() * 15) + 5;
+      if (progress >= 100) {
+        progress = 100;
+        clearInterval(interval);
+        
+        gsap.timeline()
+          .to('.preloader-content', { opacity: 0, y: -20, duration: 0.5, ease: 'power2.in', delay: 0.2 })
+          .to(preloader, { 
+            yPercent: -100, 
+            duration: 1.2, 
+            ease: 'expo.inOut',
+            onComplete: () => {
+              preloader.style.display = 'none';
+              document.body.style.overflow = '';
+              // Force scrolltrigger refresh after preloader hides
+              ScrollTrigger.refresh();
+            }
+          });
+      }
+      if (counter) counter.innerText = progress + '%';
+      if (bar) bar.style.width = progress + '%';
+    }, 80);
+  }
+
   barba.init({
     transitions: [
       {
@@ -1118,6 +1151,7 @@ function triggerEasterEgg() {
     setTimeout(() => overlay.remove(), 500);
   };
 }
+
 
 
 
