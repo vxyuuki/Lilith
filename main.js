@@ -864,7 +864,7 @@ function initPageAnimations(container) {
   }
 
   // --- BARBA TRANSITIONS ---
-      // EXTREME PRELOADER LOGIC
+        // EXTREME PRELOADER LOGIC
   const preloader = document.querySelector('.awwwards-preloader');
   if (preloader) {
     document.body.style.overflow = 'hidden';
@@ -874,6 +874,64 @@ function initPageAnimations(container) {
     const log1 = document.getElementById('log-1');
     const log2 = document.getElementById('log-2');
     
+    // Canvas Particle Core
+    const canvas = document.getElementById('preloader-canvas');
+    let ctx, particles = [];
+    const colors = ['#00ffa6', '#ff0055', '#ffaa00', '#cc66ff', '#00ccff'];
+    let animationFrameId;
+
+    if (canvas) {
+      ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      class Particle {
+        constructor() {
+          this.reset();
+        }
+        reset() {
+          this.angle = Math.random() * Math.PI * 2;
+          this.radius = Math.random() * (Math.max(canvas.width, canvas.height) / 1.5) + 50;
+          this.speed = (Math.random() * 0.02 + 0.005);
+          this.color = colors[Math.floor(Math.random() * colors.length)];
+          this.size = Math.random() * 2 + 0.5;
+        }
+        update(loadPercentage) {
+          // As it loads, they spin faster and pull towards center
+          this.angle += this.speed + (loadPercentage * 0.0005);
+          this.radius -= (loadPercentage * 0.1);
+          if (this.radius < 10) this.reset();
+          
+          this.x = canvas.width / 2 + Math.cos(this.angle) * this.radius;
+          this.y = canvas.height / 2 + Math.sin(this.angle) * this.radius;
+        }
+        draw() {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fillStyle = this.color;
+          ctx.fill();
+        }
+      }
+
+      for (let i = 0; i < 400; i++) particles.push(new Particle());
+
+      function animateCanvas() {
+        ctx.fillStyle = 'rgba(2, 4, 3, 0.1)'; // Trail effect
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => {
+          p.update(progress);
+          p.draw();
+        });
+        animationFrameId = requestAnimationFrame(animateCanvas);
+      }
+      animateCanvas();
+
+      window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      });
+    }
+
     const logs = [
       "BYPASSING SECURITY...", "DECRYPTING CORE DATA...", "ALLOCATING MEMORY...",
       "LOADING GLAMOTH PROTOCOL...", "ACTIVATING STELLARON...", "CONNECTING TO TERMINAL..."
@@ -898,12 +956,13 @@ function initPageAnimations(container) {
           onComplete: () => {
             preloader.style.display = 'none';
             document.body.style.overflow = '';
+            cancelAnimationFrame(animationFrameId);
             ScrollTrigger.refresh();
           }
         });
         
-        tl.to('.preloader-content, .preloader-bar', { 
-            scale: 1.5, opacity: 0, duration: 0.8, ease: 'power4.in', delay: 0.3 
+        tl.to('.preloader-content, .preloader-bar, #preloader-canvas', { 
+            scale: 1.1, opacity: 0, duration: 0.8, ease: 'power4.in', delay: 0.3 
           })
           .to('.blind', { 
             scaleY: 0, 
@@ -1171,6 +1230,7 @@ function triggerEasterEgg() {
     setTimeout(() => overlay.remove(), 500);
   };
 }
+
 
 
 
