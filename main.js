@@ -864,37 +864,57 @@ function initPageAnimations(container) {
   }
 
   // --- BARBA TRANSITIONS ---
-    // Preloader Logic
+      // EXTREME PRELOADER LOGIC
   const preloader = document.querySelector('.awwwards-preloader');
   if (preloader) {
     document.body.style.overflow = 'hidden';
     let progress = 0;
     const counter = preloader.querySelector('.preloader-counter');
     const bar = preloader.querySelector('.preloader-progress');
+    const log1 = document.getElementById('log-1');
+    const log2 = document.getElementById('log-2');
     
+    const logs = [
+      "BYPASSING SECURITY...", "DECRYPTING CORE DATA...", "ALLOCATING MEMORY...",
+      "LOADING GLAMOTH PROTOCOL...", "ACTIVATING STELLARON...", "CONNECTING TO TERMINAL..."
+    ];
+    
+    let logInterval = setInterval(() => {
+      if(log1) log1.innerText = logs[Math.floor(Math.random() * logs.length)];
+      if(log2) log2.innerText = logs[Math.floor(Math.random() * logs.length)];
+    }, 400);
+
     const interval = setInterval(() => {
-      progress += Math.floor(Math.random() * 15) + 5;
-      if (progress >= 100) {
-        progress = 100;
+      progress += Math.floor(Math.random() * 10) + 2;
+      if (progress > 100) progress = 100;
+      
+      if (progress === 100) {
         clearInterval(interval);
+        clearInterval(logInterval);
+        if(log1) log1.innerText = "ACCESS GRANTED.";
+        if(log2) log2.innerText = "SYSTEM ONLINE.";
         
-        gsap.timeline()
-          .to('.preloader-content', { opacity: 0, y: -20, duration: 0.5, ease: 'power2.in', delay: 0.2 })
-          .to(preloader, { 
-            yPercent: -100, 
+        const tl = gsap.timeline({
+          onComplete: () => {
+            preloader.style.display = 'none';
+            document.body.style.overflow = '';
+            ScrollTrigger.refresh();
+          }
+        });
+        
+        tl.to('.preloader-content, .preloader-bar', { 
+            scale: 1.5, opacity: 0, duration: 0.8, ease: 'power4.in', delay: 0.3 
+          })
+          .to('.blind', { 
+            scaleY: 0, 
             duration: 1.2, 
-            ease: 'expo.inOut',
-            onComplete: () => {
-              preloader.style.display = 'none';
-              document.body.style.overflow = '';
-              // Force scrolltrigger refresh after preloader hides
-              ScrollTrigger.refresh();
-            }
-          });
+            stagger: 0.1, 
+            ease: 'expo.inOut' 
+          }, "-=0.2");
       }
-      if (counter) counter.innerText = progress + '%';
+      if (counter) counter.innerText = progress;
       if (bar) bar.style.width = progress + '%';
-    }, 80);
+    }, 50);
   }
 
   barba.init({
@@ -1151,6 +1171,7 @@ function triggerEasterEgg() {
     setTimeout(() => overlay.remove(), 500);
   };
 }
+
 
 
 

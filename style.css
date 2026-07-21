@@ -1887,10 +1887,22 @@ html, body {
 }
 
 
-/* ===== PRELOADER ===== */
-.awwwards-preloader { position: fixed; inset: 0; background: #050505; z-index: 9999; display: flex; align-items: center; justify-content: center; flex-direction: column; color: #fff; }
-.preloader-content { width: 300px; text-align: center; }
-.preloader-counter { font-family: var(--font-sans); font-size: 5rem; font-weight: 800; line-height: 1; margin-bottom: 1rem; }
-.preloader-text { font-family: var(--ff-mono); font-size: 0.8rem; letter-spacing: 0.3em; color: #00ffa6; margin-bottom: 2rem; text-transform: uppercase; }
-.preloader-bar { width: 100%; height: 2px; background: rgba(255,255,255,0.1); position: relative; overflow: hidden; }
-.preloader-progress { position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: #00ffa6; }
+/* ===== EXTREME PRELOADER ===== */
+.awwwards-preloader { position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; overflow: hidden; pointer-events: none; }
+.blinds-container { position: absolute; inset: 0; display: flex; flex-direction: column; z-index: 0; }
+.blind { flex: 1; background: #020403; transform-origin: top; border-bottom: 1px solid rgba(0,255,166,0.05); }
+.preloader-noise { position: absolute; inset: 0; background: url('https://grainy-gradients.vercel.app/noise.svg'); opacity: 0.15; z-index: 1; pointer-events: none; mix-blend-mode: overlay; }
+
+.preloader-content { position: relative; z-index: 2; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+.huge-bg-text { position: absolute; font-family: var(--font-sans); font-size: 18vw; font-weight: 800; color: rgba(255,255,255,0.03); white-space: nowrap; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; user-select: none; }
+
+.terminal-logs { position: absolute; bottom: 5vh; left: 5vw; font-family: var(--ff-mono); font-size: 0.85rem; color: var(--ff-accent); letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.8; }
+.log-line { margin-bottom: 0.5rem; }
+
+.preloader-counter-wrap { font-family: var(--font-sans); font-size: clamp(6rem, 15vw, 15rem); font-weight: 800; line-height: 1; color: #fff; display: flex; align-items: flex-end; text-shadow: 0 0 40px rgba(0,255,166,0.2); }
+.percent-sign { font-size: clamp(2rem, 5vw, 5rem); color: var(--ff-accent); margin-bottom: 1.5rem; margin-left: 0.5rem; }
+
+.preloader-bar { position: absolute; bottom: 0; left: 0; width: 100%; height: 4px; background: rgba(0,255,166,0.1); z-index: 3; }
+.preloader-progress { height: 100%; width: 0%; background: var(--ff-accent); box-shadow: 0 0 20px var(--ff-accent); }
+

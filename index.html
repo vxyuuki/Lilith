@@ -10,11 +10,27 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Public+Sans:wght@300;400;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 </head>
 <body data-barba="wrapper">
-  <div class="awwwards-preloader">
+    <div class="awwwards-preloader">
+    <div class="blinds-container">
+      <div class="blind"></div>
+      <div class="blind"></div>
+      <div class="blind"></div>
+      <div class="blind"></div>
+      <div class="blind"></div>
+    </div>
+    <div class="preloader-noise"></div>
     <div class="preloader-content">
-      <div class="preloader-counter">0%</div>
-      <div class="preloader-text">DECRYPTING ARCHIVES...</div>
-      <div class="preloader-bar"><div class="preloader-progress"></div></div>
+      <div class="huge-bg-text">SYSTEM BOOT</div>
+      <div class="terminal-logs">
+        <div class="log-line" id="log-1">INITIALIZING NEURAL LINK...</div>
+        <div class="log-line" id="log-2">ESTABLISHING CONNECTION...</div>
+      </div>
+      <div class="preloader-counter-wrap">
+        <span class="preloader-counter">0</span><span class="percent-sign">%</span>
+      </div>
+    </div>
+    <div class="preloader-bar"><div class="preloader-progress"></div></div>
+  </div>
     </div>
   </div>
   
@@ -92,5 +108,6 @@
   <script type="module" src="/main.js"></script>
 <script src="https://unpkg.com/lucide@latest"></script>`n  <script>lucide.createIcons();</script>`n</body>
 </html>
+
 
 
