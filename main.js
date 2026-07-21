@@ -842,7 +842,7 @@ function initPageAnimations(container) {
 }
 
   function manageScrollForNamespace(namespace) {
-    if (namespace === 'home' || namespace === 'wip') {
+    if (namespace === 'wip') {
       if (typeof lenis !== 'undefined') lenis.stop();
       document.body.style.overflow = 'hidden';
     } else {
@@ -1117,6 +1117,7 @@ function triggerEasterEgg() {
     setTimeout(() => overlay.remove(), 500);
   };
 }
+
 
 
 
