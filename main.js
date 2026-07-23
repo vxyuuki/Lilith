@@ -736,27 +736,27 @@ function initPageAnimations(container) {
 
     // 12. Roster Hover Reveal (Home Page)
   if (container.dataset.barbaNamespace === 'home') {
-    const rosterItems = container.querySelectorAll('.roster-item');
+        const rosterItems = container.querySelectorAll('.roster-item');
     const rosterList = container.querySelector('.roster-list');
     
     rosterItems.forEach(item => {
+      // Clean up previous listeners if any (though Barba unmounts DOM)
       item.addEventListener('mouseenter', () => {
         const targetId = item.dataset.target;
         if (targetId) {
-          const targetImg = container.querySelector('#' + targetId);
+          // Use document.querySelector to ensure it always finds the active DOM element
+          const targetImg = document.querySelector('#' + targetId);
           if (targetImg) targetImg.classList.add('active');
         }
-        if (rosterList) rosterList.classList.add('has-hover');
       });
-      
       item.addEventListener('mouseleave', () => {
         const targetId = item.dataset.target;
         if (targetId) {
-          const targetImg = container.querySelector('#' + targetId);
+          const targetImg = document.querySelector('#' + targetId);
           if (targetImg) targetImg.classList.remove('active');
         }
-        if (rosterList) rosterList.classList.remove('has-hover');
       });
+    });
     });
   }
 
@@ -1176,6 +1176,7 @@ function triggerEasterEgg() {
     setTimeout(() => overlay.remove(), 500);
   };
 }
+
 
 
 
