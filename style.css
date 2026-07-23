@@ -1928,8 +1928,8 @@ html, body {
 /* Progress ring */
 .kao-ring {
   position: relative;
-  width: clamp(140px, 25vw, 220px);
-  height: clamp(140px, 25vw, 220px);
+  width: clamp(160px, 28vw, 250px);
+  height: clamp(160px, 28vw, 250px);
   display: flex; align-items: center; justify-content: center;
 }
 
@@ -1967,7 +1967,8 @@ html, body {
 
 /* Main kaomoji face */
 .kao-face {
-  font-size: clamp(1.2rem, 2.2vw, 1.8rem);
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
+  white-space: nowrap;
   color: #fff;
   z-index: 2;
   animation: kao-bounce 2s ease-in-out infinite;
