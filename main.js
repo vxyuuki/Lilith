@@ -866,6 +866,7 @@ function initPageAnimations(container) {
   // --- BARBA TRANSITIONS ---
           // MINIMALIST EDITORIAL PRELOADER LOGIC
   const preloader = document.querySelector('.awwwards-preloader');
+    if (preloader) gsap.set(preloader, { clipPath: 'inset(0% 0% 0% 0%)' });
   if (preloader) {
     document.body.style.overflow = 'hidden';
     let progress = 0;
@@ -1175,6 +1176,7 @@ function triggerEasterEgg() {
     setTimeout(() => overlay.remove(), 500);
   };
 }
+
 
 
 
