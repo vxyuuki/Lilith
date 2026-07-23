@@ -969,10 +969,13 @@ function initPageAnimations(container) {
       if (kaoFace) kaoFace.innerText = kaoMoods[moodIdx];
     }, 200);
 
-    // Progress
+    // Progress - Exactly 4 Seconds
+    const durationMs = 4000;
+    const startTime = performance.now();
+
     const progressInterval = setInterval(() => {
-      progress += Math.floor(Math.random() * 6) + 2;
-      if (progress > 100) progress = 100;
+      const elapsed = performance.now() - startTime;
+      progress = Math.min(100, Math.floor((elapsed / durationMs) * 100));
 
       // Update ring
       if (kaoRingFill) {
@@ -1023,7 +1026,7 @@ function initPageAnimations(container) {
           }, '-=0.3');
         }, 500);
       }
-    }, 50);
+    }, 40);
   }
 
   barba.init({
