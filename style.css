@@ -1,4 +1,4 @@
-/* Awwwards Premium Aesthetic Reset & Variables */
+﻿/* Awwwards Premium Aesthetic Reset & Variables */
 :root {
   --bg-color: transparent;
   --text-primary: #f8fafc;
@@ -886,7 +886,7 @@ body {
   opacity: 0.9;
 }
 
-/* Hover Effects — image distortion is handled by WebGL (imageHover.js) */
+/* Hover Effects â€” image distortion is handled by WebGL (imageHover.js) */
 /* Quote reveal is handled by GSAP typewriter in imageHover.js */
 .quote-hover-item:hover .quote-wrapper {
   opacity: 1;
@@ -1887,38 +1887,23 @@ html, body {
 }
 
 
-/* ===== EXTREME PRELOADER ===== */
-.awwwards-preloader { position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; overflow: hidden; pointer-events: none; }
+/* ===== MINIMALIST EDITORIAL PRELOADER ===== */
+.awwwards-preloader { position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; overflow: hidden; pointer-events: none; background: #030303; }
 .blinds-container { position: absolute; inset: 0; display: flex; flex-direction: column; z-index: 0; }
-.blind { flex: 1; background: #020403; transform-origin: top; border-bottom: 1px solid rgba(0,255,166,0.05); }
-.preloader-noise { position: absolute; inset: 0; background: url('https://grainy-gradients.vercel.app/noise.svg'); opacity: 0.15; z-index: 1; pointer-events: none; mix-blend-mode: overlay; }
+.blind { flex: 1; background: #030303; transform-origin: top; border-bottom: 1px solid rgba(255,255,255,0.03); }
+.preloader-noise { position: absolute; inset: 0; background: url('https://grainy-gradients.vercel.app/noise.svg'); opacity: 0.08; z-index: 1; pointer-events: none; mix-blend-mode: overlay; }
 
-.preloader-content { position: relative; z-index: 2; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.preloader-content { position: relative; z-index: 2; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; }
 
+.preloader-ticker-wrap { position: absolute; top: 35%; text-align: center; }
+.ticker-label { font-family: var(--ff-mono); font-size: 0.75rem; letter-spacing: 0.4em; color: rgba(255,255,255,0.4); text-transform: uppercase; margin-bottom: 0.5rem; }
+.ticker-name { font-family: var(--font-sans); font-size: clamp(2rem, 6vw, 5rem); font-weight: 800; letter-spacing: -0.02em; color: #ffffff; text-transform: uppercase; }
 
+.terminal-logs { position: absolute; bottom: 4rem; left: 4rem; font-family: var(--ff-mono); font-size: 0.75rem; color: rgba(255,255,255,0.4); letter-spacing: 0.2em; text-transform: uppercase; }
+.log-line { margin-bottom: 0.25rem; }
 
-.terminal-logs { position: absolute; bottom: 5vh; left: 5vw; font-family: var(--ff-mono); font-size: 0.85rem; animation: raw-color-cycle 6s infinite linear; letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.8; }
-.log-line { margin-bottom: 0.5rem; }
+.preloader-counter-wrap { font-family: var(--font-sans); font-size: clamp(5rem, 12vw, 12rem); font-weight: 800; line-height: 1; color: #ffffff; display: flex; align-items: flex-end; letter-spacing: -0.04em; }
+.percent-sign { font-size: clamp(1.5rem, 3vw, 3rem); color: rgba(255,255,255,0.4); margin-bottom: 1rem; margin-left: 0.5rem; }
 
-.preloader-counter-wrap { font-family: var(--font-sans); font-size: clamp(6rem, 15vw, 15rem); font-weight: 800; line-height: 1; display: flex; align-items: flex-end; text-shadow: none; background: linear-gradient(90deg, #00ffa6, #ff0055, #ffaa00, #cc66ff, #00ccff, #00ffa6); background-size: 500% 100%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: gradient-shift 4s linear infinite; }
-.percent-sign { font-size: clamp(2rem, 5vw, 5rem); animation: raw-color-cycle 6s infinite linear; margin-bottom: 1.5rem; margin-left: 0.5rem; }
-
-.preloader-bar { position: absolute; bottom: 0; left: 0; width: 100%; height: 4px; background: rgba(0,255,166,0.1); z-index: 3; }
-.preloader-progress { height: 100%; width: 0%; background: linear-gradient(90deg, #00ffa6, #ff0055, #ffaa00, #cc66ff, #00ccff, #00ffa6); background-size: 500% 100%; box-shadow: 0 0 20px rgba(255,255,255,0.2); animation: gradient-shift 4s linear infinite; }
-
-@keyframes gradient-shift {
-  0% { background-position: 100% 0; }
-  100% { background-position: 0 0; }
-}
-@keyframes raw-color-cycle {
-  0% { color: #00ffa6; }
-  20% { color: #ff0055; }
-  40% { color: #ffaa00; }
-  60% { color: #cc66ff; }
-  80% { color: #00ccff; }
-  100% { color: #00ffa6; }
-}
-
-
-
-
+.preloader-bar { position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: rgba(255,255,255,0.1); z-index: 3; }
+.preloader-progress { height: 100%; width: 0%; background: #ffffff; }

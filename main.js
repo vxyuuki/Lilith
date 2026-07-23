@@ -1,4 +1,4 @@
-import Lenis from 'lenis';
+﻿import Lenis from 'lenis';
 import { animate, createTimeline, stagger, splitText, utils } from 'animejs';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -864,116 +864,59 @@ function initPageAnimations(container) {
   }
 
   // --- BARBA TRANSITIONS ---
-        // EXTREME PRELOADER LOGIC
+          // MINIMALIST EDITORIAL PRELOADER LOGIC
   const preloader = document.querySelector('.awwwards-preloader');
   if (preloader) {
     document.body.style.overflow = 'hidden';
     let progress = 0;
     const counter = preloader.querySelector('.preloader-counter');
     const bar = preloader.querySelector('.preloader-progress');
+    const tickerSubject = document.getElementById('ticker-subject');
     const log1 = document.getElementById('log-1');
     const log2 = document.getElementById('log-2');
     
-    // Canvas Particle Core
-    const canvas = document.getElementById('preloader-canvas');
-    let ctx, particles = [];
-    const colors = ['#00ffa6', '#ff0055', '#ffaa00', '#cc66ff', '#00ccff'];
-    let animationFrameId;
+    const characterList = ["AEMEATH", "AMIYA", "DENIA", "FIREFLY", "HIFUMI", "HU TAO", "LILITH", "MAIHIMI"];
+    let charIdx = 0;
 
-    if (canvas) {
-      ctx = canvas.getContext('2d');
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-
-      class Particle {
-        constructor() {
-          this.reset();
-        }
-        reset() {
-          this.angle = Math.random() * Math.PI * 2;
-          this.radius = Math.random() * (Math.max(canvas.width, canvas.height) / 1.5) + 50;
-          this.speed = (Math.random() * 0.02 + 0.005);
-          this.color = colors[Math.floor(Math.random() * colors.length)];
-          this.size = Math.random() * 2 + 0.5;
-        }
-        update(loadPercentage) {
-          // As it loads, they spin faster and pull towards center
-          this.angle += this.speed + (loadPercentage * 0.0005);
-          this.radius -= (loadPercentage * 0.1);
-          if (this.radius < 10) this.reset();
-          
-          this.x = canvas.width / 2 + Math.cos(this.angle) * this.radius;
-          this.y = canvas.height / 2 + Math.sin(this.angle) * this.radius;
-        }
-        draw() {
-          ctx.beginPath();
-          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-          ctx.fillStyle = this.color;
-          ctx.fill();
-        }
+    const tickerInterval = setInterval(() => {
+      if (tickerSubject) {
+        charIdx = (charIdx + 1) % characterList.length;
+        tickerSubject.innerText = characterList[charIdx];
       }
-
-      for (let i = 0; i < 400; i++) particles.push(new Particle());
-
-      function animateCanvas() {
-        ctx.fillStyle = 'rgba(2, 4, 3, 0.1)'; // Trail effect
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        particles.forEach(p => {
-          p.update(progress);
-          p.draw();
-        });
-        animationFrameId = requestAnimationFrame(animateCanvas);
-      }
-      animateCanvas();
-
-      window.addEventListener('resize', () => {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-      });
-    }
-
-    const logs = [
-      "BYPASSING SECURITY...", "DECRYPTING CORE DATA...", "ALLOCATING MEMORY...",
-      "LOADING GLAMOTH PROTOCOL...", "ACTIVATING STELLARON...", "CONNECTING TO TERMINAL..."
-    ];
-    
-    let logInterval = setInterval(() => {
-      if(log1) log1.innerText = logs[Math.floor(Math.random() * logs.length)];
-      if(log2) log2.innerText = logs[Math.floor(Math.random() * logs.length)];
-    }, 400);
+    }, 150);
 
     const interval = setInterval(() => {
-      progress += Math.floor(Math.random() * 10) + 2;
+      progress += Math.floor(Math.random() * 8) + 2;
       if (progress > 100) progress = 100;
       
       if (progress === 100) {
         clearInterval(interval);
-        clearInterval(logInterval);
-        if(log1) log1.innerText = "ACCESS GRANTED.";
-        if(log2) log2.innerText = "SYSTEM ONLINE.";
+        clearInterval(tickerInterval);
+        if (tickerSubject) tickerSubject.innerText = "DATABASE READY";
+        if (log1) log1.innerText = "STATUS: OK";
+        if (log2) log2.innerText = "ACCESS GRANTED";
         
         const tl = gsap.timeline({
           onComplete: () => {
             preloader.style.display = 'none';
             document.body.style.overflow = '';
-            cancelAnimationFrame(animationFrameId);
             ScrollTrigger.refresh();
           }
         });
         
-        tl.to('.preloader-content, .preloader-bar, #preloader-canvas', { 
-            scale: 1.1, opacity: 0, duration: 0.8, ease: 'power4.in', delay: 0.3 
+        tl.to('.preloader-content, .preloader-bar', { 
+            opacity: 0, y: -20, duration: 0.6, ease: 'power3.in', delay: 0.2 
           })
           .to('.blind', { 
             scaleY: 0, 
-            duration: 1.2, 
-            stagger: 0.1, 
+            duration: 1.1, 
+            stagger: 0.08, 
             ease: 'expo.inOut' 
-          }, "-=0.2");
+          }, "-=0.1");
       }
-      if (counter) counter.innerText = progress;
+      if (counter) counter.innerText = String(progress).padStart(3, '0');
       if (bar) bar.style.width = progress + '%';
-    }, 50);
+    }, 40);
   }
 
   barba.init({
@@ -1230,6 +1173,7 @@ function triggerEasterEgg() {
     setTimeout(() => overlay.remove(), 500);
   };
 }
+
 
 
 
