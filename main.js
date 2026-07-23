@@ -1,4 +1,4 @@
-﻿import Lenis from 'lenis';
+import Lenis from 'lenis';
 import { animate, createTimeline, stagger, splitText, utils } from 'animejs';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -757,7 +757,11 @@ function initPageAnimations(container) {
         }
       });
     });
-    });
+
+    if (rosterList) {
+      rosterList.addEventListener('mouseenter', () => rosterList.classList.add('has-hover'));
+      rosterList.addEventListener('mouseleave', () => rosterList.classList.remove('has-hover'));
+    }
   }
 
   // 13. Firefly Custom Animations
