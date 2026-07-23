@@ -886,7 +886,7 @@ body {
   opacity: 0.9;
 }
 
-/* Hover Effects â€” image distortion is handled by WebGL (imageHover.js) */
+/* Hover Effects Ã¢â‚¬â€ image distortion is handled by WebGL (imageHover.js) */
 /* Quote reveal is handled by GSAP typewriter in imageHover.js */
 .quote-hover-item:hover .quote-wrapper {
   opacity: 1;
@@ -1885,27 +1885,158 @@ html, body {
   .roster-list { padding: 0 2rem; }
   .r-num { margin-right: 1rem; }
 }
+/* ===== âœ¦ KAOMOJI PRELOADER âœ¦ ===== */
+@property --kao-hue {
+  syntax: '<number>';
+  initial-value: 0;
+  inherits: false;
+}
 
+.kaomoji-preloader {
+  position: fixed; inset: 0; z-index: 9999;
+  display: flex; align-items: center; justify-content: center;
+  background: #0a0a0f;
+  overflow: hidden;
+}
 
-/* ===== MINIMALIST EDITORIAL PRELOADER ===== */
-.awwwards-preloader { position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; overflow: hidden; pointer-events: none; background: #030303; }
-.blinds-container { position: absolute; inset: 0; display: flex; flex-direction: column; z-index: 0; }
-.blind { flex: 1; background: #030303; transform-origin: top; border-bottom: 1px solid rgba(255,255,255,0.03); }
-.preloader-noise { position: absolute; inset: 0; background: url('https://grainy-gradients.vercel.app/noise.svg'); opacity: 0.08; z-index: 1; pointer-events: none; mix-blend-mode: overlay; }
+.kao-noise {
+  position: absolute; inset: 0;
+  background: url('https://grainy-gradients.vercel.app/noise.svg');
+  opacity: 0.06; z-index: 1; pointer-events: none; mix-blend-mode: overlay;
+}
 
-.preloader-content { position: relative; z-index: 2; width: 100vw; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+/* Floating kaomoji particles */
+.kao-particles {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+}
 
-.preloader-ticker-wrap { position: relative; text-align: center; }
-.ticker-label { font-family: var(--ff-mono); font-size: 0.8rem; letter-spacing: 0.4em; color: rgba(255,255,255,0.4); text-transform: uppercase; margin-bottom: 0.5rem; }
-.ticker-name { font-family: var(--font-sans); font-size: clamp(2rem, 5vw, 4.5rem); font-weight: 800; letter-spacing: -0.02em; color: #ffffff; text-transform: uppercase; }
+.kao-particle {
+  position: absolute;
+  font-size: clamp(0.9rem, 1.5vw, 1.4rem);
+  opacity: 0;
+  pointer-events: none;
+  filter: blur(0px);
+  will-change: transform, opacity;
+}
 
-.terminal-logs { position: absolute; bottom: 3rem; left: 3rem; font-family: var(--ff-mono); font-size: 0.75rem; color: rgba(255,255,255,0.4); letter-spacing: 0.2em; text-transform: uppercase; text-align: left; }
-.log-line { margin-bottom: 0.25rem; }
+/* Center content */
+.kao-center {
+  position: relative; z-index: 2;
+  display: flex; flex-direction: column; align-items: center; gap: 1.5rem;
+}
 
-.preloader-counter-wrap { position: absolute; bottom: 3rem; right: 3rem; font-family: var(--font-sans); font-size: 2.5rem; font-weight: 800; line-height: 1; color: #ffffff; display: flex; align-items: flex-end; letter-spacing: -0.04em; }
-.percent-sign { font-size: 1.2rem; color: rgba(255,255,255,0.4); margin-bottom: 0.2rem; margin-left: 0.2rem; }
+/* Progress ring */
+.kao-ring {
+  position: relative;
+  width: clamp(100px, 20vw, 160px);
+  height: clamp(100px, 20vw, 160px);
+  display: flex; align-items: center; justify-content: center;
+}
 
-.preloader-bar { position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: rgba(255,255,255,0.1); z-index: 3; }
-.preloader-progress { height: 100%; width: 0%; background: #ffffff; }
+.kao-ring-svg {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  transform: rotate(-90deg);
+}
 
+.kao-ring-track {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.06);
+  stroke-width: 3;
+}
 
+.kao-ring-fill {
+  fill: none;
+  stroke: url(#kao-gradient);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-dasharray: 339.292;
+  stroke-dashoffset: 339.292;
+  filter: drop-shadow(0 0 6px rgba(168, 130, 255, 0.5));
+  transition: stroke-dashoffset 0.15s ease-out;
+}
+
+/* Animated gradient for ring - we'll use a CSS animation */
+.kao-ring-svg {
+  animation: kao-ring-hue 4s linear infinite;
+}
+
+@keyframes kao-ring-hue {
+  0% { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(360deg); }
+}
+
+/* Main kaomoji face */
+.kao-face {
+  font-size: clamp(1.4rem, 3vw, 2.2rem);
+  color: #fff;
+  z-index: 2;
+  animation: kao-bounce 2s ease-in-out infinite;
+  text-shadow: 
+    0 0 20px rgba(168, 130, 255, 0.6),
+    0 0 40px rgba(255, 130, 200, 0.3);
+  letter-spacing: 0.05em;
+}
+
+@keyframes kao-bounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-6px) scale(1.05); }
+}
+
+/* Name ticker */
+.kao-name-ticker {
+  display: flex; flex-direction: column; align-items: center; gap: 0.3rem;
+}
+
+.kao-label {
+  font-family: var(--font-mono, 'Share Tech Mono', monospace);
+  font-size: 0.65rem;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.kao-subject {
+  font-family: var(--font-sans, 'Outfit', sans-serif);
+  font-size: clamp(1rem, 2.5vw, 1.6rem);
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  background: linear-gradient(135deg, #a882ff, #ff6ec7, #ffaa40, #6ec6ff, #7eff8a);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: kao-gradient-shift 3s ease-in-out infinite;
+}
+
+@keyframes kao-gradient-shift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Percentage */
+.kao-percent {
+  font-family: var(--font-sans, 'Outfit', sans-serif);
+  font-size: clamp(0.8rem, 1.5vw, 1rem);
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.3em;
+}
+
+/* Bottom decorative row */
+.kao-bottom-row {
+  position: absolute; bottom: 2rem; left: 0; right: 0;
+  display: flex; justify-content: center; gap: clamp(1rem, 3vw, 2.5rem);
+  z-index: 2;
+}
+
+.kao-bottom-item {
+  font-size: clamp(0.7rem, 1.2vw, 0.9rem);
+  opacity: 0.4;
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.kao-bottom-item.active {
+  opacity: 1;
+  transform: scale(1.2);
+}

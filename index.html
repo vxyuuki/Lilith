@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -10,32 +10,42 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Public+Sans:wght@300;400;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 </head>
 <body data-barba="wrapper">
-    <div class="awwwards-preloader">
-    <div class="blinds-container">
-      <div class="blind"></div>
-      <div class="blind"></div>
-      <div class="blind"></div>
-      <div class="blind"></div>
-      <div class="blind"></div>
-    </div>
-    <div class="preloader-noise"></div>
-    <div class="preloader-content">
-                  <div class="preloader-ticker-wrap">
-      <div class="ticker-label">LOADING SUBJECT:</div>
-      <div class="ticker-name" id="ticker-subject">FIREFLY</div>
-    </div>
-    </div>
-      <div class="terminal-logs">
-        <div class="log-line" id="log-1">INITIALIZING NEURAL LINK...</div>
-        <div class="log-line" id="log-2">ESTABLISHING CONNECTION...</div>
+  <!-- ✦ KAOMOJI PRELOADER ✦ -->
+  <div class="kaomoji-preloader" id="kaomoji-preloader">
+    <div class="kao-noise"></div>
+    
+    <!-- Floating kaomoji particles -->
+    <div class="kao-particles" id="kao-particles"></div>
+    
+    <!-- Center content -->
+    <div class="kao-center">
+      <div class="kao-ring">
+        <svg viewBox="0 0 120 120" class="kao-ring-svg">
+          <defs>
+            <linearGradient id="kao-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#a882ff"/>
+              <stop offset="25%" stop-color="#ff6ec7"/>
+              <stop offset="50%" stop-color="#ffaa40"/>
+              <stop offset="75%" stop-color="#6ec6ff"/>
+              <stop offset="100%" stop-color="#7eff8a"/>
+            </linearGradient>
+          </defs>
+          <circle cx="60" cy="60" r="54" class="kao-ring-track"/>
+          <circle cx="60" cy="60" r="54" class="kao-ring-fill" id="kao-ring-fill"/>
+        </svg>
+        <div class="kao-face" id="kao-face">(｡◕‿◕｡)</div>
       </div>
-      <div class="preloader-counter-wrap">
-        <span class="preloader-counter">0</span><span class="percent-sign">%</span>
+      
+      <div class="kao-name-ticker">
+        <span class="kao-label">loading</span>
+        <span class="kao-subject" id="kao-subject">FIREFLY</span>
       </div>
+      
+      <div class="kao-percent" id="kao-percent">0%</div>
     </div>
-    <div class="preloader-bar"><div class="preloader-progress"></div></div>
-  </div>
-    </div>
+    
+    <!-- Bottom decorative kaomoji row -->
+    <div class="kao-bottom-row" id="kao-bottom-row"></div>
   </div>
   
   

@@ -1,4 +1,4 @@
-﻿import Lenis from 'lenis';
+import Lenis from 'lenis';
 import { animate, createTimeline, stagger, splitText, utils } from 'animejs';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -868,64 +868,162 @@ function initPageAnimations(container) {
   }
 
   // --- BARBA TRANSITIONS ---
-          // MINIMALIST EDITORIAL PRELOADER LOGIC
-  const preloader = document.querySelector('.awwwards-preloader');
-    if (preloader) gsap.set(preloader, { clipPath: 'inset(0% 0% 0% 0%)' });
+  // ✦ KAOMOJI PRELOADER LOGIC ✦
+  const preloader = document.getElementById('kaomoji-preloader');
   if (preloader) {
     document.body.style.overflow = 'hidden';
     let progress = 0;
-    const counter = preloader.querySelector('.preloader-counter');
-    const bar = preloader.querySelector('.preloader-progress');
-    const tickerSubject = document.getElementById('ticker-subject');
-    const log1 = document.getElementById('log-1');
-    const log2 = document.getElementById('log-2');
-    
-    const characterList = ["AEMEATH", "AMIYA", "DENIA", "FIREFLY", "HIFUMI", "HU TAO", "LILITH", "MAIHIMI"];
-    let charIdx = 0;
 
-    const tickerInterval = setInterval(() => {
-      if (tickerSubject) {
-        charIdx = (charIdx + 1) % characterList.length;
-        tickerSubject.innerText = characterList[charIdx];
-      }
-    }, 150);
+    const kaoFace = document.getElementById('kao-face');
+    const kaoSubject = document.getElementById('kao-subject');
+    const kaoPercent = document.getElementById('kao-percent');
+    const kaoRingFill = document.getElementById('kao-ring-fill');
+    const kaoParticles = document.getElementById('kao-particles');
+    const kaoBottomRow = document.getElementById('kao-bottom-row');
 
-    const interval = setInterval(() => {
-      progress += Math.floor(Math.random() * 8) + 2;
-      if (progress > 100) progress = 100;
-      
-      if (progress === 100) {
-        clearInterval(interval);
-        clearInterval(tickerInterval);
-        if (tickerSubject) tickerSubject.innerText = "DATABASE READY";
-        if (log1) log1.innerText = "STATUS: OK";
-        if (log2) log2.innerText = "ACCESS GRANTED";
-        
-        const tl = gsap.timeline({
+    // Ring circumference: 2 * PI * 54 = 339.292
+    const CIRCUMFERENCE = 339.292;
+
+    // Character data with kaomoji and colors
+    const characters = [
+      { name: "AEMEATH",  kao: "(⌐■_■)",      color: "#6ec6ff" },
+      { name: "AMIYA",    kao: "(◕ᴗ◕✿)",     color: "#7eff8a" },
+      { name: "DENIA",    kao: "(´｡• ᵕ •｡`)",  color: "#ffcc70" },
+      { name: "FIREFLY",  kao: "(✧ω✧)",       color: "#ffaa40" },
+      { name: "HIFUMI",   kao: "(≧◡≦)",       color: "#ff6ec7" },
+      { name: "HU TAO",   kao: "(☞ﾟヮﾟ)☞",    color: "#ff4444" },
+      { name: "LILITH",   kao: "(｡♥‿♥｡)",     color: "#a882ff" },
+      { name: "MAIHIMI",  kao: "(◠‿◠)",       color: "#82d8ff" },
+    ];
+
+    // Moods for the main face
+    const kaoMoods = [
+      "(｡◕‿◕｡)", "(◕ᴗ◕✿)", "(≧◡≦)", "(✧ω✧)", 
+      "ヽ(>∀<☆)ノ", "(ﾉ◕ヮ◕)ﾉ*:・ﾟ✧", "(づ￣ ³￣)づ", "(★‿★)"
+    ];
+
+    // Floating kaomoji particles
+    const floatingKao = [
+      "✧", "♡", "☆", "♪", "✿", "◕", "❀", "⋆", "★", "♫",
+      "(◕‿◕)", "(≧▽≦)", "(◠‿◠)", "✦", "❤", "☽", "◇", "♥"
+    ];
+
+    // Build bottom row: one kaomoji per character
+    characters.forEach((char, i) => {
+      const el = document.createElement('span');
+      el.className = 'kao-bottom-item';
+      el.textContent = char.kao;
+      el.style.color = char.color;
+      kaoBottomRow.appendChild(el);
+    });
+    const bottomItems = kaoBottomRow.querySelectorAll('.kao-bottom-item');
+
+    // Spawn floating particles
+    function spawnParticle() {
+      const el = document.createElement('span');
+      el.className = 'kao-particle';
+      const rKao = floatingKao[Math.floor(Math.random() * floatingKao.length)];
+      el.textContent = rKao;
+      const rColor = characters[Math.floor(Math.random() * characters.length)].color;
+      el.style.color = rColor;
+      el.style.left = Math.random() * 100 + 'vw';
+      el.style.top = (Math.random() * 80 + 10) + 'vh';
+      kaoParticles.appendChild(el);
+
+      gsap.fromTo(el, 
+        { opacity: 0, scale: 0, rotation: Math.random() * 360 - 180 },
+        { 
+          opacity: 0.6 + Math.random() * 0.4,
+          scale: 0.6 + Math.random() * 0.8,
+          rotation: 0,
+          y: -(30 + Math.random() * 60),
+          duration: 1.5 + Math.random() * 1.5,
+          ease: 'power2.out',
           onComplete: () => {
-            preloader.style.display = 'none';
-            document.body.style.overflow = '';
-            ScrollTrigger.refresh();
+            gsap.to(el, { 
+              opacity: 0, scale: 0, y: '-=30', 
+              duration: 0.8, ease: 'power2.in',
+              onComplete: () => el.remove()
+            });
           }
-        });
-        
-        tl.to('.preloader-content, .preloader-bar', { 
-            opacity: 0, y: -20, duration: 0.6, ease: 'power3.in', delay: 0.2 
+        }
+      );
+    }
+
+    // Spawn particles at interval
+    const particleInterval = setInterval(() => {
+      for (let i = 0; i < 2; i++) spawnParticle();
+    }, 300);
+
+    let charIdx = 0;
+    let moodIdx = 0;
+
+    // Ticker: cycle through characters
+    const tickerInterval = setInterval(() => {
+      charIdx = (charIdx + 1) % characters.length;
+      if (kaoSubject) kaoSubject.innerText = characters[charIdx].name;
+      // Highlight matching bottom item
+      bottomItems.forEach((item, i) => item.classList.toggle('active', i === charIdx));
+      // Cycle main face mood
+      moodIdx = (moodIdx + 1) % kaoMoods.length;
+      if (kaoFace) kaoFace.innerText = kaoMoods[moodIdx];
+    }, 200);
+
+    // Progress
+    const progressInterval = setInterval(() => {
+      progress += Math.floor(Math.random() * 6) + 2;
+      if (progress > 100) progress = 100;
+
+      // Update ring
+      if (kaoRingFill) {
+        const offset = CIRCUMFERENCE - (progress / 100) * CIRCUMFERENCE;
+        kaoRingFill.style.strokeDashoffset = offset;
+      }
+      // Update percent text
+      if (kaoPercent) kaoPercent.innerText = progress + '%';
+
+      if (progress === 100) {
+        clearInterval(progressInterval);
+        clearInterval(tickerInterval);
+        clearInterval(particleInterval);
+
+        // Final state
+        if (kaoFace) kaoFace.innerText = "ヽ(>∀<☆)ノ";
+        if (kaoSubject) kaoSubject.innerText = "READY ✦";
+        bottomItems.forEach(item => item.classList.add('active'));
+
+        // Exit animation
+        setTimeout(() => {
+          const tl = gsap.timeline({
+            onComplete: () => {
+              preloader.style.display = 'none';
+              document.body.style.overflow = '';
+              ScrollTrigger.refresh();
+            }
+          });
+
+          // 1. Scale up the center content and fade
+          tl.to('.kao-center', {
+            scale: 1.3, opacity: 0, filter: 'blur(15px)',
+            duration: 0.8, ease: 'power3.in'
           })
-          .to(preloader, { 
-            opacity: 0,
-            scale: 1.05,
-            filter: "blur(10px)",
-            duration: 1.6, 
+          // 2. Fade bottom row  
+          .to('.kao-bottom-row', {
+            opacity: 0, y: 20, duration: 0.4, ease: 'power2.in'
+          }, '<')
+          // 3. Dissolve the entire preloader
+          .to(preloader, {
+            opacity: 0, 
+            duration: 0.8, 
             ease: 'power2.inOut',
             onStart: () => {
+              // Initialize page animations as preloader fades
               initPageAnimations(document.querySelector('[data-barba="container"]'));
             }
-          }, "-=0.2");
+          }, '-=0.3');
+        }, 500);
       }
-      if (counter) counter.innerText = String(progress).padStart(3, '0');
-      if (bar) bar.style.width = progress + '%';
-    }, 40);
+    }, 50);
   }
 
   barba.init({
