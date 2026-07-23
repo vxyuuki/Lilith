@@ -1,4 +1,4 @@
-﻿/* Awwwards Premium Aesthetic Reset & Variables */
+/* Awwwards Premium Aesthetic Reset & Variables */
 :root {
   --bg-color: transparent;
   --text-primary: #f8fafc;
@@ -1928,8 +1928,8 @@ html, body {
 /* Progress ring */
 .kao-ring {
   position: relative;
-  width: clamp(100px, 20vw, 160px);
-  height: clamp(100px, 20vw, 160px);
+  width: clamp(140px, 25vw, 220px);
+  height: clamp(140px, 25vw, 220px);
   display: flex; align-items: center; justify-content: center;
 }
 
@@ -1949,8 +1949,8 @@ html, body {
   stroke: url(#kao-gradient);
   stroke-width: 3.5;
   stroke-linecap: round;
-  stroke-dasharray: 339.292;
-  stroke-dashoffset: 339.292;
+  stroke-dasharray: 590.619;
+  stroke-dashoffset: 590.619;
   filter: drop-shadow(0 0 6px rgba(168, 130, 255, 0.5));
   transition: stroke-dashoffset 0.15s ease-out;
 }
@@ -1967,7 +1967,7 @@ html, body {
 
 /* Main kaomoji face */
 .kao-face {
-  font-size: clamp(1.4rem, 3vw, 2.2rem);
+  font-size: clamp(1.2rem, 2.2vw, 1.8rem);
   color: #fff;
   z-index: 2;
   animation: kao-bounce 2s ease-in-out infinite;

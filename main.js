@@ -881,8 +881,8 @@ function initPageAnimations(container) {
     const kaoParticles = document.getElementById('kao-particles');
     const kaoBottomRow = document.getElementById('kao-bottom-row');
 
-    // Ring circumference: 2 * PI * 54 = 339.292
-    const CIRCUMFERENCE = 339.292;
+    // Ring circumference: 2 * PI * 94 = 590.619
+    const CIRCUMFERENCE = 590.619;
 
     // Character data with kaomoji and colors
     const characters = [
