@@ -1,4 +1,4 @@
-import Lenis from 'lenis';
+﻿import Lenis from 'lenis';
 import { animate, createTimeline, stagger, splitText, utils } from 'animejs';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -912,12 +912,16 @@ function initPageAnimations(container) {
         tl.to('.preloader-content, .preloader-bar', { 
             opacity: 0, y: -20, duration: 0.6, ease: 'power3.in', delay: 0.2 
           })
-          .to('.blind', { 
-            scaleY: 0, 
-            duration: 1.1, 
-            stagger: 0.08, 
-            ease: 'expo.inOut' 
-          }, "-=0.1");
+          .to(preloader, { 
+            opacity: 0,
+            scale: 1.05,
+            filter: "blur(10px)",
+            duration: 1.6, 
+            ease: 'power2.inOut',
+            onStart: () => {
+              initPageAnimations(document.querySelector('[data-barba="container"]'));
+            }
+          }, "-=0.2");
       }
       if (counter) counter.innerText = String(progress).padStart(3, '0');
       if (bar) bar.style.width = progress + '%';
@@ -1180,6 +1184,7 @@ function triggerEasterEgg() {
     setTimeout(() => overlay.remove(), 500);
   };
 }
+
 
 
 
