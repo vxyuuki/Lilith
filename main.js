@@ -835,7 +835,7 @@ function initPageAnimations(container) {
   }
 
   // --- BARBA TRANSITIONS ---
-  // âœ¦ KAOMOJI PRELOADER LOGIC âœ¦
+  // ✦ KAOMOJI PRELOADER LOGIC ✦
   const preloader = document.getElementById('kaomoji-preloader');
   if (preloader) {
     document.body.style.overflow = 'hidden';
@@ -853,26 +853,26 @@ function initPageAnimations(container) {
 
     // Character data with kaomoji and colors
     const characters = [
-      { name: "AEMEATH",  kao: "(âŒâ– _â– )",      color: "#6ec6ff" },
-      { name: "AMIYA",    kao: "(â—•á´—â—•âœ¿)",     color: "#7eff8a" },
-      { name: "DENIA",    kao: "(Â´ï½¡â€¢ áµ• â€¢ï½¡`)",  color: "#ffcc70" },
-      { name: "FIREFLY",  kao: "(âœ§Ï‰âœ§)",       color: "#ffaa40" },
-      { name: "HIFUMI",   kao: "(â‰§â—¡â‰¦)",       color: "#ff6ec7" },
-      { name: "HU TAO",   kao: "(â˜žï¾Ÿãƒ®ï¾Ÿ)â˜ž",    color: "#ff4444" },
-      { name: "LILITH",   kao: "(ï½¡â™¥â€¿â™¥ï½¡)",     color: "#a882ff" },
-      { name: "MAIHIMI",  kao: "(â— â€¿â— )",       color: "#82d8ff" },
+      { name: "AEMEATH",  kao: "(⌐■_■)",      color: "#6ec6ff" },
+      { name: "AMIYA",    kao: "(◕ᴗ◕✿)",     color: "#7eff8a" },
+      { name: "DENIA",    kao: "(´｡• ᵕ •｡`)",  color: "#ffcc70" },
+      { name: "FIREFLY",  kao: "(✧ω✧)",       color: "#ffaa40" },
+      { name: "HIFUMI",   kao: "(≧◡≦)",       color: "#ff6ec7" },
+      { name: "HU TAO",   kao: "(☞ﾟヮﾟ)☞",    color: "#ff4444" },
+      { name: "LILITH",   kao: "(｡♥‿♥｡)",     color: "#a882ff" },
+      { name: "MAIHIMI",  kao: "(◠‿◠)",       color: "#82d8ff" },
     ];
 
     // Moods for the main face
     const kaoMoods = [
-      "(ï½¡â—•â€¿â—•ï½¡)", "(â—•á´—â—•âœ¿)", "(â‰§â—¡â‰¦)", "(âœ§Ï‰âœ§)", 
-      "ãƒ½(>âˆ€<â˜†)ãƒŽ", "(ï¾‰â—•ãƒ®â—•)ï¾‰*:ãƒ»ï¾Ÿâœ§", "(ã¥ï¿£ Â³ï¿£)ã¥", "(â˜…â€¿â˜…)"
+      "(｡◕‿◕｡)", "(◕ᴗ◕✿)", "(≧◡≦)", "(✧ω✧)", 
+      "ヽ(>∀<☆)ノ", "(ﾉ◕ヮ◕)ﾉ*:・ﾟ✧", "(づ￣ ³￣)づ", "(★‿★)"
     ];
 
     // Floating kaomoji particles
     const floatingKao = [
-      "âœ§", "â™¡", "â˜†", "â™ª", "âœ¿", "â—•", "â€", "â‹†", "â˜…", "â™«",
-      "(â—•â€¿â—•)", "(â‰§â–½â‰¦)", "(â— â€¿â— )", "âœ¦", "â¤", "â˜½", "â—‡", "â™¥"
+      "✧", "♡", "☆", "♪", "✿", "◕", "❀", "⋆", "★", "♫",
+      "(◕‿◕)", "(≧▽≦)", "(◠‿◠)", "✦", "❤", "☽", "◇", "♥"
     ];
 
     // Build bottom row: one kaomoji per character
@@ -958,8 +958,8 @@ function initPageAnimations(container) {
         clearInterval(particleInterval);
 
         // Final state
-        if (kaoFace) kaoFace.innerText = "ãƒ½(>âˆ€<â˜†)ãƒŽ";
-        if (kaoSubject) kaoSubject.innerText = "READY âœ¦";
+        if (kaoFace) kaoFace.innerText = "ヽ(>∀<☆)ノ";
+        if (kaoSubject) kaoSubject.innerText = "READY ✦";
         bottomItems.forEach(item => item.classList.add('active'));
 
         // Exit animation
@@ -1003,15 +1003,14 @@ function initPageAnimations(container) {
         to: { namespace: ['lilith', 'about'] },
         leave(data) {
           cleanupPageAnimations();
-          if (typeof playGlitchNoise === 'function') playGlitchNoise();
+          playGlitchNoise(); // Play static TV glitch SFX
           
           const transitionText = document.querySelector('.transition-glitch-text');
           if (transitionText) transitionText.innerText = "SYSTEM ERROR";
           
           return new Promise(resolve => {
             const tl = gsap.timeline({ onComplete: resolve });
-            tl.set('.page-transition-layer', { background: '#020202' })
-              .to('.page-transition-layer', { y: '0%', duration: 0.5, ease: 'power3.inOut' })
+            tl.to('.page-transition-layer', { y: '0%', duration: 0.5, ease: 'power3.inOut' })
               .to('.transition-glitch-text', { opacity: 1, duration: 0.1, yoyo: true, repeat: 3 }, '+=0');
           });
         },
@@ -1025,7 +1024,7 @@ function initPageAnimations(container) {
           gsap.to('.page-transition-layer', { 
              y: '-100%', 
              duration: 0.5, 
-             delay: 0.3,
+             delay: 0.3, // Brief pause for suspense
              ease: 'power3.inOut',
              onComplete: () => {
                 gsap.set('.page-transition-layer', { y: '100%' });
@@ -1299,7 +1298,6 @@ function triggerEasterEgg() {
     setTimeout(() => overlay.remove(), 500);
   };
 }
-
 
 
 
