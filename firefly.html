@@ -3,133 +3,121 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Firefly | The Entropy of Light</title>
+  <title>The Archives | Firefly</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Public+Sans:wght@300;400;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./style.css">
 </head>
 <body data-barba="wrapper">
+  
   <canvas id="webgl-bg"></canvas>
+
   <div class="cursor"><span class="cursor-text"></span></div>
+
   <div class="sound-toggle magnetic">
     <span class="sound-text">SOUND OFF</span>
     <div class="sound-bars"><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
   </div>
 
   <main class="smooth-scroll" data-barba="container" data-barba-namespace="firefly">
-    <nav class="cyber-nav">
-      <a href="/index.html" class="nav-link">ROSTER</a>
-      <a href="/firefly.html" class="nav-link" style="color: var(--ff-accent);">FIREFLY</a>
-      <a href="/about.html" class="nav-link">ABOUT</a>
-    </nav>
+    <style>
+      :root {
+        --ff-primary: #ffaa40;
+        --ff-secondary: #ff6ec7;
+        --ff-bg: #050505;
+      }
+    </style>
 
-    <!-- GLOBAL ORBS -->
-    <div class="ff-orb-field"></div>
-
-    <!-- S1: KINETIC HERO -->
-    <section class="ff-hero-v2" id="ff-hero">
-      <div class="ff-hero-img-container">
-        <img src="/Waifu_List/Firefly/119768376_p0.png" alt="Firefly" class="ff-parallax-bg-v2">
-        <div class="ff-hero-v2-overlay"></div>
+    <section class="ff-hero">
+      <div class="ff-hero-bg parallax-bg">
+        <img src="/Waifu_List/Firefly/119768376_p0.png" alt="Firefly Background">
       </div>
-      <div class="ff-kinetic-text-wrap">
-        <h1 class="ff-kinetic-text">FIREFLY</h1>
+      <div class="ff-hero-content">
+        <h1 class="ff-title split-target" data-text="FIREFLY">FIREFLY</h1>
+        <p class="ff-subtitle fade-target">STELLARON HUNTER // SAM</p>
       </div>
-      <div class="ff-hero-sub-wrap">
-        <p class="ff-hero-sub-v2 ff-reveal">SUBJECT: AR-26710 // STELLARON HUNTER</p>
-        <p class="ff-hero-quote-v2 ff-reveal">"I dreamed of a world where I wasn't a weapon."</p>
-      </div>
-      <div class="ff-scroll-indicator">
-        <div class="ff-scroll-dot"></div>
-      </div>
-    </section>
-
-    <!-- S2: PINNED STORYTELLING (ENTROPY LOSS) -->
-    <section class="ff-pinned-section" id="ff-pinned">
-      <div class="ff-pinned-left">
-        <div class="ff-pinned-title-wrap">
-          <span class="ff-mono-tag">CLASSIFIED DATA</span>
-          <h2 class="ff-huge-title">ENTROPY<br>LOSS</h2>
-        </div>
-      </div>
-      <div class="ff-pinned-right">
-        <div class="ff-story-block ff-fade-up">
-          <p class="ff-story-text">Born in the dying embers of the Glamoth Republic, she was not created to live. She was engineered to burn.</p>
-        </div>
-        <div class="ff-story-block ff-fade-up">
-          <p class="ff-story-text">As an Iron Cavalry soldier, her very existence is tethered to a curse: Entropy Loss Syndrome. Her physical form is slowly, irreversibly dissociating into the ether.</p>
-        </div>
-        <div class="ff-story-block ff-fade-up">
-          <p class="ff-story-text">She fights not for conquest, but for the most fragile of dreams�to experience a single, ordinary day under a real sky before she fades completely.</p>
+      <div class="ff-scroll-indicator fade-target">
+        <div class="ff-scroll-line">
+          <div class="ff-scroll-dot"></div>
         </div>
       </div>
     </section>
 
-    <!-- S3: HORIZONTAL FILMSTRIP -->
-    <section class="ff-horizontal-wrapper" id="ff-horizontal">
-      <div class="ff-horizontal-container">
-        <!-- Title slide -->
-        <div class="ff-horiz-item ff-horiz-title-slide">
-          <h2 class="ff-horiz-title">FRAGMENTS<br>OF LIGHT</h2>
-          <p>Decrypted memory drives.</p>
+    <section class="ff-lore-section">
+      <div class="ff-lore-container">
+        <div class="ff-lore-left fade-target">
+          <h2 class="ff-quote">"Like fireflies to a flame, life finds its own path."</h2>
         </div>
-        <!-- Slides -->
-        <div class="ff-horiz-item">
-          <div class="ff-bento-card magnetic-gallery">
-            <div class="ff-bento-img-wrap"><img src="/Waifu_List/Firefly/120034297_p0.png" alt="Memory" class="ff-horiz-img"></div>
-            <div class="ff-bento-overlay"></div>
-            <div class="ff-bento-text"><span class="ff-bento-tag">LOCATION // PENACONY</span><h3>Golden Hour</h3></div>
-            <div class="ff-bento-border"></div>
+        <div class="ff-lore-right">
+          <p class="fade-target">
+            A member of the Stellaron Hunters and a young girl clad in a mechanical armor known as "SAM." Born as a weapon, she’s afflicted with Entropy Loss Syndrome due to genetic modification.
+          </p>
+          <p class="fade-target" style="margin-top: 1rem;">
+            She joined the Stellaron Hunters in search of the meaning of life, relentlessly pursuing ways to defy fate.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="ff-bento-section">
+      <div class="ff-bento-grid">
+        <div class="ff-bento-card bento-large fade-target magnetic">
+          <div class="ff-bento-border"></div>
+          <img src="/Waifu_List/Firefly/119768376_p0.png" alt="Firefly Portrait" class="ff-bento-img">
+          <div class="ff-bento-overlay"></div>
+          <div class="ff-bento-text">
+            <span class="ff-bento-tag">ID: AR-26710</span>
+            <h3>GLAMOTH IRON CAVALRY</h3>
           </div>
         </div>
-        <div class="ff-horiz-item">
-          <div class="ff-bento-card magnetic-gallery">
-            <div class="ff-bento-img-wrap"><img src="/Waifu_List/Firefly/33f95b8c8308888022664e91b327896b.jpg" alt="Memory" class="ff-horiz-img"></div>
-            <div class="ff-bento-overlay"></div>
-            <div class="ff-bento-text"><span class="ff-bento-tag">LOG // 04.22</span><h3>Stargazing</h3></div>
-            <div class="ff-bento-border"></div>
+        
+        <div class="ff-bento-card bento-small fade-target magnetic" style="background: rgba(255,170,64,0.1);">
+          <div class="ff-bento-border"></div>
+          <div class="ff-bento-content-center">
+            <i data-lucide="flame" style="width: 48px; height: 48px; color: var(--ff-primary); margin-bottom: 10px;"></i>
+            <h4 style="font-family: var(--font-sans); color: var(--ff-primary);">TYPE: FIRE</h4>
           </div>
         </div>
-        <div class="ff-horiz-item">
-          <div class="ff-bento-card magnetic-gallery">
-            <div class="ff-bento-img-wrap"><img src="/Waifu_List/Firefly/22123abcbf91f2b4d220fb4d612f08e4.jpg" alt="Memory" class="ff-horiz-img"></div>
-            <div class="ff-bento-overlay"></div>
-            <div class="ff-bento-text"><span class="ff-bento-tag">STATUS // WARNING</span><h3>Fading Reality</h3></div>
-            <div class="ff-bento-border"></div>
+
+        <div class="ff-bento-card bento-small fade-target magnetic" style="background: rgba(255,110,199,0.1);">
+          <div class="ff-bento-border" style="border-color: var(--ff-secondary);"></div>
+          <div class="ff-bento-content-center">
+            <i data-lucide="swords" style="width: 48px; height: 48px; color: var(--ff-secondary); margin-bottom: 10px;"></i>
+            <h4 style="font-family: var(--font-sans); color: var(--ff-secondary);">THE DESTRUCTION</h4>
           </div>
         </div>
-        <div class="ff-horiz-item">
-          <div class="ff-bento-card magnetic-gallery">
-            <div class="ff-bento-img-wrap"><img src="/Waifu_List/Firefly/594b2923697b236648dc07d9f5addb6c.jpg" alt="Memory" class="ff-horiz-img"></div>
-            <div class="ff-bento-overlay"></div>
-            <div class="ff-bento-text"><span class="ff-bento-tag">OATH // HUNTER</span><h3>The Script</h3></div>
-            <div class="ff-bento-border"></div>
+
+        <div class="ff-bento-card bento-wide fade-target magnetic">
+          <div class="ff-bento-border"></div>
+          <div class="ff-terminal-logs">
+            <div class="ff-log-line">> Initiating Primary Engine...</div>
+            <div class="ff-log-line">> Entropy Loss Inhibitors: ONLINE</div>
+            <div class="ff-log-line">> Combustion Protocol: READY</div>
+            <div class="ff-log-line" style="color: var(--ff-primary);">> "I will set the seas ablaze."</div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- S4: TYPOGRAPHY SCRUB (VOICE ARCHIVE) -->
-    <section class="ff-scrub-section" id="ff-scrub">
-      <div class="ff-scrub-container">
-        <p class="ff-scrub-text">"Fireflies are such magical creatures. They burn so brightly, yet their lives are so short. I want to see the real stars, even just once."</p>
+    <section class="ff-next-section">
+      <div class="ff-next-content">
+        <span class="ff-next-label fade-target">NEXT SUBJECT</span>
+        <a href="/hifumi.html" class="ff-next-link magnetic split-target">HIFUMI</a>
       </div>
     </section>
-
-    <!-- S5: OUTRO -->
-    <section class="ff-outro" id="ff-outro">
-      <h2 class="ff-outro-text ff-reveal">I WILL SET THE SEAS ABLAZE.</h2>
-      <a href="/index.html" class="ff-footer-back magnetic mt-4">RETURN TO ROSTER</a>
-    </section>
-
   </main>
 
   <div class="page-transition-layer">
-    <div class="transition-glitch-text glitch-core flicker-text extreme-glitch" style="position: relative;" data-text="SYSTEM ERROR">SYSTEM ERROR</div>
+    <div class="transition-dynamic-center">
+      <div class="transition-kao" id="transition-kao">(✧ω✧)</div>
+      <div class="transition-text" id="transition-text">DECRYPTING FIREFLY</div>
+    </div>
+    <div class="transition-glitch-text glitch-core flicker-text extreme-glitch" style="position: absolute; opacity: 0;" data-text="SYSTEM ERROR">SYSTEM ERROR</div>
   </div>
 
   <script type="module" src="/main.js"></script>
-<script src="https://unpkg.com/lucide@latest"></script>`n  <script>lucide.createIcons();</script>`n</body>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>lucide.createIcons();</script>
+</body>
 </html>
-

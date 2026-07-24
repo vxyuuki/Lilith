@@ -766,82 +766,49 @@ function initPageAnimations(container) {
 
   // 13. Firefly Custom Animations
   if (container.dataset.barbaNamespace === 'firefly') {
-    // 1. Kinetic Hero
-    gsap.to('.ff-kinetic-text', {
-      xPercent: -50,
-      ease: 'none',
-      scrollTrigger: { trigger: '.ff-hero-v2', start: 'top top', end: 'bottom top', scrub: true }
-    });
-    gsap.to('.ff-parallax-bg-v2', {
+    // Parallax background
+    gsap.to('.parallax-bg', {
       y: '20%',
       ease: 'none',
-      scrollTrigger: { trigger: '.ff-hero-v2', start: 'top top', end: 'bottom top', scrub: true }
-    });
-    const ffHeroTl = gsap.timeline({ delay: 0.3 });
-    ffHeroTl
-      .to('.ff-kinetic-text', { opacity: 1, duration: 1.5, ease: 'power3.out' })
-      .fromTo('.ff-hero-sub-v2', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1, ease: 'power3.out' }, '-=0.5')
-      .fromTo('.ff-hero-quote-v2', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1, ease: 'power3.out' }, '-=0.5');
-
-    // Firefly Orbs
-    const orbField = document.querySelector('.ff-orb-field');
-    if (orbField && !orbField.hasChildNodes()) {
-      for (let i = 0; i < 35; i++) {
-        const orb = document.createElement('div');
-        orb.className = 'ff-orb';
-        orbField.appendChild(orb);
-        gsap.set(orb, { x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight, scale: Math.random() * 0.6 + 0.4 });
-        gsap.to(orb, { x: '+=' + (Math.random() * 150 - 75), y: '-=' + (Math.random() * 250 + 50), opacity: Math.random() * 0.5 + 0.15, duration: Math.random() * 8 + 4, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: Math.random() * -8 });
-      }
-    }
-
-    // 2. Pinned Storytelling
-    ScrollTrigger.create({
-      trigger: '.ff-pinned-section',
-      start: 'top top',
-      end: '+=100%',
-      pin: '.ff-pinned-left',
-      anticipatePin: 1
+      scrollTrigger: { trigger: '.ff-hero', start: 'top top', end: 'bottom top', scrub: true }
     });
 
-    container.querySelectorAll('.ff-fade-up').forEach(el => {
-      gsap.fromTo(el, { opacity: 0, y: 50 }, { 
-        opacity: 1, y: 0, duration: 1, ease: 'power3.out',
-        scrollTrigger: { trigger: el, start: 'top 80%' }
+    // Split text animation for title
+    const splitTargets = container.querySelectorAll('.split-target');
+    splitTargets.forEach(el => {
+      // Very basic split text simulation without premium plugins
+      const text = el.innerText;
+      el.innerHTML = '';
+      text.split('').forEach(char => {
+        const span = document.createElement('span');
+        span.innerText = char;
+        span.style.display = 'inline-block';
+        if(char === ' ') span.innerHTML = '&nbsp;';
+        el.appendChild(span);
       });
-    });
-
-    // 3. Horizontal Filmstrip
-    const horizContainer = container.querySelector('.ff-horizontal-container');
-    if (horizContainer) {
-      const getScrollAmount = () => -(horizContainer.scrollWidth - window.innerWidth);
-      gsap.to(horizContainer, {
-        x: getScrollAmount,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: '.ff-horizontal-wrapper',
-          start: 'top top',
-          end: () => `+=${horizContainer.scrollWidth - window.innerWidth}`,
-          pin: true,
-          scrub: 1,
-          invalidateOnRefresh: true,
-          anticipatePin: 1
+      
+      gsap.fromTo(el.children, 
+        { opacity: 0, y: 50, rotateX: -90 },
+        { 
+          opacity: 1, y: 0, rotateX: 0, 
+          duration: 1, stagger: 0.05, ease: 'back.out(1.7)',
+          scrollTrigger: { trigger: el, start: 'top 80%' }
         }
-      });
-      container.querySelectorAll('.ff-horiz-img').forEach(img => {
-        gsap.to(img, { xPercent: 15, ease: 'none', scrollTrigger: { trigger: '.ff-horizontal-wrapper', start: 'top top', end: () => `+=${horizContainer.scrollWidth - window.innerWidth}`, scrub: 1 } });
-      });
-    }
-
-    // 4. Typography Scrub
-    gsap.to('.ff-scrub-text', {
-      backgroundPosition: '0% 0',
-      ease: 'none',
-      scrollTrigger: { trigger: '.ff-scrub-section', start: 'top 60%', end: 'bottom 80%', scrub: true }
+      );
     });
 
-    // Outro
-    gsap.fromTo('.ff-outro-text', { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 1.5, ease: 'power3.out', scrollTrigger: { trigger: '.ff-outro', start: 'top 70%' } });
+    // Fade up animations
+    const fadeTargets = container.querySelectorAll('.fade-target');
+    fadeTargets.forEach(el => {
+      gsap.fromTo(el,
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1, y: 0,
+          duration: 1, ease: 'power3.out',
+          scrollTrigger: { trigger: el, start: 'top 85%' }
+        }
+      );
+    });
   }
 
 }
@@ -868,7 +835,7 @@ function initPageAnimations(container) {
   }
 
   // --- BARBA TRANSITIONS ---
-  // ✦ KAOMOJI PRELOADER LOGIC ✦
+  // âœ¦ KAOMOJI PRELOADER LOGIC âœ¦
   const preloader = document.getElementById('kaomoji-preloader');
   if (preloader) {
     document.body.style.overflow = 'hidden';
@@ -886,26 +853,26 @@ function initPageAnimations(container) {
 
     // Character data with kaomoji and colors
     const characters = [
-      { name: "AEMEATH",  kao: "(⌐■_■)",      color: "#6ec6ff" },
-      { name: "AMIYA",    kao: "(◕ᴗ◕✿)",     color: "#7eff8a" },
-      { name: "DENIA",    kao: "(´｡• ᵕ •｡`)",  color: "#ffcc70" },
-      { name: "FIREFLY",  kao: "(✧ω✧)",       color: "#ffaa40" },
-      { name: "HIFUMI",   kao: "(≧◡≦)",       color: "#ff6ec7" },
-      { name: "HU TAO",   kao: "(☞ﾟヮﾟ)☞",    color: "#ff4444" },
-      { name: "LILITH",   kao: "(｡♥‿♥｡)",     color: "#a882ff" },
-      { name: "MAIHIMI",  kao: "(◠‿◠)",       color: "#82d8ff" },
+      { name: "AEMEATH",  kao: "(âŒâ– _â– )",      color: "#6ec6ff" },
+      { name: "AMIYA",    kao: "(â—•á´—â—•âœ¿)",     color: "#7eff8a" },
+      { name: "DENIA",    kao: "(Â´ï½¡â€¢ áµ• â€¢ï½¡`)",  color: "#ffcc70" },
+      { name: "FIREFLY",  kao: "(âœ§Ï‰âœ§)",       color: "#ffaa40" },
+      { name: "HIFUMI",   kao: "(â‰§â—¡â‰¦)",       color: "#ff6ec7" },
+      { name: "HU TAO",   kao: "(â˜žï¾Ÿãƒ®ï¾Ÿ)â˜ž",    color: "#ff4444" },
+      { name: "LILITH",   kao: "(ï½¡â™¥â€¿â™¥ï½¡)",     color: "#a882ff" },
+      { name: "MAIHIMI",  kao: "(â— â€¿â— )",       color: "#82d8ff" },
     ];
 
     // Moods for the main face
     const kaoMoods = [
-      "(｡◕‿◕｡)", "(◕ᴗ◕✿)", "(≧◡≦)", "(✧ω✧)", 
-      "ヽ(>∀<☆)ノ", "(ﾉ◕ヮ◕)ﾉ*:・ﾟ✧", "(づ￣ ³￣)づ", "(★‿★)"
+      "(ï½¡â—•â€¿â—•ï½¡)", "(â—•á´—â—•âœ¿)", "(â‰§â—¡â‰¦)", "(âœ§Ï‰âœ§)", 
+      "ãƒ½(>âˆ€<â˜†)ãƒŽ", "(ï¾‰â—•ãƒ®â—•)ï¾‰*:ãƒ»ï¾Ÿâœ§", "(ã¥ï¿£ Â³ï¿£)ã¥", "(â˜…â€¿â˜…)"
     ];
 
     // Floating kaomoji particles
     const floatingKao = [
-      "✧", "♡", "☆", "♪", "✿", "◕", "❀", "⋆", "★", "♫",
-      "(◕‿◕)", "(≧▽≦)", "(◠‿◠)", "✦", "❤", "☽", "◇", "♥"
+      "âœ§", "â™¡", "â˜†", "â™ª", "âœ¿", "â—•", "â€", "â‹†", "â˜…", "â™«",
+      "(â—•â€¿â—•)", "(â‰§â–½â‰¦)", "(â— â€¿â— )", "âœ¦", "â¤", "â˜½", "â—‡", "â™¥"
     ];
 
     // Build bottom row: one kaomoji per character
@@ -991,8 +958,8 @@ function initPageAnimations(container) {
         clearInterval(particleInterval);
 
         // Final state
-        if (kaoFace) kaoFace.innerText = "ヽ(>∀<☆)ノ";
-        if (kaoSubject) kaoSubject.innerText = "READY ✦";
+        if (kaoFace) kaoFace.innerText = "ãƒ½(>âˆ€<â˜†)ãƒŽ";
+        if (kaoSubject) kaoSubject.innerText = "READY âœ¦";
         bottomItems.forEach(item => item.classList.add('active'));
 
         // Exit animation
@@ -1029,58 +996,6 @@ function initPageAnimations(container) {
     }, 40);
   }
 
-  barba.init({
-    transitions: [
-      {
-        name: 'glitch-transition',
-        to: { namespace: ['lilith', 'about'] },
-        leave(data) {
-          cleanupPageAnimations();
-          playGlitchNoise(); // Play static TV glitch SFX
-          
-          const transitionText = document.querySelector('.transition-glitch-text');
-          if (transitionText) transitionText.innerText = "SYSTEM ERROR";
-          
-          return new Promise(resolve => {
-            const tl = gsap.timeline({ onComplete: resolve });
-            tl.to('.page-transition-layer', { y: '0%', duration: 0.5, ease: 'power3.inOut' })
-              .to('.transition-glitch-text', { opacity: 1, duration: 0.1, yoyo: true, repeat: 3 }, '+=0');
-          });
-        },
-        enter(data) {
-          lenis.scrollTo(0, { immediate: true });
-          initPageAnimations(data.next.container);
-          updateWebGLTheme();
-          updateCanvasVisibility(data.next.namespace);
-          manageScrollForNamespace(data.next.namespace);
-          
-          gsap.to('.page-transition-layer', { 
-             y: '-100%', 
-             duration: 0.5, 
-             delay: 0.3, // Brief pause for suspense
-             ease: 'power3.inOut',
-             onComplete: () => {
-                gsap.set('.page-transition-layer', { y: '100%' });
-                gsap.set('.transition-glitch-text', { opacity: 0 });
-             }
-          });
-        }
-      },
-      {
-        name: 'fade-transition',
-        leave(data) {
-          cleanupPageAnimations();
-          return gsap.to(data.current.container, { opacity: 0, duration: 0.5 });
-        },
-        enter(data) {
-          lenis.scrollTo(0, { immediate: true });
-          initPageAnimations(data.next.container);
-          updateCanvasVisibility(data.next.namespace);
-          manageScrollForNamespace(data.next.namespace);
-          gsap.from(data.next.container, { opacity: 0, duration: 0.5 });
-        }
-      }
-    ]
   });
 
 // Global hover listener for digital click SFX
@@ -1285,6 +1200,7 @@ function triggerEasterEgg() {
     setTimeout(() => overlay.remove(), 500);
   };
 }
+
 
 
 
