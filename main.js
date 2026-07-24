@@ -869,18 +869,24 @@ function initPageAnimations(container) {
         win.style.top = (15 + offset) + '%';
         win.style.left = (20 + offset) + '%';
 
-        win.innerHTML = `
-          <div class="os-window-topbar">
-            <div class="window-controls">
-              <div class="win-btn win-close"></div>
-              <div class="win-btn win-min"></div>
-              <div class="win-btn win-max"></div>
-            </div>
-            <div class="win-title">${title}</div>
-            <div style="width: 44px;"></div>
-          </div>
-          ${type === 'image' ? `<div class="os-window-content">${contentHTML}</div>` : contentHTML}
-        `;
+        let winContentStr = '';
+        if (type === 'image') {
+          winContentStr = '<div class="os-window-content">' + contentHTML + '</div>';
+        } else {
+          winContentStr = contentHTML;
+        }
+
+        win.innerHTML = 
+          '<div class="os-window-topbar">' +
+            '<div class="window-controls">' +
+              '<div class="win-btn win-close"></div>' +
+              '<div class="win-btn win-min"></div>' +
+              '<div class="win-btn win-max"></div>' +
+            '</div>' +
+            '<div class="win-title">' + title + '</div>' +
+            '<div style="width: 44px;"></div>' +
+          '</div>' +
+          winContentStr;
 
         windowContainer.appendChild(win);
 
