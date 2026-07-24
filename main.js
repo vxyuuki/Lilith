@@ -764,68 +764,19 @@ function initPageAnimations(container) {
     }
   }
 
-  // 13. Firefly Custom Animations
-  if (container.dataset.barbaNamespace === 'firefly') {
-
+  // 13. Firefly SAM_OS Environment
+  if (container.dataset.barbaNamespace === 'firefly-os') {
+    
     // --- SAM BOOT-UP PRELOADER ---
     const ffPreloader = document.getElementById('ff-preloader');
     if (ffPreloader) {
       const ffRingFill = document.getElementById('ff-pre-ring-fill');
       const ffPercent = document.getElementById('ff-pre-percent');
-      const ffBootlog = document.getElementById('ff-pre-bootlog');
-      const ffDesignation = document.getElementById('ff-pre-designation');
-      const ffEmbers = document.getElementById('ff-pre-embers');
-
+      
       const FF_CIRC = 565.49;
-      const bootLogs = [
-        'GLAMOTH IRON CAVALRY — UNIT ONLINE',
-        'ENTROPY LOSS INHIBITORS: CALIBRATING...',
-        'COMBUSTION PROTOCOL: INITIALIZING...',
-        'NEURAL SYNC: ESTABLISHING LINK...',
-        'WEAPON SYSTEMS: ARMED',
-        'SAM UNIT: READY FOR DEPLOYMENT'
-      ];
-
-      // Spawn ember particles
-      if (ffEmbers) {
-        for (let i = 0; i < 25; i++) {
-          const ember = document.createElement('div');
-          ember.className = 'ff-ember';
-          ffEmbers.appendChild(ember);
-          gsap.set(ember, {
-            x: Math.random() * window.innerWidth,
-            y: window.innerHeight + 20,
-            scale: Math.random() * 0.8 + 0.3
-          });
-          gsap.to(ember, {
-            y: -50, x: '+=' + (Math.random() * 100 - 50),
-            opacity: Math.random() * 0.6 + 0.2,
-            duration: Math.random() * 4 + 3,
-            repeat: -1, ease: 'none',
-            delay: Math.random() * -5
-          });
-        }
-      }
-
-      // Designation pulse
-      if (ffDesignation) {
-        gsap.to(ffDesignation, {
-          textShadow: '0 0 50px rgba(255,170,64,0.8), 0 0 100px rgba(255,107,53,0.4)',
-          duration: 1.5, repeat: -1, yoyo: true, ease: 'sine.inOut'
-        });
-      }
-
-      let logIdx = 0;
-      const logInterval = setInterval(() => {
-        if (ffBootlog) {
-          logIdx = (logIdx + 1) % bootLogs.length;
-          ffBootlog.querySelector('.ff-pre-log-line').innerText = bootLogs[logIdx];
-        }
-      }, 600);
-
-      // Progress
-      const ffDuration = 4000;
+      const ffDuration = 3000;
       const ffStart = performance.now();
+      
       const ffProgressInterval = setInterval(() => {
         const elapsed = performance.now() - ffStart;
         const progress = Math.min(100, Math.floor((elapsed / ffDuration) * 100));
@@ -835,216 +786,178 @@ function initPageAnimations(container) {
 
         if (progress >= 100) {
           clearInterval(ffProgressInterval);
-          clearInterval(logInterval);
-
-          if (ffPercent) ffPercent.innerText = '100%';
-          if (ffBootlog) ffBootlog.querySelector('.ff-pre-log-line').innerText = 'SAM UNIT: DEPLOYMENT COMPLETE';
-
           setTimeout(() => {
-            const exitTl = gsap.timeline({
-              onComplete: () => {
-                ffPreloader.remove();
-                document.body.style.overflow = '';
-                ScrollTrigger.refresh();
-                // Trigger hero entrance
-                initFireflyHeroEntrance();
-              }
-            });
-
-            exitTl
-              .to('.ff-pre-center', { scale: 1.2, opacity: 0, filter: 'blur(20px)', duration: 0.8, ease: 'power3.in' })
-              .to('.ff-pre-sig', { opacity: 0, duration: 0.3 }, '<')
-              .to(ffPreloader, { opacity: 0, duration: 0.6, ease: 'power2.inOut' }, '-=0.3');
+            gsap.to(ffPreloader, { opacity: 0, duration: 0.6, ease: 'power2.inOut', onComplete: () => {
+              ffPreloader.remove();
+              initOS();
+            }});
           }, 400);
         }
       }, 40);
     } else {
-      initFireflyHeroEntrance();
+      initOS();
     }
 
-    function initFireflyHeroEntrance() {
-      // Hero parallax
-      gsap.to('.parallax-bg', {
-        y: '20%', ease: 'none',
-        scrollTrigger: { trigger: '.ff-hero', start: 'top top', end: 'bottom top', scrub: true }
-      });
-
-      // Hero content entrance
-      const heroTl = gsap.timeline({ delay: 0.2 });
-      heroTl
-        .fromTo('.ff-hero-overline', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1, ease: 'power3.out' })
-        .fromTo('.ff-title-line', { opacity: 0, y: 60, rotateX: -15 },
-          { opacity: 1, y: 0, rotateX: 0, duration: 1.2, stagger: 0.15, ease: 'power3.out' }, '-=0.6')
-        .fromTo('.ff-hero-meta', { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }, '-=0.4')
-        .fromTo('.ff-scroll-cue', { opacity: 0 }, { opacity: 1, duration: 0.6 }, '-=0.2');
-
-      // Spawn firefly particles in hero
-      const firefliesContainer = document.getElementById('ff-fireflies');
-      if (firefliesContainer && !firefliesContainer.hasChildNodes()) {
-        for (let i = 0; i < 30; i++) {
-          const dot = document.createElement('div');
-          dot.className = 'ff-firefly-dot';
-          firefliesContainer.appendChild(dot);
-          gsap.set(dot, {
-            x: Math.random() * window.innerWidth,
-            y: Math.random() * window.innerHeight,
-            scale: Math.random() * 0.6 + 0.4
-          });
-          gsap.to(dot, {
-            x: '+=' + (Math.random() * 120 - 60),
-            y: '+=' + (Math.random() * 120 - 60),
-            opacity: Math.random() * 0.5 + 0.15,
-            duration: Math.random() * 6 + 3,
-            repeat: -1, yoyo: true, ease: 'sine.inOut',
-            delay: Math.random() * -6
-          });
-        }
+    function initOS() {
+      // Clock
+      const clockEl = document.getElementById('os-clock');
+      function updateClock() {
+        if (!clockEl) return;
+        const d = new Date();
+        let h = d.getHours();
+        let m = d.getMinutes();
+        const ampm = h >= 12 ? 'PM' : 'AM';
+        h = h % 12; h = h ? h : 12;
+        m = m < 10 ? '0' + m : m;
+        clockEl.innerText = `${h}:${m} ${ampm}`;
       }
-    }
+      setInterval(updateClock, 1000);
+      updateClock();
 
-    // --- Scroll-triggered reveals ---
-    container.querySelectorAll('.ff-reveal').forEach((el, i) => {
-      gsap.to(el, {
-        opacity: 1, y: 0, duration: 1,
-        ease: 'power3.out',
-        scrollTrigger: { trigger: el, start: 'top 85%', once: true },
-        delay: i % 3 * 0.1,
-        onStart: () => el.classList.add('ff-visible')
-      });
-    });
-
-    // Stat bar fill animation
-    const statSection = container.querySelector('.ff-bento-statbar');
-    if (statSection) {
-      ScrollTrigger.create({
-        trigger: statSection,
-        start: 'top 80%',
-        once: true,
-        onEnter: () => {
-          statSection.querySelectorAll('.ff-stat-fill').forEach((bar, i) => {
-            setTimeout(() => bar.classList.add('ff-animated'), i * 150);
-          });
+      // Window Management System
+      const desktop = document.getElementById('os-desktop');
+      const windowContainer = document.getElementById('os-window-container');
+      const icons = document.querySelectorAll('.os-icon');
+      let highestZ = 50;
+      
+      // Select icons
+      desktop.addEventListener('click', (e) => {
+        if (!e.target.closest('.os-icon')) {
+          icons.forEach(ic => ic.classList.remove('selected'));
         }
       });
-    }
-
-    // Gallery 3D Coverflow Scroll
-    const galleryItems = document.querySelectorAll('.ff-gallery-item');
-    if (galleryStrip && galleryItems.length > 0) {
-      // Create a massive scroll space
-      ScrollTrigger.create({
-        trigger: '.ff-gallery',
-        start: 'top top',
-        end: '+=200%',
-        pin: true,
-        scrub: 1,
-        animation: gsap.to(galleryStrip, {
-          x: () => -(galleryStrip.scrollWidth - window.innerWidth + 100),
-          ease: 'none'
-        }),
-        onUpdate: (self) => {
-          // Add 3D rotation based on position
-          galleryItems.forEach(item => {
-            const rect = item.getBoundingClientRect();
-            const centerOffset = (rect.left + rect.width / 2) - window.innerWidth / 2;
-            const distance = centerOffset / (window.innerWidth / 2); // -1 to 1
-            
-            gsap.set(item, {
-              rotationY: distance * 45, // Curve effect
-              z: -Math.abs(distance) * 200, // Push back items on the side
-              scale: 1 - Math.abs(distance) * 0.2
-            });
-          });
-        }
-      });
-      // Initial render for 3D
-      gsap.set(galleryStrip, { perspective: 1000, transformStyle: 'preserve-3d' });
-    }
-
-    // Editorial line grow
-    gsap.fromTo('.ff-editorial-line', { width: 0 }, {
-      width: 120, duration: 1.5, ease: 'power3.out',
-      scrollTrigger: { trigger: '.ff-editorial-line', start: 'top 85%' }
-    });
-
-    // ─── WILD 3D EFFECTS ───
-    
-    // 1. 3D Holographic Tilt + Spotlight for Bento Cards
-    const bentoCards = container.querySelectorAll('.ff-bento-card');
-    bentoCards.forEach(card => {
-      // Inject spotlight element
-      const spotlight = document.createElement('div');
-      spotlight.className = 'ff-spotlight';
-      card.appendChild(spotlight);
-
-      card.addEventListener('mousemove', (e) => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        
-        // Spotlight position
-        gsap.to(spotlight, { x, y, opacity: 1, duration: 0.3 });
-
-        // 3D Tilt calculations
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        const rotateX = ((y - centerY) / centerY) * -10; // Max 10 deg
-        const rotateY = ((x - centerX) / centerX) * 10;
-        
-        gsap.to(card, {
-          rotateX, rotateY, scale: 1.02,
-          transformPerspective: 1000,
-          ease: 'power2.out', duration: 0.4
+      
+      icons.forEach(icon => {
+        // Selection
+        icon.addEventListener('click', (e) => {
+          e.stopPropagation();
+          icons.forEach(ic => ic.classList.remove('selected'));
+          icon.classList.add('selected');
         });
-        
-        // Pop out internal elements (parallax inside card)
-        const innerImg = card.querySelector('.ff-bento-img');
-        const innerText = card.querySelector('.ff-bento-label, .ff-bento-card-value, .ff-terminal-body');
-        if(innerImg) gsap.to(innerImg, { z: 20, rotateX: rotateX * 0.5, rotateY: rotateY * 0.5, duration: 0.4 });
-        if(innerText) gsap.to(innerText, { z: 40, duration: 0.4 });
+
+        // Double click to open window
+        icon.addEventListener('dblclick', () => {
+          openWindow(icon);
+        });
       });
 
-      card.addEventListener('mouseleave', () => {
-        gsap.to(spotlight, { opacity: 0, duration: 0.3 });
-        gsap.to(card, { rotateX: 0, rotateY: 0, scale: 1, duration: 0.6, ease: 'power3.out' });
+      function openWindow(icon) {
+        highestZ++;
+        const type = icon.dataset.type;
+        const title = icon.dataset.title;
         
-        const innerImg = card.querySelector('.ff-bento-img');
-        const innerText = card.querySelector('.ff-bento-label, .ff-bento-card-value, .ff-terminal-body');
-        if(innerImg) gsap.to(innerImg, { z: 0, rotateX: 0, rotateY: 0, duration: 0.6 });
-        if(innerText) gsap.to(innerText, { z: 0, duration: 0.6 });
-      });
-    });
-
-    // 2. RGB Split Chromatic Aberration on Scroll Velocity
-    let proxy = { skew: 0 }, skewSetter = gsap.quickSetter('.ff-hero-title, .ff-lore-heading, .ff-editorial-quote', 'textShadow'), clamp = gsap.utils.clamp(-20, 20);
-    
-    ScrollTrigger.create({
-      onUpdate: (self) => {
-        const velocity = clamp(Math.round(self.getVelocity() / 50));
-        // Apply text-shadow RGB split based on velocity
-        if(Math.abs(velocity) > 2) {
-           const splitR = `${velocity}px 0px 0px rgba(255,0,0,0.8)`;
-           const splitB = `${-velocity}px 0px 0px rgba(0,255,255,0.8)`;
-           skewSetter(`${splitR}, ${splitB}`);
-        } else {
-           // Reset to original glow or none
-           gsap.to('.ff-hero-title', { textShadow: '0 0 40px rgba(255,170,64,0.15)', duration: 0.5 });
-           gsap.to('.ff-editorial-quote', { textShadow: '0 0 60px rgba(255,170,64,0.1)', duration: 0.5 });
-           gsap.to('.ff-lore-heading', { textShadow: 'none', duration: 0.5 });
+        let contentHTML = '';
+        if (type === 'image') {
+          contentHTML = `<img src="${icon.dataset.src}" alt="${title}">`;
+        } else if (type === 'lore') {
+          contentHTML = `
+            <div class="os-window-content lore-content">
+              <h2>GLAMOTH IRON CAVALRY</h2>
+              <p>Type: SAM (Strategic Assault Mech)</p>
+              <p>Status: Active</p>
+              <p>Condition: Entropy Loss Syndrome (Terminal)</p><br>
+              <p>Born as a weapon, fighting for the right to live as a human. The firefly that burns brightest before it fades.</p>
+            </div>
+          `;
         }
-      }
-    });
 
-    // 3. 3D Floating Hero Title Tracking Mouse
-    const heroTitle = container.querySelector('.ff-hero-title');
-    container.addEventListener('mousemove', (e) => {
-      if(heroTitle) {
-        const x = (e.clientX / window.innerWidth - 0.5) * 30; // Max 15deg
-        const y = (e.clientY / window.innerHeight - 0.5) * -30;
-        gsap.to(heroTitle, { rotateY: x, rotateX: y, transformPerspective: 1000, duration: 1, ease: 'power2.out' });
+        const win = document.createElement('div');
+        win.className = 'os-window active';
+        win.style.zIndex = highestZ;
+        // Random slight offset for new windows
+        const offset = Math.random() * 40;
+        win.style.top = (15 + offset) + '%';
+        win.style.left = (20 + offset) + '%';
+
+        win.innerHTML = `
+          <div class="os-window-topbar">
+            <div class="window-controls">
+              <div class="win-btn win-close"></div>
+              <div class="win-btn win-min"></div>
+              <div class="win-btn win-max"></div>
+            </div>
+            <div class="win-title">${title}</div>
+            <div style="width: 44px;"></div>
+          </div>
+          ${type === 'image' ? `<div class="os-window-content">${contentHTML}</div>` : contentHTML}
+        `;
+
+        windowContainer.appendChild(win);
+
+        // Animate in
+        gsap.to(win, { opacity: 1, scale: 1, duration: 0.3, ease: 'back.out(1.5)' });
+
+        // Interactions
+        win.addEventListener('mousedown', () => {
+          highestZ++; win.style.zIndex = highestZ;
+          document.querySelectorAll('.os-window').forEach(w => w.classList.remove('active'));
+          win.classList.add('active');
+        });
+
+        const closeBtn = win.querySelector('.win-close');
+        closeBtn.addEventListener('click', () => {
+          gsap.to(win, { opacity: 0, scale: 0.9, duration: 0.2, onComplete: () => win.remove() });
+        });
+
+        // Simple Window Dragging
+        const topbar = win.querySelector('.os-window-topbar');
+        let isDragging = false, startX, startY, startLeft, startTop;
+
+        topbar.addEventListener('mousedown', (e) => {
+          isDragging = true;
+          startX = e.clientX; startY = e.clientY;
+          const rect = win.getBoundingClientRect();
+          startLeft = rect.left; startTop = rect.top;
+          document.body.style.userSelect = 'none';
+        });
+
+        document.addEventListener('mousemove', (e) => {
+          if (!isDragging) return;
+          const dx = e.clientX - startX;
+          const dy = e.clientY - startY;
+          win.style.left = `${startLeft + dx}px`;
+          win.style.top = `${startTop + dy}px`;
+        });
+
+        document.addEventListener('mouseup', () => {
+          isDragging = false;
+          document.body.style.userSelect = '';
+        });
       }
-    });
-  }
+
+      // Simple Icon Dragging
+      let draggedIcon = null, iconStartX, iconStartY, iconStartL, iconStartT;
+      icons.forEach(icon => {
+        icon.addEventListener('mousedown', (e) => {
+          // don't drag if not left click
+          if (e.button !== 0) return;
+          draggedIcon = icon;
+          iconStartX = e.clientX; iconStartY = e.clientY;
+          
+          // Switch to absolute positioning if not already
+          if(getComputedStyle(icon).position !== 'absolute') {
+            const rect = icon.getBoundingClientRect();
+            icon.style.position = 'absolute';
+            icon.style.left = rect.left + 'px';
+            icon.style.top = rect.top + 'px';
+            icon.style.margin = '0';
+          }
+          
+          iconStartL = parseFloat(icon.style.left) || 0;
+          iconStartT = parseFloat(icon.style.top) || 0;
+        });
+      });
+
+      document.addEventListener('mousemove', (e) => {
+        if (!draggedIcon) return;
+        const dx = e.clientX - iconStartX;
+        const dy = e.clientY - iconStartY;
+        draggedIcon.style.left = (iconStartL + dx) + 'px';
+        draggedIcon.style.top = (iconStartT + dy) + 'px';
+      });
+
+      document.addEventListener('mouseup', () => { draggedIcon = null; });
+    }
 
 }
 
