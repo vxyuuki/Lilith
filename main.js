@@ -996,6 +996,105 @@ function initPageAnimations(container) {
     }, 40);
   }
 
+  barba.init({
+    transitions: [
+      {
+        name: 'glitch-transition',
+        to: { namespace: ['lilith', 'about'] },
+        leave(data) {
+          cleanupPageAnimations();
+          if (typeof playGlitchNoise === 'function') playGlitchNoise();
+          
+          const transitionText = document.querySelector('.transition-glitch-text');
+          if (transitionText) transitionText.innerText = "SYSTEM ERROR";
+          
+          return new Promise(resolve => {
+            const tl = gsap.timeline({ onComplete: resolve });
+            tl.set('.page-transition-layer', { background: '#020202' })
+              .to('.page-transition-layer', { y: '0%', duration: 0.5, ease: 'power3.inOut' })
+              .to('.transition-glitch-text', { opacity: 1, duration: 0.1, yoyo: true, repeat: 3 }, '+=0');
+          });
+        },
+        enter(data) {
+          lenis.scrollTo(0, { immediate: true });
+          initPageAnimations(data.next.container);
+          updateWebGLTheme();
+          updateCanvasVisibility(data.next.namespace);
+          manageScrollForNamespace(data.next.namespace);
+          
+          gsap.to('.page-transition-layer', { 
+             y: '-100%', 
+             duration: 0.5, 
+             delay: 0.3,
+             ease: 'power3.inOut',
+             onComplete: () => {
+                gsap.set('.page-transition-layer', { y: '100%' });
+                gsap.set('.transition-glitch-text', { opacity: 0 });
+             }
+          });
+        }
+      },
+      {
+        name: 'dynamic-transition',
+        leave(data) {
+          cleanupPageAnimations();
+          
+          const themes = {
+            aemeath: { kao: "(⌐■_■)", color: "#6ec6ff" },
+            amiya: { kao: "(◕ᴗ◕✿)", color: "#7eff8a" },
+            denia: { kao: "(´｡• ᵕ •｡`)", color: "#ffcc70" },
+            firefly: { kao: "(✧ω✧)", color: "#ffaa40" },
+            hifumi: { kao: "(≧◡≦)", color: "#ff6ec7" },
+            hutao: { kao: "(☞ﾟヮﾟ)☞", color: "#ff4444" },
+            lilith: { kao: "(｡♥‿♥｡)", color: "#a882ff" },
+            maihimi: { kao: "(◠‿◠)", color: "#82d8ff" }
+          };
+
+          const ns = data.next.namespace;
+          const theme = themes[ns] || { kao: "(≧◡≦)", color: "#ffffff" };
+          
+          const dynamicCenter = document.querySelector('.transition-dynamic-center');
+          const kaoText = document.getElementById('transition-kao');
+          const labelText = document.getElementById('transition-text');
+          
+          if (kaoText && labelText && dynamicCenter) {
+            kaoText.innerText = theme.kao;
+            kaoText.style.color = theme.color;
+            labelText.innerText = "DECRYPTING " + ns.toUpperCase();
+            
+            gsap.set('.transition-glitch-text', { opacity: 0 });
+            gsap.set(dynamicCenter, { opacity: 0, scale: 0.9, y: 0 });
+          }
+
+          if (typeof playHoverClick === 'function') playHoverClick();
+
+          return new Promise(resolve => {
+            const tl = gsap.timeline({ onComplete: resolve });
+            tl.set('.page-transition-layer', { background: '#050505' })
+              .to('.page-transition-layer', { y: '0%', duration: 0.5, ease: 'power3.inOut' })
+              .to('.transition-dynamic-center', { opacity: 1, scale: 1, duration: 0.4, ease: 'back.out(1.5)' }, '-=0.1');
+          });
+        },
+        enter(data) {
+          lenis.scrollTo(0, { immediate: true });
+          initPageAnimations(data.next.container);
+          updateWebGLTheme();
+          updateCanvasVisibility(data.next.namespace);
+          manageScrollForNamespace(data.next.namespace);
+          
+          gsap.to('.transition-dynamic-center', { opacity: 0, scale: 1.1, duration: 0.3, ease: 'power2.in', delay: 0.2 });
+          gsap.to('.page-transition-layer', { 
+             y: '-100%', 
+             duration: 0.5, 
+             delay: 0.5,
+             ease: 'power3.inOut',
+             onComplete: () => {
+                gsap.set('.page-transition-layer', { y: '100%' });
+             }
+          });
+        }
+      }
+    ]
   });
 
 // Global hover listener for digital click SFX
