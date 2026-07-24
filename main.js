@@ -766,48 +766,191 @@ function initPageAnimations(container) {
 
   // 13. Firefly Custom Animations
   if (container.dataset.barbaNamespace === 'firefly') {
-    // Parallax background
-    gsap.to('.parallax-bg', {
-      y: '20%',
-      ease: 'none',
-      scrollTrigger: { trigger: '.ff-hero', start: 'top top', end: 'bottom top', scrub: true }
-    });
 
-    // Split text animation for title
-    const splitTargets = container.querySelectorAll('.split-target');
-    splitTargets.forEach(el => {
-      // Very basic split text simulation without premium plugins
-      const text = el.innerText;
-      el.innerHTML = '';
-      text.split('').forEach(char => {
-        const span = document.createElement('span');
-        span.innerText = char;
-        span.style.display = 'inline-block';
-        if(char === ' ') span.innerHTML = '&nbsp;';
-        el.appendChild(span);
+    // --- SAM BOOT-UP PRELOADER ---
+    const ffPreloader = document.getElementById('ff-preloader');
+    if (ffPreloader) {
+      const ffRingFill = document.getElementById('ff-pre-ring-fill');
+      const ffPercent = document.getElementById('ff-pre-percent');
+      const ffBootlog = document.getElementById('ff-pre-bootlog');
+      const ffDesignation = document.getElementById('ff-pre-designation');
+      const ffEmbers = document.getElementById('ff-pre-embers');
+
+      const FF_CIRC = 565.49;
+      const bootLogs = [
+        'GLAMOTH IRON CAVALRY — UNIT ONLINE',
+        'ENTROPY LOSS INHIBITORS: CALIBRATING...',
+        'COMBUSTION PROTOCOL: INITIALIZING...',
+        'NEURAL SYNC: ESTABLISHING LINK...',
+        'WEAPON SYSTEMS: ARMED',
+        'SAM UNIT: READY FOR DEPLOYMENT'
+      ];
+
+      // Spawn ember particles
+      if (ffEmbers) {
+        for (let i = 0; i < 25; i++) {
+          const ember = document.createElement('div');
+          ember.className = 'ff-ember';
+          ffEmbers.appendChild(ember);
+          gsap.set(ember, {
+            x: Math.random() * window.innerWidth,
+            y: window.innerHeight + 20,
+            scale: Math.random() * 0.8 + 0.3
+          });
+          gsap.to(ember, {
+            y: -50, x: '+=' + (Math.random() * 100 - 50),
+            opacity: Math.random() * 0.6 + 0.2,
+            duration: Math.random() * 4 + 3,
+            repeat: -1, ease: 'none',
+            delay: Math.random() * -5
+          });
+        }
+      }
+
+      // Designation pulse
+      if (ffDesignation) {
+        gsap.to(ffDesignation, {
+          textShadow: '0 0 50px rgba(255,170,64,0.8), 0 0 100px rgba(255,107,53,0.4)',
+          duration: 1.5, repeat: -1, yoyo: true, ease: 'sine.inOut'
+        });
+      }
+
+      let logIdx = 0;
+      const logInterval = setInterval(() => {
+        if (ffBootlog) {
+          logIdx = (logIdx + 1) % bootLogs.length;
+          ffBootlog.querySelector('.ff-pre-log-line').innerText = bootLogs[logIdx];
+        }
+      }, 600);
+
+      // Progress
+      const ffDuration = 4000;
+      const ffStart = performance.now();
+      const ffProgressInterval = setInterval(() => {
+        const elapsed = performance.now() - ffStart;
+        const progress = Math.min(100, Math.floor((elapsed / ffDuration) * 100));
+
+        if (ffRingFill) ffRingFill.style.strokeDashoffset = FF_CIRC - (FF_CIRC * progress / 100);
+        if (ffPercent) ffPercent.innerText = progress + '%';
+
+        if (progress >= 100) {
+          clearInterval(ffProgressInterval);
+          clearInterval(logInterval);
+
+          if (ffPercent) ffPercent.innerText = '100%';
+          if (ffBootlog) ffBootlog.querySelector('.ff-pre-log-line').innerText = 'SAM UNIT: DEPLOYMENT COMPLETE';
+
+          setTimeout(() => {
+            const exitTl = gsap.timeline({
+              onComplete: () => {
+                ffPreloader.remove();
+                document.body.style.overflow = '';
+                ScrollTrigger.refresh();
+                // Trigger hero entrance
+                initFireflyHeroEntrance();
+              }
+            });
+
+            exitTl
+              .to('.ff-pre-center', { scale: 1.2, opacity: 0, filter: 'blur(20px)', duration: 0.8, ease: 'power3.in' })
+              .to('.ff-pre-sig', { opacity: 0, duration: 0.3 }, '<')
+              .to(ffPreloader, { opacity: 0, duration: 0.6, ease: 'power2.inOut' }, '-=0.3');
+          }, 400);
+        }
+      }, 40);
+    } else {
+      initFireflyHeroEntrance();
+    }
+
+    function initFireflyHeroEntrance() {
+      // Hero parallax
+      gsap.to('.parallax-bg', {
+        y: '20%', ease: 'none',
+        scrollTrigger: { trigger: '.ff-hero', start: 'top top', end: 'bottom top', scrub: true }
       });
-      
-      gsap.fromTo(el.children, 
-        { opacity: 0, y: 50, rotateX: -90 },
-        { 
-          opacity: 1, y: 0, rotateX: 0, 
-          duration: 1, stagger: 0.05, ease: 'back.out(1.7)',
-          scrollTrigger: { trigger: el, start: 'top 80%' }
+
+      // Hero content entrance
+      const heroTl = gsap.timeline({ delay: 0.2 });
+      heroTl
+        .fromTo('.ff-hero-overline', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1, ease: 'power3.out' })
+        .fromTo('.ff-title-line', { opacity: 0, y: 60, rotateX: -15 },
+          { opacity: 1, y: 0, rotateX: 0, duration: 1.2, stagger: 0.15, ease: 'power3.out' }, '-=0.6')
+        .fromTo('.ff-hero-meta', { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }, '-=0.4')
+        .fromTo('.ff-scroll-cue', { opacity: 0 }, { opacity: 1, duration: 0.6 }, '-=0.2');
+
+      // Spawn firefly particles in hero
+      const firefliesContainer = document.getElementById('ff-fireflies');
+      if (firefliesContainer && !firefliesContainer.hasChildNodes()) {
+        for (let i = 0; i < 30; i++) {
+          const dot = document.createElement('div');
+          dot.className = 'ff-firefly-dot';
+          firefliesContainer.appendChild(dot);
+          gsap.set(dot, {
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+            scale: Math.random() * 0.6 + 0.4
+          });
+          gsap.to(dot, {
+            x: '+=' + (Math.random() * 120 - 60),
+            y: '+=' + (Math.random() * 120 - 60),
+            opacity: Math.random() * 0.5 + 0.15,
+            duration: Math.random() * 6 + 3,
+            repeat: -1, yoyo: true, ease: 'sine.inOut',
+            delay: Math.random() * -6
+          });
         }
-      );
+      }
+    }
+
+    // --- Scroll-triggered reveals ---
+    container.querySelectorAll('.ff-reveal').forEach((el, i) => {
+      gsap.to(el, {
+        opacity: 1, y: 0, duration: 1,
+        ease: 'power3.out',
+        scrollTrigger: { trigger: el, start: 'top 85%', once: true },
+        delay: i % 3 * 0.1,
+        onStart: () => el.classList.add('ff-visible')
+      });
     });
 
-    // Fade up animations
-    const fadeTargets = container.querySelectorAll('.fade-target');
-    fadeTargets.forEach(el => {
-      gsap.fromTo(el,
-        { opacity: 0, y: 30 },
-        {
-          opacity: 1, y: 0,
-          duration: 1, ease: 'power3.out',
-          scrollTrigger: { trigger: el, start: 'top 85%' }
+    // Stat bar fill animation
+    const statSection = container.querySelector('.ff-bento-statbar');
+    if (statSection) {
+      ScrollTrigger.create({
+        trigger: statSection,
+        start: 'top 80%',
+        once: true,
+        onEnter: () => {
+          statSection.querySelectorAll('.ff-stat-fill').forEach((bar, i) => {
+            setTimeout(() => bar.classList.add('ff-animated'), i * 150);
+          });
         }
-      );
+      });
+    }
+
+    // Gallery drag-to-scroll
+    const galleryStrip = document.getElementById('ff-gallery-strip');
+    if (galleryStrip) {
+      let isDown = false, startX, scrollLeft;
+      galleryStrip.addEventListener('mousedown', (e) => {
+        isDown = true; galleryStrip.style.cursor = 'grabbing';
+        startX = e.pageX - galleryStrip.offsetLeft;
+        scrollLeft = galleryStrip.scrollLeft;
+      });
+      galleryStrip.addEventListener('mouseleave', () => { isDown = false; galleryStrip.style.cursor = 'grab'; });
+      galleryStrip.addEventListener('mouseup', () => { isDown = false; galleryStrip.style.cursor = 'grab'; });
+      galleryStrip.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - galleryStrip.offsetLeft;
+        galleryStrip.scrollLeft = scrollLeft - (x - startX) * 1.5;
+      });
+    }
+
+    // Editorial line grow
+    gsap.fromTo('.ff-editorial-line', { width: 0 }, {
+      width: 60, duration: 1.5, ease: 'power3.out',
+      scrollTrigger: { trigger: '.ff-editorial-line', start: 'top 85%' }
     });
   }
 

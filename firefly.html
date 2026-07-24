@@ -3,14 +3,54 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Archives | Firefly</title>
+  <title>The Archives | Firefly — SAM</title>
+  <meta name="description" content="Firefly — Stellaron Hunter, SAM. A cinematic archive of the girl who defies fate.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Public+Sans:wght@300;400;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./style.css">
 </head>
 <body data-barba="wrapper">
-  
+
+  <!-- ✦ FIREFLY SAM BOOT-UP PRELOADER ✦ -->
+  <div class="ff-preloader" id="ff-preloader">
+    <div class="ff-pre-noise"></div>
+    <div class="ff-pre-scanlines"></div>
+
+    <!-- Animated ember particles -->
+    <div class="ff-pre-embers" id="ff-pre-embers"></div>
+
+    <div class="ff-pre-center">
+      <!-- Hexagonal boot ring -->
+      <div class="ff-pre-hex">
+        <svg viewBox="0 0 200 200" class="ff-pre-ring-svg">
+          <defs>
+            <linearGradient id="ff-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#ffaa40"/>
+              <stop offset="100%" stop-color="#ff6b35"/>
+            </linearGradient>
+          </defs>
+          <circle cx="100" cy="100" r="90" class="ff-pre-ring-track"/>
+          <circle cx="100" cy="100" r="90" class="ff-pre-ring-fill" id="ff-pre-ring-fill"/>
+        </svg>
+        <div class="ff-pre-designation" id="ff-pre-designation">SAM</div>
+      </div>
+
+      <!-- Boot sequence text -->
+      <div class="ff-pre-bootlog" id="ff-pre-bootlog">
+        <div class="ff-pre-log-line">GLAMOTH IRON CAVALRY — UNIT ONLINE</div>
+      </div>
+
+      <div class="ff-pre-status">
+        <span class="ff-pre-label">ENTROPY CALIBRATION</span>
+        <span class="ff-pre-percent" id="ff-pre-percent">0%</span>
+      </div>
+    </div>
+
+    <!-- Bottom kaomoji signature -->
+    <div class="ff-pre-sig">(✧ω✧) STELLARON HUNTER NETWORK</div>
+  </div>
+
   <canvas id="webgl-bg"></canvas>
 
   <div class="cursor"><span class="cursor-text"></span></div>
@@ -21,89 +61,176 @@
   </div>
 
   <main class="smooth-scroll" data-barba="container" data-barba-namespace="firefly">
-    <style>
-      :root {
-        --ff-primary: #ffaa40;
-        --ff-secondary: #ff6ec7;
-        --ff-bg: #050505;
-      }
-    </style>
 
-    <section class="ff-hero">
+    <!-- ═══════════════ SECTION 1: CINEMATIC HERO ═══════════════ -->
+    <section class="ff-hero" id="ff-hero">
       <div class="ff-hero-bg parallax-bg">
-        <img src="/Waifu_List/Firefly/119768376_p0.png" alt="Firefly Background">
+        <img src="/Waifu_List/Firefly/119768376_p0.png" alt="Firefly">
       </div>
+      <div class="ff-hero-vignette"></div>
+      <div class="ff-hero-grain"></div>
+
+      <!-- Floating firefly particles -->
+      <div class="ff-fireflies" id="ff-fireflies"></div>
+
       <div class="ff-hero-content">
-        <h1 class="ff-title split-target" data-text="FIREFLY">FIREFLY</h1>
-        <p class="ff-subtitle fade-target">STELLARON HUNTER // SAM</p>
+        <div class="ff-hero-overline ff-reveal">STELLARON HUNTER FILE NO. 026</div>
+        <h1 class="ff-hero-title ff-reveal">
+          <span class="ff-title-line">FIRE</span>
+          <span class="ff-title-line">FLY</span>
+        </h1>
+        <div class="ff-hero-meta ff-reveal">
+          <span class="ff-meta-item">DESIGNATION: SAM</span>
+          <span class="ff-meta-divider">/</span>
+          <span class="ff-meta-item">PATH: DESTRUCTION</span>
+          <span class="ff-meta-divider">/</span>
+          <span class="ff-meta-item">ELEMENT: FIRE</span>
+        </div>
       </div>
-      <div class="ff-scroll-indicator fade-target">
-        <div class="ff-scroll-line">
-          <div class="ff-scroll-dot"></div>
+
+      <div class="ff-scroll-cue">
+        <div class="ff-scroll-line"><div class="ff-scroll-dot"></div></div>
+        <span class="ff-scroll-text">SCROLL</span>
+      </div>
+    </section>
+
+    <!-- ═══════════════ SECTION 2: EDITORIAL QUOTE ═══════════════ -->
+    <section class="ff-editorial">
+      <div class="ff-editorial-inner">
+        <div class="ff-editorial-number ff-reveal">01</div>
+        <blockquote class="ff-editorial-quote ff-reveal">
+          "Even if fate has written my ending,<br>
+          <em>I'll burn the page.</em>"
+        </blockquote>
+        <div class="ff-editorial-line"></div>
+      </div>
+    </section>
+
+    <!-- ═══════════════ SECTION 3: SPLIT LORE ═══════════════ -->
+    <section class="ff-lore">
+      <div class="ff-lore-grid">
+        <div class="ff-lore-media ff-reveal">
+          <img src="/Waifu_List/Firefly/120034297_p0.png" alt="Firefly Portrait" class="ff-lore-img">
+          <div class="ff-lore-img-frame"></div>
+        </div>
+        <div class="ff-lore-text">
+          <span class="ff-lore-tag ff-reveal">PROFILE // DECLASSIFIED</span>
+          <h2 class="ff-lore-heading ff-reveal">Born as a weapon.<br>Chose to be human.</h2>
+          <p class="ff-lore-body ff-reveal">
+            A young girl clad in a mechanical armor known as "SAM" — the Glamoth Iron Cavalry's most devastating unit. Born through genetic modification, she's afflicted with Entropy Loss Syndrome, a terminal condition that erodes her very existence.
+          </p>
+          <p class="ff-lore-body ff-reveal">
+            She joined the Stellaron Hunters not for power, but in search of the meaning of life. In every battle, she doesn't fight to destroy — she fights to prove that even a weapon can dream.
+          </p>
         </div>
       </div>
     </section>
 
-    <section class="ff-lore-section">
-      <div class="ff-lore-container">
-        <div class="ff-lore-left fade-target">
-          <h2 class="ff-quote">"Like fireflies to a flame, life finds its own path."</h2>
-        </div>
-        <div class="ff-lore-right">
-          <p class="fade-target">
-            A member of the Stellaron Hunters and a young girl clad in a mechanical armor known as "SAM." Born as a weapon, she’s afflicted with Entropy Loss Syndrome due to genetic modification.
-          </p>
-          <p class="fade-target" style="margin-top: 1rem;">
-            She joined the Stellaron Hunters in search of the meaning of life, relentlessly pursuing ways to defy fate.
-          </p>
-        </div>
+    <!-- ═══════════════ SECTION 4: BENTO STATS GRID ═══════════════ -->
+    <section class="ff-stats">
+      <div class="ff-stats-header ff-reveal">
+        <span class="ff-stats-number">02</span>
+        <h2 class="ff-stats-title">COMBAT DATA</h2>
       </div>
-    </section>
-
-    <section class="ff-bento-section">
-      <div class="ff-bento-grid">
-        <div class="ff-bento-card bento-large fade-target magnetic">
-          <div class="ff-bento-border"></div>
-          <img src="/Waifu_List/Firefly/119768376_p0.png" alt="Firefly Portrait" class="ff-bento-img">
+      <div class="ff-bento">
+        <!-- Card 1: Large Image -->
+        <div class="ff-bento-card ff-bento-hero ff-reveal">
+          <img src="/Waifu_List/Firefly/33f95b8c8308888022664e91b327896b.jpg" alt="SAM Armor" class="ff-bento-img">
           <div class="ff-bento-overlay"></div>
-          <div class="ff-bento-text">
-            <span class="ff-bento-tag">ID: AR-26710</span>
+          <div class="ff-bento-label">
+            <span class="ff-bento-tag">UNIT: SAM</span>
             <h3>GLAMOTH IRON CAVALRY</h3>
           </div>
         </div>
-        
-        <div class="ff-bento-card bento-small fade-target magnetic" style="background: rgba(255,170,64,0.1);">
-          <div class="ff-bento-border"></div>
-          <div class="ff-bento-content-center">
-            <i data-lucide="flame" style="width: 48px; height: 48px; color: var(--ff-primary); margin-bottom: 10px;"></i>
-            <h4 style="font-family: var(--font-sans); color: var(--ff-primary);">TYPE: FIRE</h4>
+
+        <!-- Card 2: Element -->
+        <div class="ff-bento-card ff-bento-element ff-reveal">
+          <div class="ff-bento-icon-wrap">
+            <div class="ff-bento-icon-glow"></div>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="ff-bento-icon">
+              <path d="M12 2c1.5 3.5 5 6 5 10a5 5 0 0 1-10 0c0-4 3.5-6.5 5-10z"/>
+            </svg>
+          </div>
+          <span class="ff-bento-card-label">ELEMENT</span>
+          <span class="ff-bento-card-value">FIRE</span>
+        </div>
+
+        <!-- Card 3: Path -->
+        <div class="ff-bento-card ff-bento-path ff-reveal">
+          <div class="ff-bento-icon-wrap">
+            <div class="ff-bento-icon-glow ff-glow-pink"></div>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="ff-bento-icon ff-icon-pink">
+              <path d="M14.5 17.5L3 6V3h3l11.5 11.5M13 7l6-6 4 4-6 6M3 21l3-3"/>
+            </svg>
+          </div>
+          <span class="ff-bento-card-label">PATH</span>
+          <span class="ff-bento-card-value ff-val-pink">DESTRUCTION</span>
+        </div>
+
+        <!-- Card 4: Terminal -->
+        <div class="ff-bento-card ff-bento-terminal ff-reveal">
+          <div class="ff-terminal-head">
+            <span class="ff-terminal-dot"></span>
+            <span class="ff-terminal-dot ff-dot-y"></span>
+            <span class="ff-terminal-dot ff-dot-g"></span>
+            <span class="ff-terminal-title">sam_boot.log</span>
+          </div>
+          <div class="ff-terminal-body" id="ff-terminal-body">
+            <div class="ff-term-line">> Initiating Primary Engine...</div>
+            <div class="ff-term-line">> Entropy Loss Inhibitors: <span class="ff-t-ok">ONLINE</span></div>
+            <div class="ff-term-line">> Combustion Protocol: <span class="ff-t-ok">READY</span></div>
+            <div class="ff-term-line">> Neural Sync Rate: <span class="ff-t-warn">87.3%</span></div>
+            <div class="ff-term-line ff-t-accent">> "I will set the seas ablaze."</div>
           </div>
         </div>
 
-        <div class="ff-bento-card bento-small fade-target magnetic" style="background: rgba(255,110,199,0.1);">
-          <div class="ff-bento-border" style="border-color: var(--ff-secondary);"></div>
-          <div class="ff-bento-content-center">
-            <i data-lucide="swords" style="width: 48px; height: 48px; color: var(--ff-secondary); margin-bottom: 10px;"></i>
-            <h4 style="font-family: var(--font-sans); color: var(--ff-secondary);">THE DESTRUCTION</h4>
+        <!-- Card 5: Stat bar -->
+        <div class="ff-bento-card ff-bento-statbar ff-reveal">
+          <div class="ff-stat-row">
+            <span class="ff-stat-name">ATK</span>
+            <div class="ff-stat-bar"><div class="ff-stat-fill" style="--fill: 92%;"></div></div>
+            <span class="ff-stat-val">92</span>
           </div>
-        </div>
-
-        <div class="ff-bento-card bento-wide fade-target magnetic">
-          <div class="ff-bento-border"></div>
-          <div class="ff-terminal-logs">
-            <div class="ff-log-line">> Initiating Primary Engine...</div>
-            <div class="ff-log-line">> Entropy Loss Inhibitors: ONLINE</div>
-            <div class="ff-log-line">> Combustion Protocol: READY</div>
-            <div class="ff-log-line" style="color: var(--ff-primary);">> "I will set the seas ablaze."</div>
+          <div class="ff-stat-row">
+            <span class="ff-stat-name">DEF</span>
+            <div class="ff-stat-bar"><div class="ff-stat-fill ff-fill-pink" style="--fill: 68%;"></div></div>
+            <span class="ff-stat-val">68</span>
+          </div>
+          <div class="ff-stat-row">
+            <span class="ff-stat-name">SPD</span>
+            <div class="ff-stat-bar"><div class="ff-stat-fill ff-fill-cyan" style="--fill: 85%;"></div></div>
+            <span class="ff-stat-val">85</span>
+          </div>
+          <div class="ff-stat-row">
+            <span class="ff-stat-name">BRK</span>
+            <div class="ff-stat-bar"><div class="ff-stat-fill" style="--fill: 98%;"></div></div>
+            <span class="ff-stat-val">98</span>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="ff-next-section">
-      <div class="ff-next-content">
-        <span class="ff-next-label fade-target">NEXT SUBJECT</span>
-        <a href="/hifumi.html" class="ff-next-link magnetic split-target">HIFUMI</a>
+    <!-- ═══════════════ SECTION 5: GALLERY FILMSTRIP ═══════════════ -->
+    <section class="ff-gallery">
+      <div class="ff-gallery-header ff-reveal">
+        <span class="ff-stats-number">03</span>
+        <h2 class="ff-stats-title">VISUAL ARCHIVE</h2>
+      </div>
+      <div class="ff-gallery-strip" id="ff-gallery-strip">
+        <div class="ff-gallery-item"><img src="/Waifu_List/Firefly/140222217_p0.jpg" alt="Firefly 1"></div>
+        <div class="ff-gallery-item"><img src="/Waifu_List/Firefly/22123abcbf91f2b4d220fb4d612f08e4.jpg" alt="Firefly 2"></div>
+        <div class="ff-gallery-item"><img src="/Waifu_List/Firefly/501b67d31caa29863ab494e69bf1a9db.jpg" alt="Firefly 3"></div>
+        <div class="ff-gallery-item"><img src="/Waifu_List/Firefly/5448ef480c8a762b71904f9ab1012dd0.jpg" alt="Firefly 4"></div>
+        <div class="ff-gallery-item"><img src="/Waifu_List/Firefly/594b2923697b236648dc07d9f5addb6c.jpg" alt="Firefly 5"></div>
+      </div>
+    </section>
+
+    <!-- ═══════════════ SECTION 6: NEXT SUBJECT ═══════════════ -->
+    <section class="ff-next">
+      <div class="ff-next-inner">
+        <span class="ff-next-label ff-reveal">NEXT SUBJECT</span>
+        <a href="/" class="ff-next-link magnetic ff-reveal">ROSTER</a>
+        <div class="ff-next-line"></div>
       </div>
     </section>
   </main>
@@ -117,7 +244,5 @@
   </div>
 
   <script type="module" src="/main.js"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <script>lucide.createIcons();</script>
 </body>
 </html>

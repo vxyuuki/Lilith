@@ -3,117 +3,135 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Nonexistence of You and Me | Roster</title>
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Public+Sans:wght@300;400;700;800&display=swap" rel="stylesheet">
-  <script type="module" crossorigin src="/assets/main-Cqyoud4V.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/main-igl2Phc4.css">
+  <title>The Archives | Roster</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Public+Sans:wght@300;400;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <script type="module" crossorigin src="/assets/main-BXSR9-X9.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/main-CdRtnbvk.css">
 </head>
 <body data-barba="wrapper">
+  <!-- ✦ KAOMOJI PRELOADER ✦ -->
+  <div class="kaomoji-preloader" id="kaomoji-preloader">
+    <div class="kao-noise"></div>
+    
+    <!-- Floating kaomoji particles -->
+    <div class="kao-particles" id="kao-particles"></div>
+    
+    <!-- Center content -->
+    <div class="kao-center">
+      <div class="kao-ring">
+        <svg viewBox="0 0 200 200" class="kao-ring-svg">
+          <defs>
+            <linearGradient id="kao-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#a882ff"/>
+              <stop offset="25%" stop-color="#ff6ec7"/>
+              <stop offset="50%" stop-color="#ffaa40"/>
+              <stop offset="75%" stop-color="#6ec6ff"/>
+              <stop offset="100%" stop-color="#7eff8a"/>
+            </linearGradient>
+          </defs>
+          <circle cx="100" cy="100" r="94" class="kao-ring-track"/>
+          <circle cx="100" cy="100" r="94" class="kao-ring-fill" id="kao-ring-fill"/>
+        </svg>
+        <div class="kao-face" id="kao-face">(｡◕‿◕｡)</div>
+      </div>
+      
+      <div class="kao-name-ticker">
+        <span class="kao-label">loading</span>
+        <span class="kao-subject" id="kao-subject">FIREFLY</span>
+      </div>
+      
+      <div class="kao-percent" id="kao-percent">0%</div>
+    </div>
+    
+    <!-- Bottom decorative kaomoji row -->
+    <div class="kao-bottom-row" id="kao-bottom-row"></div>
+  </div>
   
-  <!-- Minimalist Navigation Removed for Landing Page -->
+  
 
-  <!-- WebGL Background -->
   <canvas id="webgl-bg"></canvas>
 
-  <!-- Advanced Cursor -->
-  <div class="cursor">
-    <span class="cursor-text"></span>
-  </div>
+  <div class="cursor"><span class="cursor-text"></span></div>
 
   <div class="sound-toggle magnetic">
     <span class="sound-text">SOUND OFF</span>
-    <div class="sound-bars">
-      <div class="bar"></div>
-      <div class="bar"></div>
-      <div class="bar"></div>
-    </div>
+    <div class="sound-bars"><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
   </div>
 
   <main class="smooth-scroll" data-barba="container" data-barba-namespace="home">
-  <style>:root { --accent: #ffffff; --accent-glow: rgba(255, 255, 255, 0.5); }</style>
+    <div class="roster-bg-reveal"></div>
+    <style>:root { --accent: #ffffff; --accent-glow: rgba(255, 255, 255, 0.5); }</style>
 
-    <section class="accordion-container">
-      
-      <!-- Character 1: Aemeath -->
-      <a href="/aemeath.html" class="accordion-slice">
-        <img src="/Waifu_List/Aemeath/Aemeath.jpg" alt="Aemeath">
-        <div class="slice-content">
-          <div class="slice-num">01</div>
-          <h2 class="slice-name">AEMEATH</h2>
-        </div>
-      </a>
+    <!-- S1: HERO -->
+    <section class="roster-hero">
+      <div class="roster-hero-content">
+        <h1 class="roster-title split-target">THE ARCHIVES</h1>
+        <p class="roster-sub fade-target"><i data-lucide="terminal" style="width: 14px; height: 14px; margin-right: 6px; display: inline-block; vertical-align: middle;"></i>SELECT SUBJECT TO DECRYPT DATA</p>
+      </div>
+    </section>
 
-      <!-- Character 2: Amiya -->
-      <a href="/amiya.html" class="accordion-slice">
-        <img src="/Waifu_List/Amiya/1080107.jpg" alt="Amiya">
-        <div class="slice-content">
-          <div class="slice-num">02</div>
-          <h2 class="slice-name">AMIYA</h2>
-        </div>
-      </a>
+    <!-- S2: HOVER REVEAL LIST -->
+    <section class="roster-list-section">
+      <!-- Background Images (Hidden by default) -->
+      <div class="roster-images">
+        <div class="roster-img-wrap" id="img-aemeath"><img src="/Waifu_List/Aemeath/Aemeath.jpg" alt="Aemeath"></div>
+        <div class="roster-img-wrap" id="img-amiya"><img src="/Waifu_List/Amiya/1080107.jpg" alt="Amiya"></div>
+        <div class="roster-img-wrap" id="img-denia"><img src="/Waifu_List/Denia/Denia.jpg" alt="Denia"></div>
+        <div class="roster-img-wrap" id="img-firefly"><img src="/Waifu_List/Firefly/119768376_p0.png" alt="Firefly"></div>
+        <div class="roster-img-wrap" id="img-hifumi"><img src="/Waifu_List/Hifumi Takimoto/37901097fd6b33b0dc5ecb1db9775be6.jpg" alt="Hifumi"></div>
+        <div class="roster-img-wrap" id="img-hutao"><img src="/Waifu_List/Hu Tao/09e16fbd44564fea3a24297d3bea84c8.jpg" alt="Hu Tao"></div>
+        <div class="roster-img-wrap" id="img-lilith"><img src="/Image/125966425_p0.png" alt="Lilith"></div>
+        <div class="roster-img-wrap" id="img-maihimi"><img src="/Waifu_List/Maihimi Tenkawa/24279e0e05f0b034ede5348dfd75fad3.jpg" alt="Maihimi"></div>
+      </div>
+      <div class="roster-img-overlay"></div>
 
-      <!-- Character 3: Denia -->
-      <a href="/denia.html" class="accordion-slice">
-        <img src="/Waifu_List/Denia/Denia.jpg" alt="Denia">
-        <div class="slice-content">
-          <div class="slice-num">03</div>
-          <h2 class="slice-name">DENIA</h2>
-        </div>
-      </a>
-
-      <!-- Character 4: Firefly -->
-      <a href="/firefly.html" class="accordion-slice">
-        <img src="/Waifu_List/Firefly/119768376_p0.png" alt="Firefly">
-        <div class="slice-content">
-          <div class="slice-num">04</div>
-          <h2 class="slice-name">FIREFLY</h2>
-        </div>
-      </a>
-
-      <!-- Character 5: Hifumi -->
-      <a href="/hifumi.html" class="accordion-slice">
-        <img src="/Waifu_List/Hifumi Takimoto/37901097fd6b33b0dc5ecb1db9775be6.jpg" alt="Hifumi">
-        <div class="slice-content">
-          <div class="slice-num">05</div>
-          <h2 class="slice-name">HIFUMI</h2>
-        </div>
-      </a>
-
-      <!-- Character 6: Hu Tao -->
-      <a href="/hutao.html" class="accordion-slice">
-        <img src="/Waifu_List/Hu Tao/09e16fbd44564fea3a24297d3bea84c8.jpg" alt="Hu Tao">
-        <div class="slice-content">
-          <div class="slice-num">06</div>
-          <h2 class="slice-name">HU TAO</h2>
-        </div>
-      </a>
-
-      <!-- Character 7: Lilith -->
-      <a href="/lilith.html" class="accordion-slice">
-        <img src="/Image/125966425_p0.png" alt="Lilith">
-        <div class="slice-content">
-          <div class="slice-num">07</div>
-          <h2 class="slice-name">LILITH</h2>
-        </div>
-      </a>
-
-      <!-- Character 8: Maihimi -->
-      <a href="/maihimi.html" class="accordion-slice">
-        <img src="/Waifu_List/Maihimi Tenkawa/24279e0e05f0b034ede5348dfd75fad3.jpg" alt="Maihimi">
-        <div class="slice-content">
-          <div class="slice-num">08</div>
-          <h2 class="slice-name">MAIHIMI</h2>
-        </div>
-      </a>
-
+      <!-- The Vertical List -->
+      <ul class="roster-list">
+        <li class="roster-item" data-target="img-aemeath">
+          <a href="/aemeath.html" class="roster-link magnetic"><span class="r-num">01</span><span class="r-name">AEMEATH</span><i data-lucide="arrow-right"></i></a>
+        </li>
+        <li class="roster-item" data-target="img-amiya">
+          <a href="/amiya.html" class="roster-link magnetic"><span class="r-num">02</span><span class="r-name">AMIYA</span><i data-lucide="arrow-right"></i></a>
+        </li>
+        <li class="roster-item" data-target="img-denia">
+          <a href="/denia.html" class="roster-link magnetic"><span class="r-num">03</span><span class="r-name">DENIA</span><i data-lucide="arrow-right"></i></a>
+        </li>
+        <li class="roster-item" data-target="img-firefly">
+          <a href="/firefly.html" class="roster-link magnetic"><span class="r-num">04</span><span class="r-name">FIREFLY</span><i data-lucide="arrow-right"></i></a>
+        </li>
+        <li class="roster-item" data-target="img-hifumi">
+          <a href="/hifumi.html" class="roster-link magnetic"><span class="r-num">05</span><span class="r-name">HIFUMI</span><i data-lucide="arrow-right"></i></a>
+        </li>
+        <li class="roster-item" data-target="img-hutao">
+          <a href="/hutao.html" class="roster-link magnetic"><span class="r-num">06</span><span class="r-name">HU TAO</span><i data-lucide="arrow-right"></i></a>
+        </li>
+        <li class="roster-item" data-target="img-lilith">
+          <a href="/lilith.html" class="roster-link magnetic"><span class="r-num">07</span><span class="r-name">LILITH</span><i data-lucide="arrow-right"></i></a>
+        </li>
+        <li class="roster-item" data-target="img-maihimi">
+          <a href="/maihimi.html" class="roster-link magnetic"><span class="r-num">08</span><span class="r-name">MAIHIMI</span><i data-lucide="arrow-right"></i></a>
+        </li>
+      </ul>
     </section>
   </main>
 
   <div class="page-transition-layer">
-    <div class="transition-glitch-text glitch-core flicker-text extreme-glitch" style="position: relative;" data-text="SYSTEM ERROR">SYSTEM ERROR</div>
+    <div class="transition-dynamic-center">
+      <div class="transition-kao" id="transition-kao">(✧ω✧)</div>
+      <div class="transition-text" id="transition-text">DECRYPTING FIREFLY</div>
+    </div>
+    <!-- Keep glitch text hidden by default, used only for Lilith/About -->
+    <div class="transition-glitch-text glitch-core flicker-text extreme-glitch" style="position: absolute; opacity: 0;" data-text="SYSTEM ERROR">SYSTEM ERROR</div>
   </div>
 
-</body>
+<script src="https://unpkg.com/lucide@latest"></script>`n  <script>lucide.createIcons();</script>`n</body>
 </html>
+
+
+
+
+
+
 
