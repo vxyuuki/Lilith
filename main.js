@@ -928,29 +928,121 @@ function initPageAnimations(container) {
       });
     }
 
-    // Gallery drag-to-scroll
-    const galleryStrip = document.getElementById('ff-gallery-strip');
-    if (galleryStrip) {
-      let isDown = false, startX, scrollLeft;
-      galleryStrip.addEventListener('mousedown', (e) => {
-        isDown = true; galleryStrip.style.cursor = 'grabbing';
-        startX = e.pageX - galleryStrip.offsetLeft;
-        scrollLeft = galleryStrip.scrollLeft;
+    // Gallery 3D Coverflow Scroll
+    const galleryItems = document.querySelectorAll('.ff-gallery-item');
+    if (galleryStrip && galleryItems.length > 0) {
+      // Create a massive scroll space
+      ScrollTrigger.create({
+        trigger: '.ff-gallery',
+        start: 'top top',
+        end: '+=200%',
+        pin: true,
+        scrub: 1,
+        animation: gsap.to(galleryStrip, {
+          x: () => -(galleryStrip.scrollWidth - window.innerWidth + 100),
+          ease: 'none'
+        }),
+        onUpdate: (self) => {
+          // Add 3D rotation based on position
+          galleryItems.forEach(item => {
+            const rect = item.getBoundingClientRect();
+            const centerOffset = (rect.left + rect.width / 2) - window.innerWidth / 2;
+            const distance = centerOffset / (window.innerWidth / 2); // -1 to 1
+            
+            gsap.set(item, {
+              rotationY: distance * 45, // Curve effect
+              z: -Math.abs(distance) * 200, // Push back items on the side
+              scale: 1 - Math.abs(distance) * 0.2
+            });
+          });
+        }
       });
-      galleryStrip.addEventListener('mouseleave', () => { isDown = false; galleryStrip.style.cursor = 'grab'; });
-      galleryStrip.addEventListener('mouseup', () => { isDown = false; galleryStrip.style.cursor = 'grab'; });
-      galleryStrip.addEventListener('mousemove', (e) => {
-        if (!isDown) return;
-        e.preventDefault();
-        const x = e.pageX - galleryStrip.offsetLeft;
-        galleryStrip.scrollLeft = scrollLeft - (x - startX) * 1.5;
-      });
+      // Initial render for 3D
+      gsap.set(galleryStrip, { perspective: 1000, transformStyle: 'preserve-3d' });
     }
 
     // Editorial line grow
     gsap.fromTo('.ff-editorial-line', { width: 0 }, {
-      width: 60, duration: 1.5, ease: 'power3.out',
+      width: 120, duration: 1.5, ease: 'power3.out',
       scrollTrigger: { trigger: '.ff-editorial-line', start: 'top 85%' }
+    });
+
+    // ─── WILD 3D EFFECTS ───
+    
+    // 1. 3D Holographic Tilt + Spotlight for Bento Cards
+    const bentoCards = container.querySelectorAll('.ff-bento-card');
+    bentoCards.forEach(card => {
+      // Inject spotlight element
+      const spotlight = document.createElement('div');
+      spotlight.className = 'ff-spotlight';
+      card.appendChild(spotlight);
+
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        // Spotlight position
+        gsap.to(spotlight, { x, y, opacity: 1, duration: 0.3 });
+
+        // 3D Tilt calculations
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const rotateX = ((y - centerY) / centerY) * -10; // Max 10 deg
+        const rotateY = ((x - centerX) / centerX) * 10;
+        
+        gsap.to(card, {
+          rotateX, rotateY, scale: 1.02,
+          transformPerspective: 1000,
+          ease: 'power2.out', duration: 0.4
+        });
+        
+        // Pop out internal elements (parallax inside card)
+        const innerImg = card.querySelector('.ff-bento-img');
+        const innerText = card.querySelector('.ff-bento-label, .ff-bento-card-value, .ff-terminal-body');
+        if(innerImg) gsap.to(innerImg, { z: 20, rotateX: rotateX * 0.5, rotateY: rotateY * 0.5, duration: 0.4 });
+        if(innerText) gsap.to(innerText, { z: 40, duration: 0.4 });
+      });
+
+      card.addEventListener('mouseleave', () => {
+        gsap.to(spotlight, { opacity: 0, duration: 0.3 });
+        gsap.to(card, { rotateX: 0, rotateY: 0, scale: 1, duration: 0.6, ease: 'power3.out' });
+        
+        const innerImg = card.querySelector('.ff-bento-img');
+        const innerText = card.querySelector('.ff-bento-label, .ff-bento-card-value, .ff-terminal-body');
+        if(innerImg) gsap.to(innerImg, { z: 0, rotateX: 0, rotateY: 0, duration: 0.6 });
+        if(innerText) gsap.to(innerText, { z: 0, duration: 0.6 });
+      });
+    });
+
+    // 2. RGB Split Chromatic Aberration on Scroll Velocity
+    let proxy = { skew: 0 }, skewSetter = gsap.quickSetter('.ff-hero-title, .ff-lore-heading, .ff-editorial-quote', 'textShadow'), clamp = gsap.utils.clamp(-20, 20);
+    
+    ScrollTrigger.create({
+      onUpdate: (self) => {
+        const velocity = clamp(Math.round(self.getVelocity() / 50));
+        // Apply text-shadow RGB split based on velocity
+        if(Math.abs(velocity) > 2) {
+           const splitR = `${velocity}px 0px 0px rgba(255,0,0,0.8)`;
+           const splitB = `${-velocity}px 0px 0px rgba(0,255,255,0.8)`;
+           skewSetter(`${splitR}, ${splitB}`);
+        } else {
+           // Reset to original glow or none
+           gsap.to('.ff-hero-title', { textShadow: '0 0 40px rgba(255,170,64,0.15)', duration: 0.5 });
+           gsap.to('.ff-editorial-quote', { textShadow: '0 0 60px rgba(255,170,64,0.1)', duration: 0.5 });
+           gsap.to('.ff-lore-heading', { textShadow: 'none', duration: 0.5 });
+        }
+      }
+    });
+
+    // 3. 3D Floating Hero Title Tracking Mouse
+    const heroTitle = container.querySelector('.ff-hero-title');
+    container.addEventListener('mousemove', (e) => {
+      if(heroTitle) {
+        const x = (e.clientX / window.innerWidth - 0.5) * 30; // Max 15deg
+        const y = (e.clientY / window.innerHeight - 0.5) * -30;
+        gsap.to(heroTitle, { rotateY: x, rotateX: y, transformPerspective: 1000, duration: 1, ease: 'power2.out' });
+      }
     });
   }
 
